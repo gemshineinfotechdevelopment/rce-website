@@ -1,170 +1,210 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react';
+import { Navbar } from './components/Navbar';
+import { Hero } from './components/Hero';
+import { StatsRibbon } from './components/StatsRibbon';
+import { AboutSection } from './components/AboutSection';
+import { ProjectsSection } from './components/ProjectsSection';
+import { EventsSection } from './components/EventsSection';
+import { StoriesSection } from './components/StoriesSection';
+import { GallerySection } from './components/GallerySection';
+import { ContactSection } from './components/ContactSection';
+import { Footer } from './components/Footer';
+import { JoinModal } from './components/JoinModal';
+import { DonateModal } from './components/DonateModal';
+import { AdminPortal } from './components/AdminPortal';
+import {
+  fetchClubStats,
+  fetchClubProjects,
+  fetchClubEvents,
+  fetchClubStories,
+} from './services/api';
+import type {
+  ClubStats,
+  ProjectItem,
+  ClubEvent,
+  StoryItem,
+} from './services/api';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
-  const [serverStatus, setServerStatus] = useState<string>('Ready to test')
-  const [serverMsg, setServerMsg] = useState<string>('')
-  const [isOnline, setIsOnline] = useState<boolean | null>(null)
+  const [stats, setStats] = useState<ClubStats>({
+    livesImpacted: 28450,
+    activeVolunteers: 1420,
+    projectsCompleted: 185,
+    treesPlanted: 12400,
+    mealsServed: 45200,
+    medicalCamps: 68,
+    citiesCovered: 14,
+    satisfactionRate: 98,
+  });
 
-  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
-  const frontendPort = import.meta.env.VITE_PORT || '5173'
+  const [projects, setProjects] = useState<ProjectItem[]>([]);
+  const [events, setEvents] = useState<ClubEvent[]>([]);
+  const [stories, setStories] = useState<StoryItem[]>([]);
+  const [isSyncingStats, setIsSyncingStats] = useState(false);
 
-  const checkBackend = async () => {
+  // Standalone Admin Route State
+  const [isAdminPortalView, setIsAdminPortalView] = useState(() => {
+    return window.location.pathname.startsWith('/admin') || window.location.hash === '#admin';
+  });
+
+  // Modal States for Public Website
+  const [isJoinOpen, setIsJoinOpen] = useState(false);
+  const [defaultJoinRole, setDefaultJoinRole] = useState('Volunteer');
+  const [isDonateOpen, setIsDonateOpen] = useState(false);
+  const [defaultDonateCause, setDefaultDonateCause] = useState('Child Education & Vidhya Connect');
+
+  // Listen to browser URL changes
+  useEffect(() => {
+    const handleRouteCheck = () => {
+      setIsAdminPortalView(
+        window.location.pathname.startsWith('/admin') || window.location.hash === '#admin'
+      );
+    };
+
+    window.addEventListener('popstate', handleRouteCheck);
+    window.addEventListener('hashchange', handleRouteCheck);
+    return () => {
+      window.removeEventListener('popstate', handleRouteCheck);
+      window.removeEventListener('hashchange', handleRouteCheck);
+    };
+  }, []);
+
+  // Load initial backend data
+  useEffect(() => {
+    loadAllData();
+  }, []);
+
+  const loadAllData = async () => {
+    setIsSyncingStats(true);
     try {
-      setServerStatus(`Connecting to ${apiBaseUrl}...`)
-      const res = await fetch(`${apiBaseUrl}/api/health`)
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const data = await res.json()
-      setServerStatus(data.message || 'Connected!')
-      setIsOnline(true)
-    } catch {
-      setServerStatus(`Offline (Backend is not running at ${apiBaseUrl})`)
-      setIsOnline(false)
+      const [statsData, projectsData, eventsData, storiesData] = await Promise.all([
+        fetchClubStats(),
+        fetchClubProjects(),
+        fetchClubEvents(),
+        fetchClubStories(),
+      ]);
+
+      if (statsData) setStats(statsData);
+      if (projectsData?.length) setProjects(projectsData);
+      if (eventsData?.length) setEvents(eventsData);
+      if (storiesData?.length) setStories(storiesData);
+    } catch (err) {
+      console.warn('Error loading club data from backend:', err);
+    } finally {
+      setIsSyncingStats(false);
     }
+  };
+
+  const handleRefreshStats = async () => {
+    setIsSyncingStats(true);
+    try {
+      const updatedStats = await fetchClubStats();
+      const updatedProjects = await fetchClubProjects();
+      setStats(updatedStats);
+      if (updatedProjects?.length) setProjects(updatedProjects);
+    } finally {
+      setIsSyncingStats(false);
+    }
+  };
+
+  const handleOpenJoin = (role = 'Volunteer') => {
+    setDefaultJoinRole(role);
+    setIsJoinOpen(true);
+  };
+
+  const handleOpenDonate = (cause = 'Child Education & Vidhya Connect') => {
+    setDefaultDonateCause(cause);
+    setIsDonateOpen(true);
+  };
+
+  const handleNavigateToAdmin = () => {
+    window.history.pushState({}, '', '/admin');
+    setIsAdminPortalView(true);
+  };
+
+  const handleBackToWebsite = () => {
+    window.history.pushState({}, '', '/');
+    setIsAdminPortalView(false);
+  };
+
+  // ==============================================================
+  // 1. DEDICATED STANDALONE ADMIN PANEL VIEW (NOT EMBEDDED IN WEBSITE)
+  // ==============================================================
+  if (isAdminPortalView) {
+    return (
+      <AdminPortal
+        onBackToWebsite={handleBackToWebsite}
+        onDataUpdated={loadAllData}
+      />
+    );
   }
 
-  const fetchBackendMsg = async () => {
-    try {
-      const res = await fetch(`${apiBaseUrl}/api/message`)
-      const data = await res.json()
-      setServerMsg(data.message)
-    } catch {
-      setServerMsg('Failed to reach backend.')
-    }
-  }
-
+  // ==============================================================
+  // 2. PUBLIC SOCIAL SERVICE CLUB WEBSITE
+  // ==============================================================
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>RCE Website</h1>
-          <p>
-            Frontend (Port {frontendPort}) &bull; Backend ({apiBaseUrl})
-          </p>
-        </div>
+    <div className="rce-app-root">
+      {/* Top Public Navbar (No Admin button here) */}
+      <Navbar
+        onOpenJoin={handleOpenJoin}
+        onOpenDonate={handleOpenDonate}
+      />
 
-        {/* Backend Connectivity Status Box */}
-        <div className={`status-card ${isOnline === true ? 'online' : isOnline === false ? 'offline' : ''}`}>
-          <div className="status-header">
-            <span className={`status-dot ${isOnline === true ? 'green' : isOnline === false ? 'red' : 'yellow'}`}></span>
-            <strong>Backend Server Status:</strong> <span>{serverStatus}</span>
-          </div>
-          <div className="status-buttons">
-            <button type="button" className="btn-test" onClick={checkBackend}>
-              🔄 Test Health (Port 5000)
-            </button>
-            <button type="button" className="btn-test" onClick={fetchBackendMsg}>
-              📩 Get API Message
-            </button>
-          </div>
-          {serverMsg && <p className="server-msg">Backend response: <em>{serverMsg}</em></p>}
-        </div>
+      {/* Main Landing Page Content */}
+      <main>
+        <Hero
+          stats={stats}
+          onOpenJoin={() => handleOpenJoin('Volunteer')}
+          onOpenDonate={() => handleOpenDonate()}
+        />
 
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+        <StatsRibbon
+          stats={stats}
+          onRefreshStats={handleRefreshStats}
+          isLoading={isSyncingStats}
+        />
 
-      <div className="ticks"></div>
+        <AboutSection onOpenJoin={() => handleOpenJoin('Member')} />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        <ProjectsSection
+          projects={projects}
+          onOpenDonate={handleOpenDonate}
+          onOpenJoin={handleOpenJoin}
+        />
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        <EventsSection
+          events={events}
+          onOpenJoin={(role) => handleOpenJoin(role)}
+        />
+
+        <StoriesSection stories={stories} />
+
+        <GallerySection />
+
+        <ContactSection />
+      </main>
+
+      {/* Site Footer with discreet staff admin link */}
+      <Footer onOpenAdmin={handleNavigateToAdmin} />
+
+      {/* Join RCE Modal */}
+      <JoinModal
+        isOpen={isJoinOpen}
+        onClose={() => setIsJoinOpen(false)}
+        defaultRole={defaultJoinRole}
+        onSuccessRegistered={handleRefreshStats}
+      />
+
+      {/* Donate / Support Modal with 80G tax receipt */}
+      <DonateModal
+        isOpen={isDonateOpen}
+        onClose={() => setIsDonateOpen(false)}
+        defaultCause={defaultDonateCause}
+        onSuccessDonated={handleRefreshStats}
+      />
+    </div>
+  );
 }
 
-export default App
+export default App;
