@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Heart, ShieldCheck, QrCode, CheckCircle2, Printer } from 'lucide-react';
-import { submitDonation } from '../services/api';
+import { submitDonation, type ProjectItem } from '../services/api';
 
 interface DonateModalProps {
   isOpen: boolean;
   onClose: () => void;
   defaultCause?: string;
+  projects?: ProjectItem[];
   onSuccessDonated?: () => void;
 }
 
@@ -13,11 +14,18 @@ export const DonateModal: React.FC<DonateModalProps> = ({
   isOpen,
   onClose,
   defaultCause = 'Child Education & Vidhya Connect',
+  projects = [],
   onSuccessDonated,
 }) => {
   const [amount, setAmount] = useState<number>(1000);
   const [customAmount, setCustomAmount] = useState<string>('');
   const [cause, setCause] = useState<string>(defaultCause || 'Child Education & Vidhya Connect');
+
+  useEffect(() => {
+    if (defaultCause) {
+      setCause(defaultCause);
+    }
+  }, [defaultCause, isOpen]);
   const [donorName, setDonorName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -188,12 +196,25 @@ export const DonateModal: React.FC<DonateModalProps> = ({
                   onChange={(e) => setCause(e.target.value)}
                   className="form-input"
                 >
-                  <option value="Child Education & Vidhya Connect">Child Education & Vidhya Connect</option>
-                  <option value="Green Earth: Miyawaki 25,000 Saplings">Green Earth: Miyawaki 25,000 Saplings</option>
-                  <option value="Arogya: Community Eye & Health Camps">Arogya: Community Eye & Health Camps</option>
-                  <option value="Annapoorna: Zero-Hunger Weekend Drives">Annapoorna: Zero-Hunger Weekend Drives</option>
-                  <option value="Shakthi: Women Skill Development Hub">Shakthi: Women Skill Development Hub</option>
-                  <option value="General Community Welfare Fund">General Community Welfare Fund</option>
+                  {projects && projects.length > 0 ? (
+                    <>
+                      {projects.map((p) => (
+                        <option key={p.id} value={p.title}>
+                          {p.title}
+                        </option>
+                      ))}
+                      <option value="General Community Welfare Fund">General Community Welfare Fund</option>
+                    </>
+                  ) : (
+                    <>
+                      <option value="General Community Welfare Fund">General Community Welfare Fund</option>
+                      <option value="Child Education & Vidhya Connect">Child Education & Vidhya Connect</option>
+                      <option value="Green Earth: Miyawaki 25,000 Saplings">Green Earth: Miyawaki 25,000 Saplings</option>
+                      <option value="Arogya: Community Eye & Health Camps">Arogya: Community Eye & Health Camps</option>
+                      <option value="Annapoorna: Zero-Hunger Weekend Drives">Annapoorna: Zero-Hunger Weekend Drives</option>
+                      <option value="Shakthi: Women Skill Development Hub">Shakthi: Women Skill Development Hub</option>
+                    </>
+                  )}
                 </select>
               </div>
 

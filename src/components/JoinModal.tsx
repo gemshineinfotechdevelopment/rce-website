@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, CheckCircle2, Users, Award, GraduationCap, Briefcase, Sparkles, Send } from 'lucide-react';
-import { submitJoinApplication } from '../services/api';
+import { submitJoinApplication, type ProjectItem } from '../services/api';
 
 interface JoinModalProps {
   isOpen: boolean;
   onClose: () => void;
   defaultRole?: string;
+  projects?: ProjectItem[];
   onSuccessRegistered?: () => void;
 }
 
@@ -13,6 +14,7 @@ export const JoinModal: React.FC<JoinModalProps> = ({
   isOpen,
   onClose,
   defaultRole = 'Volunteer',
+  projects = [],
   onSuccessRegistered,
 }) => {
   const [roleType, setRoleType] = useState(defaultRole || 'Volunteer');
@@ -20,20 +22,24 @@ export const JoinModal: React.FC<JoinModalProps> = ({
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [city, setCity] = useState('');
-  const [department, setDepartment] = useState('Computer Science & Engineering');
-  const [collegeId, setCollegeId] = useState('');
-  const [yearOfStudy, setYearOfStudy] = useState('3rd Year');
+  const [occupation, setOccupation] = useState('Working Professional');
+  const [organization, setOrganization] = useState('');
   const [bloodGroup, setBloodGroup] = useState('O+ Positive');
   const [emergencyContact, setEmergencyContact] = useState('');
-  const occupation = 'Student';
   const [skills, setSkills] = useState('Ground Drives & Field Work');
   const [availability, setAvailability] = useState('Weekends (Saturday/Sunday)');
-  const [preferredDomain, setPreferredDomain] = useState('Child Education & Vidhya Connect');
+  const [preferredDomain, setPreferredDomain] = useState('General Community Service');
   const [message, setMessage] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successData, setSuccessData] = useState<{ id: string; name: string } | null>(null);
+
+  useEffect(() => {
+    if (defaultRole) {
+      setRoleType(defaultRole);
+    }
+  }, [defaultRole, isOpen]);
 
   if (!isOpen) return null;
 
@@ -41,25 +47,25 @@ export const JoinModal: React.FC<JoinModalProps> = ({
     {
       id: 'Volunteer',
       title: 'Volunteer',
-      desc: 'Participate in weekend drives, distribution & ground activities',
+      desc: 'Join weekend ground drives, distribution, tree plantation & community work',
       icon: <Users size={20} color="#b45309" />,
     },
     {
       id: 'Member',
       title: 'Active Member',
-      desc: 'Core team organizing, project planning & leadership',
+      desc: 'Core team organizing, project coordination & community leadership',
       icon: <Award size={20} color="#78350f" />,
     },
     {
-      id: 'Student',
-      title: 'Campus Ambassador',
-      desc: 'Lead student chapter drives in your college or school',
+      id: 'Youth & Student',
+      title: 'Youth & Student',
+      desc: 'Campus initiatives, school mentorship drives and student volunteering',
       icon: <GraduationCap size={20} color="#d97706" />,
     },
     {
-      id: 'Mentor',
+      id: 'Mentor / Professional',
       title: 'Mentor / Professional',
-      desc: 'Offer career guidance, legal/medical advice or CSR support',
+      desc: 'Career guidance, medical/legal advice, training, or CSR collaboration',
       icon: <Briefcase size={20} color="#92400e" />,
     },
   ];
@@ -76,21 +82,21 @@ export const JoinModal: React.FC<JoinModalProps> = ({
     setLoading(true);
     try {
       const res = await submitJoinApplication({
-        fullName,
-        email,
-        phone,
+        fullName: fullName.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
         roleType,
-        department,
-        collegeId,
-        yearOfStudy,
+        department: organization.trim() || occupation,
+        collegeId: 'N/A',
+        yearOfStudy: 'N/A',
         bloodGroup,
-        emergencyContact,
-        city: city || 'Chennai / TN',
-        occupation: occupation || 'Student',
+        emergencyContact: emergencyContact.trim() || 'Not provided',
+        city: city.trim() || 'Chennai / TN',
+        occupation: occupation || 'General Citizen',
         skills,
         availability,
         preferredDomain,
-        message,
+        message: message.trim(),
       });
 
       setSuccessData({
@@ -244,36 +250,34 @@ export const JoinModal: React.FC<JoinModalProps> = ({
                 </div>
               </div>
 
-              {/* College & Student Details */}
+              {/* Profile & Background (Universal for All Citizens) */}
               <div className="form-group">
-                <label className="form-label">3. College Department & Details</label>
+                <label className="form-label">3. Profile & Background</label>
                 <div className="form-row-2">
                   <div>
-                    <label className="input-sublabel">Department / Branch</label>
+                    <label className="input-sublabel">Occupation / Profile</label>
                     <select
-                      value={department}
-                      onChange={(e) => setDepartment(e.target.value)}
+                      value={occupation}
+                      onChange={(e) => setOccupation(e.target.value)}
                       className="form-input"
                     >
-                      <option value="Computer Science & Engineering">Computer Science & Engineering</option>
-                      <option value="Information Technology">Information Technology</option>
-                      <option value="AI & Data Science">AI & Data Science</option>
-                      <option value="Electronics & Comm (ECE)">Electronics & Comm (ECE)</option>
-                      <option value="Electrical & Electronics (EEE)">Electrical & Electronics (EEE)</option>
-                      <option value="Mechanical Engineering">Mechanical Engineering</option>
-                      <option value="Biotechnology">Biotechnology</option>
-                      <option value="Civil Engineering">Civil Engineering</option>
-                      <option value="Management Studies / MBA">Management Studies / MBA</option>
-                      <option value="Alumni / Faculty / External">Alumni / Faculty / External</option>
+                      <option value="Working Professional">Working Professional</option>
+                      <option value="College Student">College Student</option>
+                      <option value="School Student">School Student</option>
+                      <option value="Business / Self-Employed">Business / Self-Employed</option>
+                      <option value="Homemaker">Homemaker</option>
+                      <option value="Retired / Senior Citizen">Retired / Senior Citizen</option>
+                      <option value="Social Worker / Freelancer">Social Worker / Freelancer</option>
+                      <option value="Other">Other</option>
                     </select>
                   </div>
                   <div>
-                    <label className="input-sublabel">Student ID / Roll No</label>
+                    <label className="input-sublabel">Company / College / Workplace (Optional)</label>
                     <input
                       type="text"
-                      placeholder="e.g. 23CS105"
-                      value={collegeId}
-                      onChange={(e) => setCollegeId(e.target.value)}
+                      placeholder="e.g. TCS, Anna Univ, Self-Employed, etc."
+                      value={organization}
+                      onChange={(e) => setOrganization(e.target.value)}
                       className="form-input"
                     />
                   </div>
@@ -281,21 +285,7 @@ export const JoinModal: React.FC<JoinModalProps> = ({
 
                 <div className="form-row-2 mt-3">
                   <div>
-                    <label className="input-sublabel">Year of Study</label>
-                    <select
-                      value={yearOfStudy}
-                      onChange={(e) => setYearOfStudy(e.target.value)}
-                      className="form-input"
-                    >
-                      <option value="1st Year">1st Year</option>
-                      <option value="2nd Year">2nd Year</option>
-                      <option value="3rd Year">3rd Year</option>
-                      <option value="4th Year">4th Year</option>
-                      <option value="PG / Alumni">PG / Alumni</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="input-sublabel">Blood Group</label>
+                    <label className="input-sublabel">Blood Group (Optional)</label>
                     <select
                       value={bloodGroup}
                       onChange={(e) => setBloodGroup(e.target.value)}
@@ -309,19 +299,19 @@ export const JoinModal: React.FC<JoinModalProps> = ({
                       <option value="A- Negative">A- Negative</option>
                       <option value="B- Negative">B- Negative</option>
                       <option value="AB- Negative">AB- Negative</option>
+                      <option value="Not Sure">Not Sure / Prefer not to say</option>
                     </select>
                   </div>
-                </div>
-
-                <div className="mt-3">
-                  <label className="input-sublabel">Emergency Contact Phone</label>
-                  <input
-                    type="tel"
-                    placeholder="e.g. +91 94441 55667 (Parent / Guardian)"
-                    value={emergencyContact}
-                    onChange={(e) => setEmergencyContact(e.target.value)}
-                    className="form-input"
-                  />
+                  <div>
+                    <label className="input-sublabel">Emergency Contact Phone (Optional)</label>
+                    <input
+                      type="tel"
+                      placeholder="e.g. +91 94441 55667 (Family / Friend)"
+                      value={emergencyContact}
+                      onChange={(e) => setEmergencyContact(e.target.value)}
+                      className="form-input"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -336,12 +326,28 @@ export const JoinModal: React.FC<JoinModalProps> = ({
                       onChange={(e) => setPreferredDomain(e.target.value)}
                       className="form-input"
                     >
-                      <option value="Child Education & Vidhya Connect">Child Education & Vidhya Connect</option>
-                      <option value="Green Earth Miyawaki Afforestation">Green Earth Miyawaki Afforestation</option>
-                      <option value="Arogya Free Health & Eye Camps">Arogya Free Health & Eye Camps</option>
-                      <option value="Annapoorna Hospital Food Drive">Annapoorna Hospital Food Drive</option>
-                      <option value="Kala Uday Youth Leadership">Kala Uday Youth Leadership</option>
-                      <option value="Media & Event Logistics">Media & Event Logistics</option>
+                      {projects && projects.length > 0 ? (
+                        <>
+                          {projects.map((p) => (
+                            <option key={p.id} value={p.title}>
+                              {p.title}
+                            </option>
+                          ))}
+                          <option value="Media, Design & Event Logistics">Media, Design & Event Logistics</option>
+                          <option value="Ground Relief & Emergency Drives">Ground Relief & Emergency Drives</option>
+                          <option value="General Community Service">General Community Service</option>
+                        </>
+                      ) : (
+                        <>
+                          <option value="General Community Service">General Community Service</option>
+                          <option value="Child Education & Vidhya Connect">Child Education & Vidhya Connect</option>
+                          <option value="Green Earth Miyawaki Afforestation">Green Earth Miyawaki Afforestation</option>
+                          <option value="Arogya Free Health & Eye Camps">Arogya Free Health & Eye Camps</option>
+                          <option value="Annapoorna Hospital Food Drive">Annapoorna Hospital Food Drive</option>
+                          <option value="Kala Uday Youth Leadership">Kala Uday Youth Leadership</option>
+                          <option value="Media & Event Logistics">Media & Event Logistics</option>
+                        </>
+                      )}
                     </select>
                   </div>
                   <div>
@@ -360,7 +366,7 @@ export const JoinModal: React.FC<JoinModalProps> = ({
                 </div>
 
                 <div className="mt-3">
-                  <label className="input-sublabel">Primary Skill / Strength</label>
+                  <label className="input-sublabel">How would you like to contribute? / Primary Strength</label>
                   <select
                     value={skills}
                     onChange={(e) => setSkills(e.target.value)}
@@ -370,8 +376,10 @@ export const JoinModal: React.FC<JoinModalProps> = ({
                     <option value="Teaching & Tutoring Kids">Teaching & Tutoring Kids</option>
                     <option value="Miyawaki Tree Plantation">Miyawaki Tree Plantation</option>
                     <option value="Medical Camp Coordination">Medical Camp Coordination</option>
+                    <option value="Food Relief & Ration Packaging">Food Relief & Ration Packaging</option>
                     <option value="Social Media & Content Creation">Social Media & Content Creation</option>
                     <option value="Event Planning & Logistics">Event Planning & Logistics</option>
+                    <option value="Professional / Legal / CSR Advisory">Professional / Legal / CSR Advisory</option>
                   </select>
                 </div>
 

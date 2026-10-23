@@ -51,6 +51,12 @@ export const StoriesSection: React.FC<StoriesSectionProps> = ({ stories }) => {
             </div>
           ))}
         </div>
+
+        {stories.length === 0 && (
+          <div className="text-center py-12 text-stone-500">
+            <p>No testimonials published yet. Publish new stories from the Admin Portal.</p>
+          </div>
+        )}
       </div>
     </section>
   );

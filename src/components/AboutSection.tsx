@@ -37,30 +37,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ content, onOpenJoin 
     <HandHeart size={28} color="#d97706" key="p4" />
   ];
 
-  const pillarsData = content?.pillars?.length
-    ? content.pillars
-    : [
-        {
-          id: 'pillar-1',
-          title: 'Vidhya (Education)',
-          description: 'Bridging the educational divide by supporting government schools, setting up smart digital labs, and conducting free weekend tutoring.',
-        },
-        {
-          id: 'pillar-2',
-          title: 'Prakriti (Environment)',
-          description: 'Championing high-density Miyawaki urban forests, lake restoration, rainwater harvesting drives, and single-use plastic eradication.',
-        },
-        {
-          id: 'pillar-3',
-          title: 'Arogya (Healthcare)',
-          description: 'Zero-cost screening camps for eyes, cardiac health, diabetes, and maintaining an emergency volunteer blood donation grid.',
-        },
-        {
-          id: 'pillar-4',
-          title: 'Seva (Relief & Nutrition)',
-          description: 'Immediate flood and disaster relief packages, weekend nutritious meal distributions to attendants outside public hospitals.',
-        },
-      ];
+  const pillarsData = content?.pillars || [];
 
   return (
     <section id="about" className="about-section">

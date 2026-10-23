@@ -6,71 +6,18 @@ interface GallerySectionProps {
   items?: GalleryItem[];
 }
 
-const defaultGalleryItems: GalleryItem[] = [
-  {
-    id: 'g-1',
-    title: 'Miyawaki Urban Forest Drive',
-    category: 'Environment',
-    image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80',
-    location: 'Kattivakkam Lake',
-    year: '2026',
-  },
-  {
-    id: 'g-2',
-    title: 'Vidhya Connect Book Distribution',
-    category: 'Education',
-    image: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80',
-    location: 'Govt Model High School',
-    year: '2026',
-  },
-  {
-    id: 'g-3',
-    title: 'Free Community Eye Screening',
-    category: 'Healthcare',
-    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80',
-    location: 'Rural Health Center',
-    year: '2026',
-  },
-  {
-    id: 'g-4',
-    title: 'Annapoorna Food Aid Distribution',
-    category: 'Relief',
-    image: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80',
-    location: 'GH Attendant Shelters',
-    year: '2026',
-  },
-  {
-    id: 'g-5',
-    title: 'Youth Leadership & Sports Fest',
-    category: 'Youth',
-    image: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80',
-    location: 'District Stadium',
-    year: '2026',
-  },
-  {
-    id: 'g-6',
-    title: 'Women Sewing Machine Donation',
-    category: 'Empowerment',
-    image: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=800&q=80',
-    location: 'Shakthi Skill Center',
-    year: '2026',
-  },
-];
-
-export const GallerySection: React.FC<GallerySectionProps> = ({ items }) => {
+export const GallerySection: React.FC<GallerySectionProps> = ({ items = [] }) => {
   const [activeTab, setActiveTab] = useState('All');
   const [lightboxImg, setLightboxImg] = useState<GalleryItem | null>(null);
 
-  const galleryItems = items && items.length > 0 ? items : defaultGalleryItems;
-
-  // Extract unique categories from items
-  const uniqueCats = Array.from(new Set(galleryItems.map((i) => i.category)));
+  // Extract unique categories directly from backend items
+  const uniqueCats = Array.from(new Set(items.map((i) => i.category))).filter(Boolean);
   const categories = ['All', ...uniqueCats];
 
   const filtered =
     activeTab === 'All'
-      ? galleryItems
-      : galleryItems.filter((item) => item.category === activeTab);
+      ? items
+      : items.filter((item) => item.category === activeTab);
 
   return (
     <section id="gallery" className="gallery-section">
@@ -87,49 +34,57 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ items }) => {
             Smiles on young faces, green canopies rising from barren soil, and communities standing together in solidarity.
           </p>
 
-          <div className="category-filter-bar">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setActiveTab(cat)}
-                className={`filter-pill ${activeTab === cat ? 'active' : ''}`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+          {categories.length > 1 && (
+            <div className="category-filter-bar">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setActiveTab(cat)}
+                  className={`filter-pill ${activeTab === cat ? 'active' : ''}`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
-        <div className="gallery-grid">
-          {filtered.map((item) => (
-            <div
-              key={item.id}
-              className="gallery-item card-hover"
-              onClick={() => setLightboxImg(item)}
-              role="button"
-              tabIndex={0}
-              aria-label={`View photo ${item.title}`}
-            >
-              <img
-                src={item.image}
-                alt={item.title}
-                className="gallery-img"
-                loading="lazy"
-              />
-              <div className="gallery-overlay">
-                <span className="gallery-zoom-icon">
-                  <ZoomIn size={20} />
-                </span>
-                <div className="gallery-item-meta">
-                  <span className="gallery-item-cat">{item.category}</span>
-                  <h4 className="gallery-item-title">{item.title}</h4>
-                  <span className="gallery-item-loc">{item.location} &bull; {item.year}</span>
+        {items.length === 0 ? (
+          <div className="text-center py-12 text-stone-500">
+            <p>No photos added yet. Use the Admin Portal to upload gallery photos.</p>
+          </div>
+        ) : (
+          <div className="gallery-grid">
+            {filtered.map((item) => (
+              <div
+                key={item.id}
+                className="gallery-item card-hover"
+                onClick={() => setLightboxImg(item)}
+                role="button"
+                tabIndex={0}
+                aria-label={`View photo ${item.title}`}
+              >
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="gallery-img"
+                  loading="lazy"
+                />
+                <div className="gallery-overlay">
+                  <span className="gallery-zoom-icon">
+                    <ZoomIn size={20} />
+                  </span>
+                  <div className="gallery-item-meta">
+                    <span className="gallery-item-cat">{item.category}</span>
+                    <h4 className="gallery-item-title">{item.title}</h4>
+                    <span className="gallery-item-loc">{item.location} &bull; {item.year}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Lightbox Modal */}
         {lightboxImg && (

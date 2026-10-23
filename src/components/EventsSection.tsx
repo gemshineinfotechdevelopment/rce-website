@@ -77,6 +77,12 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
             );
           })}
         </div>
+
+        {events.length === 0 && (
+          <div className="text-center py-12 text-stone-500">
+            <p>No upcoming drives scheduled right now. Check back soon or stay tuned!</p>
+          </div>
+        )}
       </div>
     </section>
   );

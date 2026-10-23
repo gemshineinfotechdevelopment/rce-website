@@ -15,15 +15,11 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
 }) => {
   const [selectedCategory, setSelectedCategory] = useState('All');
 
-  const categories = [
-    'All',
-    'Education',
-    'Environment',
-    'Healthcare',
-    'Relief',
-    'Empowerment',
-    'Culture & Youth',
-  ];
+  const dynamicCategories = Array.from(
+    new Set(projects.map((p) => p.category?.trim()).filter(Boolean))
+  ) as string[];
+
+  const categories = ['All', ...dynamicCategories];
 
   const filteredProjects =
     selectedCategory === 'All'

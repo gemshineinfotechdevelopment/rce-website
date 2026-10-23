@@ -214,6 +214,7 @@ function App() {
         isOpen={isJoinOpen}
         onClose={() => setIsJoinOpen(false)}
         defaultRole={defaultJoinRole}
+        projects={projects}
         onSuccessRegistered={handleRefreshStats}
       />
 
@@ -222,6 +223,7 @@ function App() {
         isOpen={isDonateOpen}
         onClose={() => setIsDonateOpen(false)}
         defaultCause={defaultDonateCause}
+        projects={projects}
         onSuccessDonated={handleRefreshStats}
       />
     </div>

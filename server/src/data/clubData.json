@@ -1,0 +1,520 @@
+{
+  "siteContent": {
+    "brand": {
+      "name": "RCE CLUB",
+      "subtitle": "SERVICE • CULTURE • YOUTH",
+      "mission": "A people-driven social movement inspired by compassion and collective civic action. Bridging resources to the vulnerable and fostering responsible young leaders.",
+      "trustReg": "TN/CH/2021/84920",
+      "taxExemption80G": "CIT(E)/CHN/80G/2021-22/A-412",
+      "reg12A": "AAATR8492GE20210",
+      "pan": "AAATR8492G"
+    },
+    "hero": {
+      "tag": "A People-Driven Social Movement",
+      "titlePrefix": "Dedicated to ",
+      "titleGradient": "Culture, Service",
+      "titleSuffix": " & Community Upliftment",
+      "description": "RCE Social Service Club unites passionate youth, students, and mentors to bring tangible grassroots change. From educating underprivileged children and organizing mega medical camps, to restoring water bodies and planting native urban forests.",
+      "primaryCta": "Join As Volunteer",
+      "secondaryCta": "Support A Cause",
+      "tertiaryCta": "Active Drives",
+      "trustBadge1": "80G Tax Exemption",
+      "trustBadge2": "Govt. Registered NGO",
+      "trustBadge3": "100% Volunteer Driven",
+      "imageUrl": "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=900&q=80",
+      "badgeTagline": "✨ Service Above Self • RCE Chapter",
+      "statTreesLabel": "Saplings Planted",
+      "statLivesLabel": "Lives Impacted"
+    },
+    "about": {
+      "tag": "About RCE Movement",
+      "title": "Empowering Youth to Serve with ",
+      "titleGradient": "Heart & Integrity",
+      "subtitle": "Just like Kutumb (Family), RCE is founded on the philosophy that true community development begins when we treat every citizen as family.",
+      "storyHeading": "From a Small Campus Initiative to a Statewide Movement",
+      "storyParagraph1": "RCE Social Service Club began with a handful of passionate students who believed that youth energy should not be confined within classrooms. We witnessed rural children struggling with textbooks, seniors suffering without basic eye care, and barren public plots longing for shade.",
+      "storyParagraph2": "Today, RCE connects thousands of students, working professionals, doctors, and community elders. We do not just hand out charity; we build self-sustaining educational ecosystems, plant trees that live for decades, and empower families with dignity.",
+      "checklist1": "100% of public donations go directly into on-ground drive supplies",
+      "checklist2": "Full financial transparency with publicly published expenditure audits",
+      "checklist3": "Active chapters across universities, colleges, and residential welfare bodies",
+      "yearsExperience": "5+",
+      "yearsExperienceLabel": "Years of Active Service",
+      "drivesExperience": "180+ Successful Drives",
+      "imageUrl": "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=800&q=80",
+      "pillarsTitle": "Our 4 Core Pillars of Service",
+      "pillars": [
+        {
+          "id": "pillar-1",
+          "title": "Vidhya (Education)",
+          "description": "Bridging the educational divide by supporting government schools, setting up smart digital labs, and conducting free weekend tutoring."
+        },
+        {
+          "id": "pillar-2",
+          "title": "Prakriti (Environment)",
+          "description": "Championing high-density Miyawaki urban forests, lake restoration, rainwater harvesting drives, and single-use plastic eradication."
+        },
+        {
+          "id": "pillar-3",
+          "title": "Arogya (Healthcare)",
+          "description": "Zero-cost screening camps for eyes, cardiac health, diabetes, and maintaining an emergency volunteer blood donation grid."
+        },
+        {
+          "id": "pillar-4",
+          "title": "Seva (Relief & Nutrition)",
+          "description": "Immediate flood and disaster relief packages, weekend nutritious meal distributions to attendants outside public hospitals."
+        }
+      ]
+    },
+    "contact": {
+      "tag": "Connect With Us",
+      "title": "Have Questions or a ",
+      "titleGradient": "Cause to Champion?",
+      "subtitle": "Every great initiative begins with a conversation. Let us know how we can collaborate.",
+      "officeAddress": "RCE Youth Movement Hub, 42 Community Avenue, Anna Nagar, Chennai, Tamil Nadu - 600040",
+      "phone": "+91 (044) 2894-8800 / +91 98401 22334",
+      "email": "contact@rceclub.org / volunteer@rceclub.org",
+      "hours": "Monday - Saturday: 9:00 AM - 7:00 PM\nSunday: On-Ground Field Drives",
+      "emergencyHotline": "+91 99400 99999"
+    }
+  },
+  "currentStats": {
+    "livesImpacted": 28450,
+    "activeVolunteers": 1420,
+    "projectsCompleted": 185,
+    "treesPlanted": 12400,
+    "mealsServed": 45200,
+    "medicalCamps": 68,
+    "citiesCovered": 14,
+    "satisfactionRate": 98
+  },
+  "projectsList": [
+    {
+      "id": "proj-1",
+      "title": "Vidhya Connect: Youth & Child Education",
+      "category": "Education",
+      "tagline": "Empowering 1,500+ rural & underprivileged students with after-school tutoring and study kits",
+      "description": "Providing quality learning kits, digital tabs, mentorship, and weekend coaching for government school students across Tamil Nadu to reduce dropout rates.",
+      "goal": 500000,
+      "raised": 412000,
+      "volunteersEnrolled": 84,
+      "beneficiaries": "1,500+ Students",
+      "badge": "Flagship Initiative",
+      "featured": true,
+      "image": "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80",
+      "highlights": [
+        "Free STEM toolkits",
+        "English fluency workshops",
+        "High school scholarship grants"
+      ]
+    },
+    {
+      "id": "proj-2",
+      "title": "Green Earth: 25,000 Miyawaki Plantation",
+      "category": "Environment",
+      "tagline": "Restoring local biodiversity, urban green pockets, and rejuvenating dried water bodies",
+      "description": "Transforming barren public grounds, school perimeters, and lakeshores into dense native oxygen groves using the proven Miyawaki afforestation method.",
+      "goal": 350000,
+      "raised": 295000,
+      "volunteersEnrolled": 230,
+      "beneficiaries": "12+ Local Ecosystems",
+      "badge": "Eco Champion",
+      "featured": true,
+      "image": "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80",
+      "highlights": [
+        "Native indigenous saplings",
+        "Drip irrigation maintenance",
+        "Community sapling gifting"
+      ]
+    },
+    {
+      "id": "proj-3",
+      "title": "Arogya: Community Eye & Health Camps",
+      "category": "Healthcare",
+      "tagline": "Free preventive screenings, pediatric checkups, and prescription glasses distribution",
+      "description": "Partnering with top doctors to bring mobile screening vans, free cataract diagnostics, pediatric anemia screenings, and basic medications to remote hamlets.",
+      "goal": 400000,
+      "raised": 375000,
+      "volunteersEnrolled": 62,
+      "beneficiaries": "4,200+ Villagers",
+      "badge": "Critical Need",
+      "featured": true,
+      "image": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80",
+      "highlights": [
+        "Free spectacles given",
+        "Full general health review",
+        "Zero-cost referral treatments"
+      ]
+    },
+    {
+      "id": "proj-4",
+      "title": "Annapoorna: Zero-Hunger Weekend Drives",
+      "category": "Relief",
+      "tagline": "Nutritious warm meals distributed to hospital attendants and homeless shelters",
+      "description": "Every Saturday & Sunday morning, our volunteer team prepares wholesome, hygienic meals and delivers them to government hospital attenders and night shelters.",
+      "goal": 250000,
+      "raised": 218000,
+      "volunteersEnrolled": 110,
+      "beneficiaries": "45,000+ Meals Served",
+      "badge": "Weekly Active",
+      "featured": false,
+      "image": "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80",
+      "highlights": [
+        "100% hygienic prep",
+        "Eco-friendly packaging",
+        "Zero food wastage network"
+      ]
+    },
+    {
+      "id": "proj-5",
+      "title": "Kala Uday: Youth Talent & Sports Wing",
+      "category": "Culture & Youth",
+      "tagline": "Fostering arts, traditional crafts, leadership workshops, and youth sports",
+      "description": "Creating a vibrant platform for youth to discover civic leadership, public speaking, folk arts, and district-level sports tournaments.",
+      "goal": 200000,
+      "raised": 165000,
+      "volunteersEnrolled": 95,
+      "beneficiaries": "3,000+ Young Leaders",
+      "badge": "Inspiring Youth",
+      "featured": false,
+      "image": "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80",
+      "highlights": [
+        "Inter-college youth summit",
+        "Folk art revival camps",
+        "Sports equipment grants"
+      ]
+    },
+    {
+      "id": "proj-6",
+      "title": "Shakthi: Women Skill Development Hub",
+      "category": "Empowerment",
+      "tagline": "Vocational tailoring, organic product crafting, and digital commerce skills",
+      "description": "Training rural and single mothers in certified tailoring, handloom weaving, financial literacy, and online micro-business setup to gain economic independence.",
+      "goal": 300000,
+      "raised": 280000,
+      "volunteersEnrolled": 48,
+      "beneficiaries": "620+ Women Entrepreneurs",
+      "badge": "Empowerment",
+      "featured": false,
+      "image": "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=800&q=80",
+      "highlights": [
+        "Free sewing machines gifted",
+        "Micro-loans guidance",
+        "Self-help group network"
+      ]
+    }
+  ],
+  "eventsList": [
+    {
+      "id": "ev-1",
+      "title": "Mega Tree Plantation Drive: Mission Green 5,000",
+      "date": "2026-11-08",
+      "time": "07:30 AM - 11:30 AM",
+      "location": "Lakeview Biodiversity Park, Sector 4",
+      "category": "Environment",
+      "status": "Upcoming",
+      "slotsTotal": 150,
+      "slotsBooked": 118,
+      "description": "Join hands with 100+ fellow volunteers to plant 1,500 native saplings with tree guards and drip systems.",
+      "leader": "Karthik R. (Green Wing Head)"
+    },
+    {
+      "id": "ev-2",
+      "title": "Free Community Eye & Diabetes Screening Camp",
+      "date": "2026-11-15",
+      "time": "09:00 AM - 03:00 PM",
+      "location": "Govt. Higher Secondary School Campus",
+      "category": "Healthcare",
+      "status": "Upcoming",
+      "slotsTotal": 60,
+      "slotsBooked": 44,
+      "description": "Volunteers will assist doctors with registration, token management, vision charts, and free spectacle distribution.",
+      "leader": "Dr. Ananya S. & RCE Medical Team"
+    },
+    {
+      "id": "ev-3",
+      "title": "Vidhya Connect: Book & Science Fair for Kids",
+      "date": "2026-11-22",
+      "time": "10:00 AM - 04:00 PM",
+      "location": "Community Center Hall, West Zone",
+      "category": "Education",
+      "status": "Upcoming",
+      "slotsTotal": 80,
+      "slotsBooked": 52,
+      "description": "A fun interactive science exhibition and stationery distribution drive for 400+ middle school children.",
+      "leader": "Preethi M. (Education Coordinator)"
+    },
+    {
+      "id": "ev-4",
+      "title": "Annual Social Impact Conclave & Volunteer Awards",
+      "date": "2026-12-05",
+      "time": "05:00 PM - 08:30 PM",
+      "location": "City Auditorium, Main Hall",
+      "category": "Youth & Culture",
+      "status": "Upcoming",
+      "slotsTotal": 300,
+      "slotsBooked": 215,
+      "description": "Celebrating 5 years of relentless community service, recognizing our top youth changemakers and partners.",
+      "leader": "RCE Executive Board"
+    }
+  ],
+  "storiesList": [
+    {
+      "id": "story-1",
+      "name": "Kavitha M.",
+      "role": "Mother of 8th Grade Student",
+      "location": "Rural Tiruvallur",
+      "quote": "Through Vidhya Connect's weekend mentoring, my daughter is scoring above 90% in Mathematics today. The books and tablet made all the difference.",
+      "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80",
+      "impactTag": "Education Beneficiary"
+    },
+    {
+      "id": "story-2",
+      "name": "Senthil Nathan",
+      "role": "Senior Volunteer (3 Years)",
+      "location": "Chennai Hub",
+      "quote": "Being a part of RCE transformed how I see my weekends. When you plant trees and feed families, you gain a sense of purpose no corporate job can give.",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80",
+      "impactTag": "Youth Volunteer"
+    },
+    {
+      "id": "story-3",
+      "name": "Dr. Rajeshwar Rao",
+      "role": "Visiting Ophthalmologist",
+      "location": "Healthcare Camps",
+      "quote": "In the last 6 months alone, RCE camps screened over 2,000 seniors and identified 320 cataract cases who were given zero-cost treatment.",
+      "avatar": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=200&q=80",
+      "impactTag": "Medical Partner"
+    }
+  ],
+  "galleryList": [
+    {
+      "id": "g-1",
+      "title": "Miyawaki Urban Forest Drive",
+      "category": "Environment",
+      "image": "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80",
+      "location": "Kattivakkam Lake",
+      "year": "2026"
+    },
+    {
+      "id": "g-2",
+      "title": "Vidhya Connect Book Distribution",
+      "category": "Education",
+      "image": "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80",
+      "location": "Govt Model High School",
+      "year": "2026"
+    },
+    {
+      "id": "g-3",
+      "title": "Free Community Eye Screening",
+      "category": "Healthcare",
+      "image": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80",
+      "location": "Rural Health Center",
+      "year": "2026"
+    },
+    {
+      "id": "g-4",
+      "title": "Annapoorna Food Aid Distribution",
+      "category": "Relief",
+      "image": "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80",
+      "location": "GH Attendant Shelters",
+      "year": "2026"
+    },
+    {
+      "id": "g-5",
+      "title": "Youth Leadership & Sports Fest",
+      "category": "Youth",
+      "image": "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80",
+      "location": "District Stadium",
+      "year": "2026"
+    },
+    {
+      "id": "g-6",
+      "title": "Women Sewing Machine Donation",
+      "category": "Empowerment",
+      "image": "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=800&q=80",
+      "location": "Shakthi Skill Center",
+      "year": "2026"
+    }
+  ],
+  "volunteerApplications": [
+    {
+      "id": "RCE-MEN-241490",
+      "fullName": "Dr. Ramesh Kumar",
+      "email": "ramesh.k@gmail.com",
+      "phone": "+91 98401 99887",
+      "roleType": "Mentor / Professional",
+      "department": "Senior Pediatrician, Apollo Hospitals",
+      "collegeId": "N/A",
+      "yearOfStudy": "N/A",
+      "bloodGroup": "O+ Positive",
+      "emergencyContact": "Not provided",
+      "city": "Chennai",
+      "occupation": "Working Professional",
+      "skills": "Medical Camp Coordination",
+      "availability": "Weekends (Saturday/Sunday)",
+      "preferredDomain": "General Community Service",
+      "message": "",
+      "status": "Approved",
+      "joinedAt": "2026-10-23T07:00:10.030Z"
+    },
+    {
+      "id": "RCE-VOL-726830",
+      "fullName": "heamanth",
+      "email": "heamanthprabhu59@gmail.com",
+      "phone": "7868079841",
+      "roleType": "Volunteer",
+      "department": "Computer Science & Engineering",
+      "collegeId": "N/A",
+      "yearOfStudy": "3rd Year",
+      "bloodGroup": "O+ Positive",
+      "emergencyContact": "Not provided",
+      "city": "Sivakasi",
+      "occupation": "Student",
+      "skills": "Ground Drives & Field Work",
+      "availability": "Weekends (Saturday/Sunday)",
+      "preferredDomain": "Child Education & Vidhya Connect",
+      "message": "",
+      "status": "Approved",
+      "joinedAt": "2026-10-23T06:14:44.598Z"
+    },
+    {
+      "id": "RCE-VOL-849201",
+      "fullName": "Arunachalam S",
+      "email": "arun.cse@rce.ac.in",
+      "phone": "+91 98401 23456",
+      "roleType": "Active Member",
+      "department": "Computer Science & Engineering",
+      "collegeId": "22CS104",
+      "yearOfStudy": "3rd Year",
+      "bloodGroup": "O+ Positive",
+      "emergencyContact": "+91 94441 55667",
+      "city": "Chennai",
+      "occupation": "Student",
+      "skills": "Web Development, Event Photography, Social Media",
+      "availability": "Weekends & College Evenings",
+      "preferredDomain": "Child Education & Vidhya Connect",
+      "message": "Passionate about teaching coding & digital literacy to rural school children.",
+      "status": "Approved",
+      "joinedAt": "2026-10-18T10:30:00.000Z"
+    },
+    {
+      "id": "RCE-VOL-712390",
+      "fullName": "Priya Dharshini K",
+      "email": "priya.biotech@rce.ac.in",
+      "phone": "+91 97890 65432",
+      "roleType": "Volunteer",
+      "department": "Biotechnology",
+      "collegeId": "23BT045",
+      "yearOfStudy": "2nd Year",
+      "bloodGroup": "B+ Positive",
+      "emergencyContact": "+91 99400 11223",
+      "city": "Kanchipuram",
+      "occupation": "Student",
+      "skills": "Medical Screening Support, First Aid, Logistics",
+      "availability": "Sunday Drives Only",
+      "preferredDomain": "Arogya Free Health & Eye Camps",
+      "message": "Volunteered at Red Cross earlier. Eager to assist doctors in village medical camps.",
+      "status": "Approved",
+      "joinedAt": "2026-10-19T14:15:00.000Z"
+    },
+    {
+      "id": "RCE-VOL-552109",
+      "fullName": "Vigneshwaran M",
+      "email": "vicky.mech@rce.ac.in",
+      "phone": "+91 91760 99887",
+      "roleType": "Campus Ambassador",
+      "department": "Mechanical Engineering",
+      "collegeId": "21ME088",
+      "yearOfStudy": "4th Year",
+      "bloodGroup": "A+ Positive",
+      "emergencyContact": "+91 98840 77665",
+      "city": "Tambaram, Chennai",
+      "occupation": "Student Leader",
+      "skills": "Crowd Management, Transport, Audio/Stage Setup",
+      "availability": "Flexible & Emergency Call",
+      "preferredDomain": "Green Earth Miyawaki Afforestation",
+      "message": "Can coordinate college transport buses and mobilize 50+ junior student volunteers.",
+      "status": "Pending Review",
+      "joinedAt": "2026-10-21T09:40:00.000Z"
+    }
+  ],
+  "donationRecords": [
+    {
+      "receiptNo": "80G-2026-00412",
+      "donorName": "Dr. Sundararajan Ramanathan",
+      "email": "dr.sundar@medicare.in",
+      "phone": "+91 98410 88776",
+      "pan": "ABCDE1234F",
+      "city": "Chennai",
+      "amount": 25000,
+      "cause": "Child Education & Vidhya Connect",
+      "paymentMethod": "UPI / Net Banking",
+      "transactionId": "UPI/329481928410",
+      "taxBenefit": "Eligible for 80G Indian Income Tax Exemption (50% Deduction)",
+      "timestamp": "2026-10-15T11:20:00.000Z",
+      "status": "Verified & Received"
+    },
+    {
+      "receiptNo": "80G-2026-00413",
+      "donorName": "Ananya Narayanan",
+      "email": "ananya.n@gmail.com",
+      "phone": "+91 99620 44332",
+      "pan": "BNXPN5544K",
+      "city": "Bangalore",
+      "amount": 10000,
+      "cause": "Green Earth: Miyawaki Groves",
+      "paymentMethod": "Credit Card / Razorpay",
+      "transactionId": "TXN_774910294",
+      "taxBenefit": "Eligible for 80G Indian Income Tax Exemption (50% Deduction)",
+      "timestamp": "2026-10-18T16:45:00.000Z",
+      "status": "Verified & Received"
+    },
+    {
+      "receiptNo": "80G-2026-00414",
+      "donorName": "RCE Alumni Batch 2018",
+      "email": "alumni.rce18@gmail.com",
+      "phone": "+91 94440 12890",
+      "pan": "AAATR8492G",
+      "city": "Coimbatore",
+      "amount": 50000,
+      "cause": "Annapoorna Hospital Food Drive",
+      "paymentMethod": "Direct Bank Transfer / NEFT",
+      "transactionId": "NEFT/SBIN8492019",
+      "taxBenefit": "Eligible for 80G Indian Income Tax Exemption (50% Deduction)",
+      "timestamp": "2026-10-20T08:10:00.000Z",
+      "status": "Verified & Received"
+    }
+  ],
+  "contactMessages": [
+    {
+      "id": "MSG-101",
+      "name": "Kavitha Rajan (Headmistress)",
+      "email": "gths.poonamallee@tngov.in",
+      "phone": "+91 94442 33221",
+      "subject": "Request for Vidhya Connect Weekend Math & Science Coaching",
+      "category": "Assistance Request",
+      "priority": "High",
+      "message": "Our Government High School at Poonamallee has 120 10th-standard students. We would be immensely grateful if RCE student volunteers could conduct weekend coaching sessions for them.",
+      "status": "New",
+      "date": "2026-10-21T15:20:00.000Z"
+    },
+    {
+      "id": "MSG-102",
+      "name": "Manoj Kumar (Rotary Club)",
+      "email": "manoj@rotarychennaicentral.org",
+      "phone": "+91 98841 00998",
+      "subject": "Joint Mega Blood Donation & Eye Screening Camp Proposal",
+      "category": "Partnership / CSR",
+      "priority": "Normal",
+      "message": "We would like to partner with RCE Social Service Club to sponsor 300 cataract surgeries and co-host a mega blood drive on Campus next month.",
+      "status": "In Progress",
+      "date": "2026-10-20T12:00:00.000Z"
+    }
+  ],
+  "newsletterSubscribers": [
+    "arun.cse@rce.ac.in",
+    "priya.biotech@rce.ac.in",
+    "alumni.rce18@gmail.com",
+    "volunteer@mykutumb.com"
+  ]
+}

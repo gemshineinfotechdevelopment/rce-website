@@ -2284,7 +2284,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   <tr>
                     <th>Ref ID</th>
                     <th>Volunteer Name</th>
-                    <th>Dept & Roll No</th>
+                    <th>Profile & Background</th>
                     <th>Blood Group</th>
                     <th>Phone / WhatsApp</th>
                     <th>Domain & Skills</th>
@@ -2311,8 +2311,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                           <span className="text-xs text-amber-700 font-semibold">{vol.roleType}</span>
                         </td>
                         <td>
-                          <div className="text-xs font-bold text-stone-800">{vol.department || 'General'}</div>
-                          <div className="text-xs text-stone-500">ID: {vol.collegeId || 'N/A'} • {vol.yearOfStudy || 'Student'}</div>
+                          <div className="text-xs font-bold text-stone-800">{vol.occupation || 'Volunteer'}</div>
+                          <div className="text-xs text-stone-500">{vol.department || vol.city || 'General Citizen'}</div>
                         </td>
                         <td>
                           <span className="blood-group-chip">{vol.bloodGroup || 'O+'}</span>
@@ -3645,16 +3645,16 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
 
               <div className="volunteer-detail-grid mt-4">
                 <div className="detail-item">
-                  <span className="detail-label">College Department:</span>
-                  <span className="detail-val">{selectedVolunteer.department || 'Computer Science & Engineering'}</span>
+                  <span className="detail-label">Occupation / Profile:</span>
+                  <span className="detail-val">{selectedVolunteer.occupation || 'General Citizen'}</span>
                 </div>
                 <div className="detail-item">
-                  <span className="detail-label">Student ID / Roll No:</span>
-                  <span className="detail-val">{selectedVolunteer.collegeId || 'N/A'}</span>
+                  <span className="detail-label">Organization / College:</span>
+                  <span className="detail-val">{selectedVolunteer.department || 'N/A'}</span>
                 </div>
                 <div className="detail-item">
-                  <span className="detail-label">Year of Study:</span>
-                  <span className="detail-val">{selectedVolunteer.yearOfStudy || '3rd Year'}</span>
+                  <span className="detail-label">City / Location:</span>
+                  <span className="detail-val">{selectedVolunteer.city || 'Chennai'}</span>
                 </div>
                 <div className="detail-item">
                   <span className="detail-label">Emergency Phone:</span>
