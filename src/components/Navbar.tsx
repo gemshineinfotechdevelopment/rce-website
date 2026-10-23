@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Heart, Users, Menu, X } from 'lucide-react';
 import { checkBackendHealth } from '../services/api';
 
+import type { BrandContent } from '../services/api';
+
 interface NavbarProps {
+  brand?: BrandContent;
   onOpenJoin: (role?: string) => void;
   onOpenDonate: (cause?: string) => void;
   onOpenAdmin?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenJoin, onOpenDonate }) => {
+export const Navbar: React.FC<NavbarProps> = ({ brand, onOpenJoin, onOpenDonate }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [backendOnline, setBackendOnline] = useState<boolean | null>(null);
@@ -38,8 +41,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenJoin, onOpenDonate }) => {
             <span className="logo-icon">🤝</span>
           </div>
           <div className="logo-text-group">
-            <span className="brand-title">RCE CLUB</span>
-            <span className="brand-subtitle">SERVICE &bull; CULTURE &bull; YOUTH</span>
+            <span className="brand-title">{brand?.name || 'RCE CLUB'}</span>
+            <span className="brand-subtitle">{brand?.subtitle || 'SERVICE • CULTURE • YOUTH'}</span>
           </div>
         </a>
 

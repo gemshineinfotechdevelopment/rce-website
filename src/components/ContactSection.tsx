@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Clock, Send, CheckCircle2, MessageSquare } from 'lucide-react';
 import { submitContactForm } from '../services/api';
+import type { ContactContent } from '../services/api';
 
-export const ContactSection: React.FC = () => {
+interface ContactSectionProps {
+  content?: ContactContent;
+}
+
+export const ContactSection: React.FC<ContactSectionProps> = ({ content }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('Suggest a School / Community in Need');
@@ -10,6 +15,16 @@ export const ContactSection: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{ text: string; isError: boolean } | null>(null);
+
+  const tag = content?.tag || 'Connect With Us';
+  const title = content?.title ?? 'Have Questions or a ';
+  const titleGradient = content?.titleGradient || 'Cause to Champion?';
+  const subtitle = content?.subtitle || 'Every great initiative begins with a conversation. Let us know how we can collaborate.';
+  const officeAddress = content?.officeAddress || 'RCE Youth Movement Hub, 42 Community Avenue, Anna Nagar, Chennai, Tamil Nadu - 600040';
+  const phone = content?.phone || '+91 (044) 2894-8800 / +91 98401 22334';
+  const emailDesk = content?.email || 'contact@rceclub.org / volunteer@rceclub.org';
+  const hours = content?.hours || 'Monday - Saturday: 9:00 AM - 7:00 PM\nSunday: On-Ground Field Drives';
+  const emergencyHotline = content?.emergencyHotline || '+91 99400 99999';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,13 +61,13 @@ export const ContactSection: React.FC = () => {
         <div className="contact-header text-center">
           <span className="section-tag gold">
             <MessageSquare size={14} color="#d97706" />
-            Connect With Us
+            {tag}
           </span>
           <h2 className="section-title">
-            Have Questions or a <span className="text-gradient">Cause to Champion?</span>
+            {title}<span className="text-gradient">{titleGradient}</span>
           </h2>
           <p className="section-subtitle">
-            Every great initiative begins with a conversation. Let us know how we can collaborate.
+            {subtitle}
           </p>
         </div>
 
@@ -71,7 +86,7 @@ export const ContactSection: React.FC = () => {
                 </div>
                 <div>
                   <strong>Registered Office</strong>
-                  <p>RCE Youth Movement Hub, 42 Community Avenue, Anna Nagar, Chennai, Tamil Nadu - 600040</p>
+                  <p>{officeAddress}</p>
                 </div>
               </div>
 
@@ -81,7 +96,7 @@ export const ContactSection: React.FC = () => {
                 </div>
                 <div>
                   <strong>Helpline & WhatsApp</strong>
-                  <p>+91 (044) 2894-8800 / +91 98401 22334</p>
+                  <p>{phone}</p>
                 </div>
               </div>
 
@@ -91,7 +106,7 @@ export const ContactSection: React.FC = () => {
                 </div>
                 <div>
                   <strong>Email Desk</strong>
-                  <p>contact@rceclub.org / volunteer@rceclub.org</p>
+                  <p>{emailDesk}</p>
                 </div>
               </div>
 
@@ -101,14 +116,16 @@ export const ContactSection: React.FC = () => {
                 </div>
                 <div>
                   <strong>Operating Hours</strong>
-                  <p>Monday - Saturday: 9:00 AM - 7:00 PM<br />Sunday: On-Ground Field Drives</p>
+                  <p style={{ whiteSpace: 'pre-line' }}>{hours}</p>
                 </div>
               </div>
             </div>
 
-            <div className="contact-emergency-strip">
-              <span>🚨 <strong>Need Emergency Blood or Food Aid?</strong> Call our 24/7 Hotline: <code>+91 99400 99999</code></span>
-            </div>
+            {emergencyHotline && (
+              <div className="contact-emergency-strip">
+                <span>🚨 <strong>Need Emergency Blood or Food Aid?</strong> Call our 24/7 Hotline: <code>{emergencyHotline}</code></span>
+              </div>
+            )}
           </div>
 
           {/* Contact Form Card */}

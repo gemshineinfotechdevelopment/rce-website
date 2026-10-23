@@ -17,12 +17,17 @@ import {
   fetchClubProjects,
   fetchClubEvents,
   fetchClubStories,
+  fetchGallery,
+  fetchSiteContent,
+  DEFAULT_SITE_CONTENT,
 } from './services/api';
 import type {
   ClubStats,
   ProjectItem,
   ClubEvent,
   StoryItem,
+  GalleryItem,
+  SiteContent,
 } from './services/api';
 import './App.css';
 
@@ -41,6 +46,8 @@ function App() {
   const [projects, setProjects] = useState<ProjectItem[]>([]);
   const [events, setEvents] = useState<ClubEvent[]>([]);
   const [stories, setStories] = useState<StoryItem[]>([]);
+  const [gallery, setGallery] = useState<GalleryItem[]>([]);
+  const [siteContent, setSiteContent] = useState<SiteContent>(DEFAULT_SITE_CONTENT);
   const [isSyncingStats, setIsSyncingStats] = useState(false);
 
   // Standalone Admin Route State
@@ -78,17 +85,21 @@ function App() {
   const loadAllData = async () => {
     setIsSyncingStats(true);
     try {
-      const [statsData, projectsData, eventsData, storiesData] = await Promise.all([
+      const [statsData, projectsData, eventsData, storiesData, galleryData, contentData] = await Promise.all([
         fetchClubStats(),
         fetchClubProjects(),
         fetchClubEvents(),
         fetchClubStories(),
+        fetchGallery(),
+        fetchSiteContent(),
       ]);
 
       if (statsData) setStats(statsData);
       if (projectsData?.length) setProjects(projectsData);
       if (eventsData?.length) setEvents(eventsData);
       if (storiesData?.length) setStories(storiesData);
+      if (galleryData?.length) setGallery(galleryData);
+      if (contentData) setSiteContent(contentData);
     } catch (err) {
       console.warn('Error loading club data from backend:', err);
     } finally {
@@ -99,8 +110,10 @@ function App() {
   const handleRefreshStats = async () => {
     setIsSyncingStats(true);
     try {
-      const updatedStats = await fetchClubStats();
-      const updatedProjects = await fetchClubProjects();
+      const [updatedStats, updatedProjects] = await Promise.all([
+        fetchClubStats(),
+        fetchClubProjects(),
+      ]);
       setStats(updatedStats);
       if (updatedProjects?.length) setProjects(updatedProjects);
     } finally {
@@ -147,6 +160,7 @@ function App() {
     <div className="rce-app-root">
       {/* Top Public Navbar (No Admin button here) */}
       <Navbar
+        brand={siteContent.brand}
         onOpenJoin={handleOpenJoin}
         onOpenDonate={handleOpenDonate}
       />
@@ -155,6 +169,7 @@ function App() {
       <main>
         <Hero
           stats={stats}
+          content={siteContent.hero}
           onOpenJoin={() => handleOpenJoin('Volunteer')}
           onOpenDonate={() => handleOpenDonate()}
         />
@@ -165,7 +180,10 @@ function App() {
           isLoading={isSyncingStats}
         />
 
-        <AboutSection onOpenJoin={() => handleOpenJoin('Member')} />
+        <AboutSection
+          content={siteContent.about}
+          onOpenJoin={() => handleOpenJoin('Member')}
+        />
 
         <ProjectsSection
           projects={projects}
@@ -180,13 +198,16 @@ function App() {
 
         <StoriesSection stories={stories} />
 
-        <GallerySection />
+        <GallerySection items={gallery} />
 
-        <ContactSection />
+        <ContactSection content={siteContent.contact} />
       </main>
 
       {/* Site Footer with discreet staff admin link */}
-      <Footer onOpenAdmin={handleNavigateToAdmin} />
+      <Footer
+        brand={siteContent.brand}
+        onOpenAdmin={handleNavigateToAdmin}
+      />
 
       {/* Join RCE Modal */}
       <JoinModal

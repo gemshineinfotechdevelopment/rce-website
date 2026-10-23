@@ -1,5 +1,91 @@
-// In-memory store (persists during server runtime, compatible with or without MongoDB)
-const volunteerApplications = [
+const fs = require("fs");
+const path = require("path");
+
+const DATA_FILE = path.join(__dirname, "../data/clubData.json");
+
+// Default Website CMS Details
+const defaultSiteContent = {
+  brand: {
+    name: "RCE CLUB",
+    subtitle: "SERVICE • CULTURE • YOUTH",
+    mission: "A people-driven social movement inspired by compassion and collective civic action. Bridging resources to the vulnerable and fostering responsible young leaders.",
+    trustReg: "TN/CH/2021/84920",
+    taxExemption80G: "CIT(E)/CHN/80G/2021-22/A-412",
+    reg12A: "AAATR8492GE20210",
+    pan: "AAATR8492G"
+  },
+  hero: {
+    tag: "A People-Driven Social Movement",
+    titlePrefix: "Dedicated to ",
+    titleGradient: "Culture, Service",
+    titleSuffix: " & Community Upliftment",
+    description: "RCE Social Service Club unites passionate youth, students, and mentors to bring tangible grassroots change. From educating underprivileged children and organizing mega medical camps, to restoring water bodies and planting native urban forests.",
+    primaryCta: "Join As Volunteer",
+    secondaryCta: "Support A Cause",
+    tertiaryCta: "Active Drives",
+    trustBadge1: "80G Tax Exemption",
+    trustBadge2: "Govt. Registered NGO",
+    trustBadge3: "100% Volunteer Driven",
+    imageUrl: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=900&q=80",
+    badgeTagline: "✨ Service Above Self • RCE Chapter",
+    statTreesLabel: "Saplings Planted",
+    statLivesLabel: "Lives Impacted"
+  },
+  about: {
+    tag: "About RCE Movement",
+    title: "Empowering Youth to Serve with ",
+    titleGradient: "Heart & Integrity",
+    subtitle: "Just like Kutumb (Family), RCE is founded on the philosophy that true community development begins when we treat every citizen as family.",
+    storyHeading: "From a Small Campus Initiative to a Statewide Movement",
+    storyParagraph1: "RCE Social Service Club began with a handful of passionate students who believed that youth energy should not be confined within classrooms. We witnessed rural children struggling with textbooks, seniors suffering without basic eye care, and barren public plots longing for shade.",
+    storyParagraph2: "Today, RCE connects thousands of students, working professionals, doctors, and community elders. We do not just hand out charity; we build self-sustaining educational ecosystems, plant trees that live for decades, and empower families with dignity.",
+    checklist1: "100% of public donations go directly into on-ground drive supplies",
+    checklist2: "Full financial transparency with publicly published expenditure audits",
+    checklist3: "Active chapters across universities, colleges, and residential welfare bodies",
+    yearsExperience: "5+",
+    yearsExperienceLabel: "Years of Active Service",
+    drivesExperience: "180+ Successful Drives",
+    imageUrl: "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=800&q=80",
+    pillarsTitle: "Our 4 Core Pillars of Service",
+    pillars: [
+      {
+        id: "pillar-1",
+        title: "Vidhya (Education)",
+        description: "Bridging the educational divide by supporting government schools, setting up smart digital labs, and conducting free weekend tutoring."
+      },
+      {
+        id: "pillar-2",
+        title: "Prakriti (Environment)",
+        description: "Championing high-density Miyawaki urban forests, lake restoration, rainwater harvesting drives, and single-use plastic eradication."
+      },
+      {
+        id: "pillar-3",
+        title: "Arogya (Healthcare)",
+        description: "Zero-cost screening camps for eyes, cardiac health, diabetes, and maintaining an emergency volunteer blood donation grid."
+      },
+      {
+        id: "pillar-4",
+        title: "Seva (Relief & Nutrition)",
+        description: "Immediate flood and disaster relief packages, weekend nutritious meal distributions to attendants outside public hospitals."
+      }
+    ]
+  },
+  contact: {
+    tag: "Connect With Us",
+    title: "Have Questions or a ",
+    titleGradient: "Cause to Champion?",
+    subtitle: "Every great initiative begins with a conversation. Let us know how we can collaborate.",
+    officeAddress: "RCE Youth Movement Hub, 42 Community Avenue, Anna Nagar, Chennai, Tamil Nadu - 600040",
+    phone: "+91 (044) 2894-8800 / +91 98401 22334",
+    email: "contact@rceclub.org / volunteer@rceclub.org",
+    hours: "Monday - Saturday: 9:00 AM - 7:00 PM\nSunday: On-Ground Field Drives",
+    emergencyHotline: "+91 99400 99999"
+  }
+};
+
+let siteContent = JSON.parse(JSON.stringify(defaultSiteContent));
+
+let volunteerApplications = [
   {
     id: "RCE-VOL-849201",
     fullName: "Arunachalam S",
@@ -62,7 +148,7 @@ const volunteerApplications = [
   }
 ];
 
-const donationRecords = [
+let donationRecords = [
   {
     receiptNo: "80G-2026-00412",
     donorName: "Dr. Sundararajan Ramanathan",
@@ -110,7 +196,7 @@ const donationRecords = [
   }
 ];
 
-const contactMessages = [
+let contactMessages = [
   {
     id: "MSG-101",
     name: "Kavitha Rajan (Headmistress)",
@@ -137,7 +223,7 @@ const contactMessages = [
   }
 ];
 
-const newsletterSubscribers = new Set(["arun.cse@rce.ac.in", "priya.biotech@rce.ac.in", "alumni.rce18@gmail.com", "volunteer@mykutumb.com"]);
+let newsletterSubscribers = new Set(["arun.cse@rce.ac.in", "priya.biotech@rce.ac.in", "alumni.rce18@gmail.com", "volunteer@mykutumb.com"]);
 
 let currentStats = {
   livesImpacted: 28450,
@@ -298,7 +384,7 @@ let eventsList = [
   }
 ];
 
-const initialStories = [
+let storiesList = [
   {
     id: "story-1",
     name: "Kavitha M.",
@@ -328,7 +414,293 @@ const initialStories = [
   }
 ];
 
-// Public Read Controllers
+let galleryList = [
+  {
+    id: "g-1",
+    title: "Miyawaki Urban Forest Drive",
+    category: "Environment",
+    image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80",
+    location: "Kattivakkam Lake",
+    year: "2026",
+  },
+  {
+    id: "g-2",
+    title: "Vidhya Connect Book Distribution",
+    category: "Education",
+    image: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80",
+    location: "Govt Model High School",
+    year: "2026",
+  },
+  {
+    id: "g-3",
+    title: "Free Community Eye Screening",
+    category: "Healthcare",
+    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80",
+    location: "Rural Health Center",
+    year: "2026",
+  },
+  {
+    id: "g-4",
+    title: "Annapoorna Food Aid Distribution",
+    category: "Relief",
+    image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80",
+    location: "GH Attendant Shelters",
+    year: "2026",
+  },
+  {
+    id: "g-5",
+    title: "Youth Leadership & Sports Fest",
+    category: "Youth",
+    image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80",
+    location: "District Stadium",
+    year: "2026",
+  },
+  {
+    id: "g-6",
+    title: "Women Sewing Machine Donation",
+    category: "Empowerment",
+    image: "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=800&q=80",
+    location: "Shakthi Skill Center",
+    year: "2026",
+  },
+];
+
+// Persistence Helpers
+function saveDataToFile() {
+  try {
+    const dir = path.dirname(DATA_FILE);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    const state = {
+      siteContent,
+      currentStats,
+      projectsList,
+      eventsList,
+      storiesList,
+      galleryList,
+      volunteerApplications,
+      donationRecords,
+      contactMessages,
+      newsletterSubscribers: Array.from(newsletterSubscribers),
+    };
+    fs.writeFileSync(DATA_FILE, JSON.stringify(state, null, 2), "utf8");
+  } catch (err) {
+    console.warn("⚠️ Could not write clubData.json:", err.message);
+  }
+}
+
+function loadDataFromFile() {
+  try {
+    if (fs.existsSync(DATA_FILE)) {
+      const raw = fs.readFileSync(DATA_FILE, "utf8");
+      const state = JSON.parse(raw);
+      if (state.siteContent) siteContent = state.siteContent;
+      if (state.currentStats) currentStats = state.currentStats;
+      if (state.projectsList) projectsList = state.projectsList;
+      if (state.eventsList) eventsList = state.eventsList;
+      if (state.storiesList) storiesList = state.storiesList;
+      if (state.galleryList) galleryList = state.galleryList;
+      if (state.volunteerApplications) volunteerApplications = state.volunteerApplications;
+      if (state.donationRecords) donationRecords = state.donationRecords;
+      if (state.contactMessages) contactMessages = state.contactMessages;
+      if (state.newsletterSubscribers) {
+        newsletterSubscribers = new Set(state.newsletterSubscribers);
+      }
+      console.log("✅ Successfully loaded persisted club data from clubData.json");
+    }
+  } catch (err) {
+    console.warn("⚠️ Could not read clubData.json:", err.message);
+  }
+}
+
+// Initial load from file
+loadDataFromFile();
+
+// ==========================================
+// SITE CONTENT / CMS CONTROLLERS
+// ==========================================
+
+const getSiteContent = (req, res) => {
+  res.json({
+    success: true,
+    data: siteContent
+  });
+};
+
+const updateSiteContent = (req, res) => {
+  const updates = req.body;
+  if (!updates || typeof updates !== "object") {
+    return res.status(400).json({ success: false, message: "Invalid content payload" });
+  }
+
+  // Merge brand
+  if (updates.brand) {
+    siteContent.brand = { ...siteContent.brand, ...updates.brand };
+  }
+  // Merge hero
+  if (updates.hero) {
+    siteContent.hero = { ...siteContent.hero, ...updates.hero };
+  }
+  // Merge about
+  if (updates.about) {
+    siteContent.about = { ...siteContent.about, ...updates.about };
+  }
+  // Merge contact
+  if (updates.contact) {
+    siteContent.contact = { ...siteContent.contact, ...updates.contact };
+  }
+
+  saveDataToFile();
+
+  res.json({
+    success: true,
+    message: "Public website content updated successfully!",
+    data: siteContent
+  });
+};
+
+// ==========================================
+// GALLERY CONTROLLERS
+// ==========================================
+
+const getGallery = (req, res) => {
+  res.json({
+    success: true,
+    count: galleryList.length,
+    data: galleryList
+  });
+};
+
+const createGalleryItem = (req, res) => {
+  const { title, category, image, location, year } = req.body;
+  if (!title || !image) {
+    return res.status(400).json({ success: false, message: "Photo title and image URL are required" });
+  }
+
+  const newItem = {
+    id: "g-" + Date.now(),
+    title: title.trim(),
+    category: category || "Environment",
+    image: image.trim(),
+    location: location || "Chennai Hub",
+    year: year || new Date().getFullYear().toString()
+  };
+
+  galleryList.unshift(newItem);
+  saveDataToFile();
+
+  res.status(201).json({
+    success: true,
+    message: "Photo added to impact gallery!",
+    data: newItem
+  });
+};
+
+const updateGalleryItem = (req, res) => {
+  const { id } = req.params;
+  const index = galleryList.findIndex(g => g.id === id);
+  if (index === -1) {
+    return res.status(404).json({ success: false, message: "Gallery item not found" });
+  }
+
+  galleryList[index] = {
+    ...galleryList[index],
+    ...req.body,
+    id: galleryList[index].id // preserve id
+  };
+
+  saveDataToFile();
+
+  res.json({
+    success: true,
+    message: "Gallery photo details updated successfully!",
+    data: galleryList[index]
+  });
+};
+
+const deleteGalleryItem = (req, res) => {
+  const { id } = req.params;
+  galleryList = galleryList.filter(g => g.id !== id);
+  saveDataToFile();
+
+  res.json({
+    success: true,
+    message: "Photo removed from gallery."
+  });
+};
+
+// ==========================================
+// TESTIMONIAL STORIES CONTROLLERS
+// ==========================================
+
+const getStories = (req, res) => {
+  res.json({ success: true, count: storiesList.length, data: storiesList });
+};
+
+const createStory = (req, res) => {
+  const { name, role, location, quote, avatar, impactTag } = req.body;
+  if (!name || !quote) {
+    return res.status(400).json({ success: false, message: "Name and quote are required" });
+  }
+
+  const newStory = {
+    id: "story-" + Date.now(),
+    name: name.trim(),
+    role: role || "Supporter & Beneficiary",
+    location: location || "Chennai",
+    quote: quote.trim(),
+    avatar: avatar || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80",
+    impactTag: impactTag || "Community Voice"
+  };
+
+  storiesList.unshift(newStory);
+  saveDataToFile();
+
+  res.status(201).json({
+    success: true,
+    message: "Impact story published!",
+    data: newStory
+  });
+};
+
+const updateStory = (req, res) => {
+  const { id } = req.params;
+  const index = storiesList.findIndex(s => s.id === id);
+  if (index === -1) {
+    return res.status(404).json({ success: false, message: "Story not found" });
+  }
+
+  storiesList[index] = {
+    ...storiesList[index],
+    ...req.body,
+    id: storiesList[index].id
+  };
+
+  saveDataToFile();
+
+  res.json({
+    success: true,
+    message: "Story updated successfully!",
+    data: storiesList[index]
+  });
+};
+
+const deleteStory = (req, res) => {
+  const { id } = req.params;
+  storiesList = storiesList.filter(s => s.id !== id);
+  saveDataToFile();
+
+  res.json({
+    success: true,
+    message: "Story removed."
+  });
+};
+
+// ==========================================
+// STATS CONTROLLERS
+// ==========================================
+
 const getStats = (req, res) => {
   res.json({
     success: true,
@@ -340,6 +712,36 @@ const getStats = (req, res) => {
   });
 };
 
+const updateStats = (req, res) => {
+  const {
+    livesImpacted,
+    activeVolunteers,
+    projectsCompleted,
+    treesPlanted,
+    mealsServed,
+    medicalCamps,
+    citiesCovered,
+    satisfactionRate
+  } = req.body;
+
+  if (livesImpacted !== undefined) currentStats.livesImpacted = Number(livesImpacted);
+  if (activeVolunteers !== undefined) currentStats.activeVolunteers = Number(activeVolunteers);
+  if (projectsCompleted !== undefined) currentStats.projectsCompleted = Number(projectsCompleted);
+  if (treesPlanted !== undefined) currentStats.treesPlanted = Number(treesPlanted);
+  if (mealsServed !== undefined) currentStats.mealsServed = Number(mealsServed);
+  if (medicalCamps !== undefined) currentStats.medicalCamps = Number(medicalCamps);
+  if (citiesCovered !== undefined) currentStats.citiesCovered = Number(citiesCovered);
+  if (satisfactionRate !== undefined) currentStats.satisfactionRate = Number(satisfactionRate);
+
+  saveDataToFile();
+
+  res.json({ success: true, message: "Stats updated successfully!", data: currentStats });
+};
+
+// ==========================================
+// PROJECTS CONTROLLERS
+// ==========================================
+
 const getProjects = (req, res) => {
   const { category } = req.query;
   let filtered = projectsList;
@@ -349,15 +751,164 @@ const getProjects = (req, res) => {
   res.json({ success: true, count: filtered.length, data: filtered });
 };
 
+const createProject = (req, res) => {
+  const { title, category, tagline, description, goal, raised, image, highlights, beneficiaries, badge } = req.body;
+  if (!title) {
+    return res.status(400).json({ success: false, message: "Project title is required." });
+  }
+
+  const newProject = {
+    id: "proj-" + Date.now(),
+    title: title.trim(),
+    category: category || "Education",
+    tagline: tagline || "Empowering communities through grassroots action",
+    description: description || "Social service initiative organized by RCE Club.",
+    goal: Number(goal) || 100000,
+    raised: Number(raised) || 0,
+    volunteersEnrolled: 0,
+    beneficiaries: beneficiaries || "1,000+ Beneficiaries",
+    badge: badge || "Active Initiative",
+    featured: false,
+    image: image || "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80",
+    highlights: Array.isArray(highlights) ? highlights : (highlights ? highlights.split(",").map(s => s.trim()) : ["Volunteer driven", "Community impact"])
+  };
+
+  projectsList.unshift(newProject);
+  saveDataToFile();
+
+  res.status(201).json({
+    success: true,
+    message: "New project created successfully!",
+    data: newProject
+  });
+};
+
+const updateProject = (req, res) => {
+  const { id } = req.params;
+  const index = projectsList.findIndex(p => p.id === id);
+  if (index === -1) {
+    return res.status(404).json({ success: false, message: "Project not found" });
+  }
+
+  const existing = projectsList[index];
+  const { title, category, tagline, description, goal, raised, image, highlights, beneficiaries, badge } = req.body;
+
+  projectsList[index] = {
+    ...existing,
+    title: title !== undefined ? title.trim() : existing.title,
+    category: category !== undefined ? category : existing.category,
+    tagline: tagline !== undefined ? tagline : existing.tagline,
+    description: description !== undefined ? description : existing.description,
+    goal: goal !== undefined ? Number(goal) : existing.goal,
+    raised: raised !== undefined ? Number(raised) : existing.raised,
+    image: image !== undefined ? image : existing.image,
+    beneficiaries: beneficiaries !== undefined ? beneficiaries : existing.beneficiaries,
+    badge: badge !== undefined ? badge : existing.badge,
+    highlights: highlights !== undefined
+      ? (Array.isArray(highlights) ? highlights : highlights.split(",").map(s => s.trim()))
+      : existing.highlights
+  };
+
+  saveDataToFile();
+
+  res.json({
+    success: true,
+    message: "Project updated successfully!",
+    data: projectsList[index]
+  });
+};
+
+const deleteProject = (req, res) => {
+  const { id } = req.params;
+  projectsList = projectsList.filter(p => p.id !== id);
+  saveDataToFile();
+
+  res.json({ success: true, message: "Project deleted successfully." });
+};
+
+// ==========================================
+// EVENTS CONTROLLERS
+// ==========================================
+
 const getEvents = (req, res) => {
   res.json({ success: true, count: eventsList.length, data: eventsList });
 };
 
-const getStories = (req, res) => {
-  res.json({ success: true, count: initialStories.length, data: initialStories });
+const createEvent = (req, res) => {
+  const { title, date, time, location, category, slotsTotal, description, leader } = req.body;
+  if (!title || !date) {
+    return res.status(400).json({ success: false, message: "Event title and date are required." });
+  }
+
+  const newEvent = {
+    id: "ev-" + Date.now(),
+    title: title.trim(),
+    date,
+    time: time || "09:00 AM - 01:00 PM",
+    location: location || "Chennai Community Grounds",
+    category: category || "Environment",
+    status: "Upcoming",
+    slotsTotal: Number(slotsTotal) || 100,
+    slotsBooked: 0,
+    description: description || "Community volunteer drive organized by RCE Social Service Club.",
+    leader: leader || "RCE Event Coordinator"
+  };
+
+  eventsList.unshift(newEvent);
+  saveDataToFile();
+
+  res.status(201).json({
+    success: true,
+    message: "New event created successfully!",
+    data: newEvent
+  });
 };
 
-// Form Submission Controllers
+const updateEvent = (req, res) => {
+  const { id } = req.params;
+  const index = eventsList.findIndex(ev => ev.id === id);
+  if (index === -1) {
+    return res.status(404).json({ success: false, message: "Event not found" });
+  }
+
+  const existing = eventsList[index];
+  const { title, date, time, location, category, slotsTotal, slotsBooked, description, leader, status } = req.body;
+
+  eventsList[index] = {
+    ...existing,
+    title: title !== undefined ? title.trim() : existing.title,
+    date: date !== undefined ? date : existing.date,
+    time: time !== undefined ? time : existing.time,
+    location: location !== undefined ? location : existing.location,
+    category: category !== undefined ? category : existing.category,
+    status: status !== undefined ? status : existing.status,
+    slotsTotal: slotsTotal !== undefined ? Number(slotsTotal) : existing.slotsTotal,
+    slotsBooked: slotsBooked !== undefined ? Number(slotsBooked) : existing.slotsBooked,
+    description: description !== undefined ? description : existing.description,
+    leader: leader !== undefined ? leader : existing.leader
+  };
+
+  saveDataToFile();
+
+  res.json({
+    success: true,
+    message: "Drive / Event updated successfully!",
+    data: eventsList[index]
+  });
+};
+
+const deleteEvent = (req, res) => {
+  const { id } = req.params;
+  eventsList = eventsList.filter(ev => ev.id !== id);
+  saveDataToFile();
+
+  res.json({ success: true, message: "Event deleted successfully." });
+};
+
+// ==========================================
+// FORM SUBMISSION CONTROLLERS
+// ==========================================
+
 const joinClub = (req, res) => {
   const {
     fullName,
@@ -408,6 +959,7 @@ const joinClub = (req, res) => {
   };
 
   volunteerApplications.unshift(applicationRecord);
+  saveDataToFile();
 
   res.status(201).json({
     success: true,
@@ -451,6 +1003,8 @@ const makeDonation = (req, res) => {
     project.raised += donationAmount;
   }
 
+  saveDataToFile();
+
   res.status(201).json({
     success: true,
     message: "Thank you for your generous contribution! Receipt generated.",
@@ -478,6 +1032,7 @@ const submitContact = (req, res) => {
   };
 
   contactMessages.unshift(contactRecord);
+  saveDataToFile();
 
   res.json({
     success: true,
@@ -493,6 +1048,8 @@ const subscribeNewsletter = (req, res) => {
   }
 
   newsletterSubscribers.add(email.trim().toLowerCase());
+  saveDataToFile();
+
   res.json({
     success: true,
     message: "Successfully subscribed to RCE monthly impact dispatch & drive invites!"
@@ -500,7 +1057,7 @@ const subscribeNewsletter = (req, res) => {
 };
 
 // ==========================================
-// ADMIN DASHBOARD / MANAGEMENT CONTROLLERS
+// ADMIN DASHBOARD CONTROLLERS
 // ==========================================
 
 const getAdminData = (req, res) => {
@@ -518,90 +1075,11 @@ const getAdminData = (req, res) => {
       newsletterSubscribers: Array.from(newsletterSubscribers),
       projects: projectsList,
       events: eventsList,
+      stories: storiesList,
+      gallery: galleryList,
+      siteContent: siteContent
     }
   });
-};
-
-const createEvent = (req, res) => {
-  const { title, date, time, location, category, slotsTotal, description, leader } = req.body;
-  if (!title || !date) {
-    return res.status(400).json({ success: false, message: "Event title and date are required." });
-  }
-
-  const newEvent = {
-    id: "ev-" + Date.now(),
-    title: title.trim(),
-    date,
-    time: time || "09:00 AM - 01:00 PM",
-    location: location || "Chennai Community Grounds",
-    category: category || "Environment",
-    status: "Upcoming",
-    slotsTotal: Number(slotsTotal) || 100,
-    slotsBooked: 0,
-    description: description || "Community volunteer drive organized by RCE Social Service Club.",
-    leader: leader || "RCE Event Coordinator"
-  };
-
-  eventsList.unshift(newEvent);
-  res.status(201).json({
-    success: true,
-    message: "New event created successfully!",
-    data: newEvent
-  });
-};
-
-const deleteEvent = (req, res) => {
-  const { id } = req.params;
-  eventsList = eventsList.filter(ev => ev.id !== id);
-  res.json({ success: true, message: "Event deleted successfully." });
-};
-
-const createProject = (req, res) => {
-  const { title, category, tagline, description, goal, raised, image, highlights, beneficiaries } = req.body;
-  if (!title) {
-    return res.status(400).json({ success: false, message: "Project title is required." });
-  }
-
-  const newProject = {
-    id: "proj-" + Date.now(),
-    title: title.trim(),
-    category: category || "Education",
-    tagline: tagline || "Empowering communities through grassroots action",
-    description: description || "Social service initiative organized by RCE Club.",
-    goal: Number(goal) || 100000,
-    raised: Number(raised) || 0,
-    volunteersEnrolled: 0,
-    beneficiaries: beneficiaries || "1,000+ Beneficiaries",
-    badge: "Active Initiative",
-    featured: false,
-    image: image || "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80",
-    highlights: Array.isArray(highlights) ? highlights : (highlights ? highlights.split(",").map(s => s.trim()) : ["Volunteer driven", "Community impact"])
-  };
-
-  projectsList.unshift(newProject);
-  res.status(201).json({
-    success: true,
-    message: "New project created successfully!",
-    data: newProject
-  });
-};
-
-const deleteProject = (req, res) => {
-  const { id } = req.params;
-  projectsList = projectsList.filter(p => p.id !== id);
-  res.json({ success: true, message: "Project deleted successfully." });
-};
-
-const updateStats = (req, res) => {
-  const { livesImpacted, activeVolunteers, projectsCompleted, treesPlanted, mealsServed, medicalCamps } = req.body;
-  if (livesImpacted !== undefined) currentStats.livesImpacted = Number(livesImpacted);
-  if (activeVolunteers !== undefined) currentStats.activeVolunteers = Number(activeVolunteers);
-  if (projectsCompleted !== undefined) currentStats.projectsCompleted = Number(projectsCompleted);
-  if (treesPlanted !== undefined) currentStats.treesPlanted = Number(treesPlanted);
-  if (mealsServed !== undefined) currentStats.mealsServed = Number(mealsServed);
-  if (medicalCamps !== undefined) currentStats.medicalCamps = Number(medicalCamps);
-
-  res.json({ success: true, message: "Stats updated successfully!", data: currentStats });
 };
 
 const updateVolunteerStatus = (req, res) => {
@@ -612,6 +1090,8 @@ const updateVolunteerStatus = (req, res) => {
     return res.status(404).json({ success: false, message: "Volunteer not found" });
   }
   volunteer.status = status || volunteer.status;
+  saveDataToFile();
+
   res.json({ success: true, message: `Volunteer status updated to ${volunteer.status}`, data: volunteer });
 };
 
@@ -620,6 +1100,7 @@ const deleteVolunteer = (req, res) => {
   const index = volunteerApplications.findIndex(v => v.id === id);
   if (index !== -1) {
     volunteerApplications.splice(index, 1);
+    saveDataToFile();
   }
   res.json({ success: true, message: "Volunteer record removed." });
 };
@@ -632,6 +1113,8 @@ const updateInquiryStatus = (req, res) => {
     return res.status(404).json({ success: false, message: "Inquiry not found" });
   }
   inquiry.status = status || inquiry.status;
+  saveDataToFile();
+
   res.json({ success: true, message: `Inquiry status updated to ${inquiry.status}`, data: inquiry });
 };
 
@@ -640,6 +1123,7 @@ const deleteInquiry = (req, res) => {
   const index = contactMessages.findIndex(m => m.id === id);
   if (index !== -1) {
     contactMessages.splice(index, 1);
+    saveDataToFile();
   }
   res.json({ success: true, message: "Inquiry record deleted." });
 };
@@ -649,6 +1133,7 @@ const deleteDonation = (req, res) => {
   const index = donationRecords.findIndex(d => d.receiptNo === receiptNo);
   if (index !== -1) {
     donationRecords.splice(index, 1);
+    saveDataToFile();
   }
   res.json({ success: true, message: "Donation record deleted." });
 };
@@ -671,18 +1156,29 @@ const adminLogin = (req, res) => {
 };
 
 module.exports = {
+  getSiteContent,
+  updateSiteContent,
+  getGallery,
+  createGalleryItem,
+  updateGalleryItem,
+  deleteGalleryItem,
   getStats,
   getProjects,
   getEvents,
   getStories,
+  createStory,
+  updateStory,
+  deleteStory,
   joinClub,
   makeDonation,
   submitContact,
   subscribeNewsletter,
   getAdminData,
   createEvent,
+  updateEvent,
   deleteEvent,
   createProject,
+  updateProject,
   deleteProject,
   updateStats,
   updateVolunteerStatus,

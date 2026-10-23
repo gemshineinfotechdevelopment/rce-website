@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { Heart, Send, ShieldCheck, Mail, SlidersHorizontal } from 'lucide-react';
 import { submitNewsletter } from '../services/api';
 
+import type { BrandContent } from '../services/api';
+
 interface FooterProps {
+  brand?: BrandContent;
   onOpenAdmin?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenAdmin }) => {
+export const Footer: React.FC<FooterProps> = ({ brand, onOpenAdmin }) => {
   const [email, setEmail] = useState('');
   const [subMsg, setSubMsg] = useState('');
   const [loading, setLoading] = useState(false);
@@ -71,13 +74,12 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin }) => {
             <div className="brand-logo footer-brand">
               <span className="logo-icon text-2xl">🤝</span>
               <div className="logo-text-group">
-                <span className="brand-title text-white">RCE CLUB</span>
-                <span className="brand-subtitle" style={{ color: '#f59e0b' }}>SERVICE &bull; CULTURE &bull; YOUTH</span>
+                <span className="brand-title text-white">{brand?.name || 'RCE CLUB'}</span>
+                <span className="brand-subtitle" style={{ color: '#f59e0b' }}>{brand?.subtitle || 'SERVICE • CULTURE • YOUTH'}</span>
               </div>
             </div>
             <p className="footer-mission-text">
-              A people-driven social movement inspired by compassion and collective civic action. 
-              Bridging resources to the vulnerable and fostering responsible young leaders.
+              {brand?.mission || 'A people-driven social movement inspired by compassion and collective civic action. Bridging resources to the vulnerable and fostering responsible young leaders.'}
             </p>
             <div className="footer-tax-badge">
               <ShieldCheck size={18} color="#fde047" className="flex-shrink-0" />
@@ -139,10 +141,10 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin }) => {
           <div className="footer-col">
             <h4 className="footer-heading">Trust & Legal</h4>
             <div className="footer-legal-box">
-              <p><strong>Trust Reg No:</strong> TN/CH/2021/84920</p>
-              <p><strong>80G Exemption:</strong> CIT(E)/CHN/80G/2021-22/A-412</p>
-              <p><strong>12A Registration:</strong> AAATR8492GE20210</p>
-              <p><strong>PAN:</strong> AAATR8492G</p>
+              <p><strong>Trust Reg No:</strong> {brand?.trustReg || 'TN/CH/2021/84920'}</p>
+              <p><strong>80G Exemption:</strong> {brand?.taxExemption80G || 'CIT(E)/CHN/80G/2021-22/A-412'}</p>
+              <p><strong>12A Registration:</strong> {brand?.reg12A || 'AAATR8492GE20210'}</p>
+              <p><strong>PAN:</strong> {brand?.pan || 'AAATR8492G'}</p>
               <p className="mt-2 text-xs text-stone-400">
                 Audited statements are published annually for complete public scrutiny.
               </p>
