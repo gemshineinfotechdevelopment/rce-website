@@ -14,7 +14,7 @@ export const JoinModal: React.FC<JoinModalProps> = ({
   isOpen,
   onClose,
   defaultRole = 'Volunteer',
-  projects = [],
+  projects: _projects = [],
   onSuccessRegistered,
 }) => {
   const [roleType, setRoleType] = useState(defaultRole || 'Volunteer');
@@ -26,10 +26,6 @@ export const JoinModal: React.FC<JoinModalProps> = ({
   const [organization, setOrganization] = useState('');
   const [bloodGroup, setBloodGroup] = useState('O+ Positive');
   const [emergencyContact, setEmergencyContact] = useState('');
-  const [skills, setSkills] = useState('Ground Drives & Field Work');
-  const [availability, setAvailability] = useState('Weekends (Saturday/Sunday)');
-  const [preferredDomain, setPreferredDomain] = useState('General Community Service');
-  const [message, setMessage] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -93,10 +89,10 @@ export const JoinModal: React.FC<JoinModalProps> = ({
         emergencyContact: emergencyContact.trim() || 'Not provided',
         city: city.trim() || 'Chennai / TN',
         occupation: occupation || 'General Citizen',
-        skills,
-        availability,
-        preferredDomain,
-        message: message.trim(),
+        skills: 'General Volunteering & Community Drives',
+        availability: 'Flexible / Weekends',
+        preferredDomain: 'General Community Service',
+        message: '',
       });
 
       setSuccessData({
@@ -312,87 +308,6 @@ export const JoinModal: React.FC<JoinModalProps> = ({
                       className="form-input"
                     />
                   </div>
-                </div>
-              </div>
-
-              {/* Skills & Availability */}
-              <div className="form-group">
-                <label className="form-label">4. Volunteering Preference & Skills</label>
-                <div className="form-row-2">
-                  <div>
-                    <label className="input-sublabel">Preferred Cause / Domain</label>
-                    <select
-                      value={preferredDomain}
-                      onChange={(e) => setPreferredDomain(e.target.value)}
-                      className="form-input"
-                    >
-                      {projects && projects.length > 0 ? (
-                        <>
-                          {projects.map((p) => (
-                            <option key={p.id} value={p.title}>
-                              {p.title}
-                            </option>
-                          ))}
-                          <option value="Media, Design & Event Logistics">Media, Design & Event Logistics</option>
-                          <option value="Ground Relief & Emergency Drives">Ground Relief & Emergency Drives</option>
-                          <option value="General Community Service">General Community Service</option>
-                        </>
-                      ) : (
-                        <>
-                          <option value="General Community Service">General Community Service</option>
-                          <option value="Child Education & Vidhya Connect">Child Education & Vidhya Connect</option>
-                          <option value="Green Earth Miyawaki Afforestation">Green Earth Miyawaki Afforestation</option>
-                          <option value="Arogya Free Health & Eye Camps">Arogya Free Health & Eye Camps</option>
-                          <option value="Annapoorna Hospital Food Drive">Annapoorna Hospital Food Drive</option>
-                          <option value="Kala Uday Youth Leadership">Kala Uday Youth Leadership</option>
-                          <option value="Media & Event Logistics">Media & Event Logistics</option>
-                        </>
-                      )}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="input-sublabel">Availability</label>
-                    <select
-                      value={availability}
-                      onChange={(e) => setAvailability(e.target.value)}
-                      className="form-input"
-                    >
-                      <option value="Weekends (Saturday/Sunday)">Weekends (Saturday/Sunday)</option>
-                      <option value="Flexible Weekdays">Flexible Weekdays</option>
-                      <option value="Emergency Relief On-Call">Emergency Relief On-Call</option>
-                      <option value="Remote / Digital Support">Remote / Digital Support</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="mt-3">
-                  <label className="input-sublabel">How would you like to contribute? / Primary Strength</label>
-                  <select
-                    value={skills}
-                    onChange={(e) => setSkills(e.target.value)}
-                    className="form-input"
-                  >
-                    <option value="Ground Drives & Field Work">Ground Drives & Field Work</option>
-                    <option value="Teaching & Tutoring Kids">Teaching & Tutoring Kids</option>
-                    <option value="Miyawaki Tree Plantation">Miyawaki Tree Plantation</option>
-                    <option value="Medical Camp Coordination">Medical Camp Coordination</option>
-                    <option value="Food Relief & Ration Packaging">Food Relief & Ration Packaging</option>
-                    <option value="Social Media & Content Creation">Social Media & Content Creation</option>
-                    <option value="Event Planning & Logistics">Event Planning & Logistics</option>
-                    <option value="Professional / Legal / CSR Advisory">Professional / Legal / CSR Advisory</option>
-                  </select>
-                </div>
-
-                {/* Optional Motivation Message */}
-                <div className="mt-3">
-                  <label className="input-sublabel">Why would you like to join? (Optional)</label>
-                  <textarea
-                    rows={2}
-                    placeholder="Share a few words about what motivates you to serve..."
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    className="form-input textarea"
-                  ></textarea>
                 </div>
               </div>
 
