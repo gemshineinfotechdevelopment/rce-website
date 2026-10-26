@@ -67,6 +67,7 @@ export const JoinModal: React.FC<JoinModalProps> = ({
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
+    2
     e.preventDefault();
     setErrorMsg('');
 
