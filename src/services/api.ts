@@ -219,8 +219,8 @@ export interface AdminData {
 // Fallback Default Site Content (used when offline)
 export const DEFAULT_SITE_CONTENT: SiteContent = {
   brand: {
-    name: 'RCE CLUB',
-    subtitle: 'SERVICE • CULTURE • YOUTH',
+    name: 'RCE',
+    subtitle: 'RIGHT CLUB FOR EDUCATION',
     mission: 'A people-driven social movement inspired by compassion and collective civic action. Bridging resources to the vulnerable and fostering responsible young leaders.',
     trustReg: 'TN/CH/2021/84920',
     taxExemption80G: 'CIT(E)/CHN/80G/2021-22/A-412',

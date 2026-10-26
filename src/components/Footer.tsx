@@ -72,10 +72,12 @@ export const Footer: React.FC<FooterProps> = ({ brand, onOpenAdmin }) => {
           {/* Column 1: Brand & Charter */}
           <div className="footer-col-brand">
             <div className="brand-logo footer-brand">
-              <span className="logo-icon text-2xl">🤝</span>
+              <div className="brand-logo-frame">
+                <img src="/Rce.logo.png" alt="RCE - Right Club for Education" className="footer-logo-img" />
+              </div>
               <div className="logo-text-group">
-                <span className="brand-title text-white">{brand?.name || 'RCE CLUB'}</span>
-                <span className="brand-subtitle" style={{ color: '#f59e0b' }}>{brand?.subtitle || 'SERVICE • CULTURE • YOUTH'}</span>
+                <span className="brand-title text-white">{brand?.name || 'RCE'}</span>
+                <span className="brand-subtitle footer-brand-subtitle">{brand?.subtitle || 'RIGHT CLUB FOR EDUCATION'}</span>
               </div>
             </div>
             <p className="footer-mission-text">

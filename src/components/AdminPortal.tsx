@@ -31,7 +31,9 @@ import {
   Globe,
   ExternalLink,
   Save,
-  RotateCcw
+  RotateCcw,
+  Menu,
+  X
 } from 'lucide-react';
 import {
   fetchAdminData,
@@ -97,6 +99,9 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
     | 'inquiries'
     | 'newsletters'
   >('overview');
+
+  // Mobile sidebar open state
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   // Sub-navigation for Website CMS
   const [cmsSubTab, setCmsSubTab] = useState<'hero' | 'about' | 'pillars' | 'contact' | 'brand'>('hero');
@@ -839,12 +844,23 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       <div className="admin-login-screen">
         <div className="admin-login-card">
           <div className="admin-login-header">
-            <div className="admin-login-logo">
-              <span className="text-3xl">🤝</span>
+            <div className="admin-login-brand-lockup">
+              <div className="admin-login-logo-wrap">
+                <img src="/Rce.logo.png" alt="RCE Logo" className="admin-login-logo-img" />
+              </div>
+              <div className="admin-login-brand-text">
+                <span className="admin-login-brand-title">{brandName || 'RCE'}</span>
+                <span className="admin-login-brand-subtitle">RIGHT CLUB FOR EDUCATION</span>
+              </div>
             </div>
-            <span className="section-tag gold">RESTRICTED ACCESS</span>
-            <h2>RCE Club Admin Portal</h2>
-            <p>Administrative Command & Content Management Hub</p>
+
+            <div className="admin-login-badge-strip">
+              <span className="admin-login-badge">
+                <ShieldCheck size={14} className="badge-shield-icon" />
+                <span>RESTRICTED ACCESS • ADMIN COMMAND</span>
+              </span>
+            </div>
+            <p className="admin-login-subtext">Authorized Personnel & Trust Officers Access</p>
           </div>
 
           <form onSubmit={handleLogin} className="admin-login-form">
@@ -921,15 +937,34 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
         </div>
       )}
 
+      {/* Mobile Sidebar Backdrop */}
+      {mobileSidebarOpen && (
+        <div
+          className="admin-sidebar-backdrop"
+          onClick={() => setMobileSidebarOpen(false)}
+          aria-label="Close navigation"
+        />
+      )}
+
       {/* Admin Sidebar */}
-      <aside className="admin-sidebar">
+      <aside className={`admin-sidebar ${mobileSidebarOpen ? 'mobile-open' : ''}`}>
         {/* Brand */}
         <div className="admin-sidebar-brand">
-          <div className="logo-emblem">🤝</div>
-          <div className="admin-sidebar-text">
-            <h3>{brandName || 'RCE CLUB'}</h3>
-            <span>ADMIN COMMAND</span>
+          <div className="admin-sidebar-logo-wrap">
+            <img src="/Rce.logo.png" alt="RCE Logo" className="admin-sidebar-logo-img" />
           </div>
+          <div className="admin-sidebar-text">
+            <h3>{brandName || 'RCE'}</h3>
+            <span>RIGHT CLUB FOR EDUCATION</span>
+          </div>
+          <button
+            type="button"
+            className="admin-sidebar-close-btn"
+            onClick={() => setMobileSidebarOpen(false)}
+            aria-label="Close admin menu"
+          >
+            <X size={20} />
+          </button>
         </div>
 
         {/* Live Server Indicator */}
@@ -943,7 +978,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           <button
             type="button"
             className={`admin-nav-item ${activeTab === 'overview' ? 'active' : ''}`}
-            onClick={() => setActiveTab('overview')}
+            onClick={() => { setActiveTab('overview'); setMobileSidebarOpen(false); }}
           >
             <BarChart3 size={18} />
             <span>Dashboard Overview</span>
@@ -953,7 +988,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           <button
             type="button"
             className={`admin-nav-item ${activeTab === 'cms' ? 'active' : ''}`}
-            onClick={() => setActiveTab('cms')}
+            onClick={() => { setActiveTab('cms'); setMobileSidebarOpen(false); }}
             style={{ background: activeTab === 'cms' ? '#b45309' : '#fdf5eb', border: '1px solid #fed7aa' }}
           >
             <Globe size={18} className="text-amber-700" />
@@ -966,7 +1001,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           <button
             type="button"
             className={`admin-nav-item ${activeTab === 'gallery' ? 'active' : ''}`}
-            onClick={() => setActiveTab('gallery')}
+            onClick={() => { setActiveTab('gallery'); setMobileSidebarOpen(false); }}
           >
             <ImageIcon size={18} />
             <span>Photo Gallery</span>
@@ -976,7 +1011,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           <button
             type="button"
             className={`admin-nav-item ${activeTab === 'stories' ? 'active' : ''}`}
-            onClick={() => setActiveTab('stories')}
+            onClick={() => { setActiveTab('stories'); setMobileSidebarOpen(false); }}
           >
             <Quote size={18} />
             <span>Voices & Stories</span>
@@ -986,7 +1021,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           <button
             type="button"
             className={`admin-nav-item ${activeTab === 'projects' ? 'active' : ''}`}
-            onClick={() => setActiveTab('projects')}
+            onClick={() => { setActiveTab('projects'); setMobileSidebarOpen(false); }}
           >
             <Layers size={18} />
             <span>Projects & Causes</span>
@@ -996,7 +1031,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           <button
             type="button"
             className={`admin-nav-item ${activeTab === 'events' ? 'active' : ''}`}
-            onClick={() => setActiveTab('events')}
+            onClick={() => { setActiveTab('events'); setMobileSidebarOpen(false); }}
           >
             <Calendar size={18} />
             <span>Events & Drives</span>
@@ -1006,7 +1041,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           <button
             type="button"
             className={`admin-nav-item ${activeTab === 'counters' ? 'active' : ''}`}
-            onClick={() => setActiveTab('counters')}
+            onClick={() => { setActiveTab('counters'); setMobileSidebarOpen(false); }}
           >
             <Sliders size={18} />
             <span>Live Counters</span>
@@ -1015,7 +1050,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           <button
             type="button"
             className={`admin-nav-item ${activeTab === 'volunteers' ? 'active' : ''}`}
-            onClick={() => setActiveTab('volunteers')}
+            onClick={() => { setActiveTab('volunteers'); setMobileSidebarOpen(false); }}
           >
             <Users size={18} />
             <span>Volunteers & Members</span>
@@ -1025,7 +1060,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           <button
             type="button"
             className={`admin-nav-item ${activeTab === 'donations' ? 'active' : ''}`}
-            onClick={() => setActiveTab('donations')}
+            onClick={() => { setActiveTab('donations'); setMobileSidebarOpen(false); }}
           >
             <Heart size={18} />
             <span>Donations & 80G Tax</span>
@@ -1035,7 +1070,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           <button
             type="button"
             className={`admin-nav-item ${activeTab === 'inquiries' ? 'active' : ''}`}
-            onClick={() => setActiveTab('inquiries')}
+            onClick={() => { setActiveTab('inquiries'); setMobileSidebarOpen(false); }}
           >
             <Mail size={18} />
             <span>Helpline & Inquiries</span>
@@ -1047,7 +1082,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           <button
             type="button"
             className={`admin-nav-item ${activeTab === 'newsletters' ? 'active' : ''}`}
-            onClick={() => setActiveTab('newsletters')}
+            onClick={() => { setActiveTab('newsletters'); setMobileSidebarOpen(false); }}
           >
             <Mail size={18} />
             <span>Newsletter Audience</span>
@@ -1059,7 +1094,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
         <div className="admin-sidebar-footer">
           <button
             type="button"
-            onClick={onBackToWebsite}
+            onClick={() => { setMobileSidebarOpen(false); onBackToWebsite(); }}
             className="btn-outline w-full mb-2 admin-switch-website-btn"
           >
             <ArrowLeft size={16} />
@@ -1068,7 +1103,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
 
           <button
             type="button"
-            onClick={handleLogout}
+            onClick={() => { setMobileSidebarOpen(false); handleLogout(); }}
             className="admin-logout-btn w-full"
           >
             <LogOut size={16} />
@@ -1081,21 +1116,31 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       <main className="admin-main-viewport">
         {/* Top Header Bar */}
         <header className="admin-topbar">
-          <div className="admin-topbar-title">
-            <h2>
-              {activeTab === 'overview' && 'Executive Performance Dashboard'}
-              {activeTab === 'cms' && 'Website Content & Details Manager (CMS)'}
-              {activeTab === 'gallery' && 'Public Photo Gallery Management'}
-              {activeTab === 'stories' && 'Voices of Change & Testimonials'}
-              {activeTab === 'events' && 'Social Drives & Event Operations'}
-              {activeTab === 'projects' && 'Flagship Causes & Community Projects'}
-              {activeTab === 'counters' && 'Home Page Live Impact Counters'}
-              {activeTab === 'volunteers' && 'Volunteer & Student Members Registry'}
-              {activeTab === 'donations' && 'Donations & 80G Tax Exemption Receipts'}
-              {activeTab === 'inquiries' && 'Helpline & Citizen Messages'}
-              {activeTab === 'newsletters' && 'Newsletter Audience & Email Subscribers'}
-            </h2>
-            <p>Direct manual controls for all live website sections and data</p>
+          <div className="admin-topbar-brand-group">
+            <button
+              type="button"
+              className="admin-mobile-menu-toggle"
+              onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+              aria-label="Toggle admin navigation menu"
+            >
+              <Menu size={22} />
+            </button>
+            <div className="admin-topbar-title">
+              <h2>
+                {activeTab === 'overview' && 'Executive Performance Dashboard'}
+                {activeTab === 'cms' && 'Website Content & Details Manager (CMS)'}
+                {activeTab === 'gallery' && 'Public Photo Gallery Management'}
+                {activeTab === 'stories' && 'Voices of Change & Testimonials'}
+                {activeTab === 'events' && 'Social Drives & Event Operations'}
+                {activeTab === 'projects' && 'Flagship Causes & Community Projects'}
+                {activeTab === 'counters' && 'Home Page Live Impact Counters'}
+                {activeTab === 'volunteers' && 'Volunteer & Student Members Registry'}
+                {activeTab === 'donations' && 'Donations & 80G Tax Exemption Receipts'}
+                {activeTab === 'inquiries' && 'Helpline & Citizen Messages'}
+                {activeTab === 'newsletters' && 'Newsletter Audience & Email Subscribers'}
+              </h2>
+              <p className="admin-topbar-subtitle">Direct manual controls for all live website sections and data</p>
+            </div>
           </div>
 
           <div className="admin-topbar-actions">
@@ -1107,7 +1152,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               title="Refresh all data"
             >
               <RefreshCw size={15} className={loading ? 'spin-icon' : ''} />
-              <span>{loading ? 'Refreshing...' : 'Refresh'}</span>
+              <span className="admin-btn-text">{loading ? 'Refreshing...' : 'Refresh'}</span>
             </button>
 
             <button
@@ -1117,10 +1162,91 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               title="Switch to public landing page"
             >
               <ExternalLink size={15} />
-              <span>Live Website ↗</span>
+              <span className="admin-btn-text">Live Site ↗</span>
             </button>
           </div>
         </header>
+
+        {/* Quick mobile horizontal tabs strip */}
+        <div className="admin-mobile-quicktabs">
+          <button
+            type="button"
+            className={`quicktab-pill ${activeTab === 'overview' ? 'active' : ''}`}
+            onClick={() => setActiveTab('overview')}
+          >
+            <BarChart3 size={13} /> Overview
+          </button>
+          <button
+            type="button"
+            className={`quicktab-pill ${activeTab === 'cms' ? 'active' : ''}`}
+            onClick={() => setActiveTab('cms')}
+          >
+            <Globe size={13} /> CMS
+          </button>
+          <button
+            type="button"
+            className={`quicktab-pill ${activeTab === 'gallery' ? 'active' : ''}`}
+            onClick={() => setActiveTab('gallery')}
+          >
+            <ImageIcon size={13} /> Gallery
+          </button>
+          <button
+            type="button"
+            className={`quicktab-pill ${activeTab === 'stories' ? 'active' : ''}`}
+            onClick={() => setActiveTab('stories')}
+          >
+            <Quote size={13} /> Stories
+          </button>
+          <button
+            type="button"
+            className={`quicktab-pill ${activeTab === 'projects' ? 'active' : ''}`}
+            onClick={() => setActiveTab('projects')}
+          >
+            <Layers size={13} /> Projects
+          </button>
+          <button
+            type="button"
+            className={`quicktab-pill ${activeTab === 'events' ? 'active' : ''}`}
+            onClick={() => setActiveTab('events')}
+          >
+            <Calendar size={13} /> Events
+          </button>
+          <button
+            type="button"
+            className={`quicktab-pill ${activeTab === 'counters' ? 'active' : ''}`}
+            onClick={() => setActiveTab('counters')}
+          >
+            <Sliders size={13} /> Counters
+          </button>
+          <button
+            type="button"
+            className={`quicktab-pill ${activeTab === 'volunteers' ? 'active' : ''}`}
+            onClick={() => setActiveTab('volunteers')}
+          >
+            <Users size={13} /> Volunteers
+          </button>
+          <button
+            type="button"
+            className={`quicktab-pill ${activeTab === 'donations' ? 'active' : ''}`}
+            onClick={() => setActiveTab('donations')}
+          >
+            <Heart size={13} /> Donations
+          </button>
+          <button
+            type="button"
+            className={`quicktab-pill ${activeTab === 'inquiries' ? 'active' : ''}`}
+            onClick={() => setActiveTab('inquiries')}
+          >
+            <Mail size={13} /> Helpline
+          </button>
+          <button
+            type="button"
+            className={`quicktab-pill ${activeTab === 'newsletters' ? 'active' : ''}`}
+            onClick={() => setActiveTab('newsletters')}
+          >
+            <Mail size={13} /> Newsletter
+          </button>
+        </div>
 
         {/* ==============================================================
             TAB: WEBSITE CONTENT (CMS) - FULL MANUAL CONTROL OVER ALL SECTIONS
@@ -3743,7 +3869,9 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
 
             <div className="receipt-certificate-printable" id="printable-receipt">
               <div className="receipt-cert-header">
-                <div className="receipt-trust-logo">🤝</div>
+                <div className="receipt-trust-logo">
+                  <img src="/Rce.logo.png" alt="RCE Logo" className="receipt-logo-img" />
+                </div>
                 <div className="receipt-trust-info">
                   <h2>{brandName || 'RCE SOCIAL SERVICE CLUB CHARITABLE TRUST'}</h2>
                   <p>Registered Public Charitable Trust • Chennai, Tamil Nadu</p>

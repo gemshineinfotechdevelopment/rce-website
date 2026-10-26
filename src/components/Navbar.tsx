@@ -37,12 +37,12 @@ export const Navbar: React.FC<NavbarProps> = ({ brand, onOpenJoin, onOpenDonate 
       <div className="container nav-container">
         {/* Brand Logo */}
         <a href="#hero" className="brand-logo" aria-label="RCE Social Service Club Home">
-          <div className="logo-emblem">
-            <span className="logo-icon">🤝</span>
+          <div className="brand-logo-frame">
+            <img src="/Rce.logo.png" alt="RCE - Right Club for Education" className="brand-logo-img" />
           </div>
           <div className="logo-text-group">
-            <span className="brand-title">{brand?.name || 'RCE CLUB'}</span>
-            <span className="brand-subtitle">{brand?.subtitle || 'SERVICE • CULTURE • YOUTH'}</span>
+            <span className="brand-title">{brand?.name || 'RCE'}</span>
+            <span className="brand-subtitle">{brand?.subtitle || 'RIGHT CLUB FOR EDUCATION'}</span>
           </div>
         </a>
 
@@ -115,6 +115,15 @@ export const Navbar: React.FC<NavbarProps> = ({ brand, onOpenJoin, onOpenDonate 
           </button>
         </div>
       </div>
+
+      {/* Mobile Backdrop */}
+      {mobileMenuOpen && (
+        <div
+          className="mobile-nav-backdrop"
+          onClick={() => setMobileMenuOpen(false)}
+          aria-label="Close mobile navigation"
+        />
+      )}
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
