@@ -22,9 +22,6 @@ import {
   Phone,
   Eye,
   Sliders,
-  Award,
-  MapPin,
-  FileSpreadsheet,
   Edit3,
   Image as ImageIcon,
   Quote,
@@ -33,7 +30,16 @@ import {
   Save,
   RotateCcw,
   Menu,
-  X
+  X,
+  FileSpreadsheet,
+  ChevronUp,
+  TreePine,
+  Utensils,
+  Stethoscope,
+  Building2,
+  Award,
+  Tv,
+  Play
 } from 'lucide-react';
 import {
   fetchAdminData,
@@ -57,6 +63,12 @@ import {
   createClubStoryApi,
   updateClubStoryApi,
   deleteClubStoryApi,
+  fetchClubVideos,
+  createClubVideoApi,
+  updateClubVideoApi,
+  deleteClubVideoApi,
+  extractYouTubeId,
+  getYouTubeThumbnail,
   DEFAULT_SITE_CONTENT
 } from '../services/api';
 import type {
@@ -67,6 +79,7 @@ import type {
   ClubEvent,
   StoryItem,
   GalleryItem,
+  VideoItem,
   PillarItem,
   SiteContent
 } from '../services/api';
@@ -75,6 +88,20 @@ interface AdminPortalProps {
   onBackToWebsite: () => void;
   onDataUpdated?: () => void;
 }
+
+type AdminTab =
+  | 'overview'
+  | 'volunteers'
+  | 'donations'
+  | 'events'
+  | 'projects'
+  | 'inquiries'
+  | 'cms'
+  | 'counters'
+  | 'videos'
+  | 'gallery'
+  | 'stories'
+  | 'newsletters';
 
 export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDataUpdated }) => {
   // Authentication State
@@ -86,21 +113,9 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
   const [loginLoading, setLoginLoading] = useState(false);
 
   // Active Navigation Tab
-  const [activeTab, setActiveTab] = useState<
-    | 'overview'
-    | 'cms'
-    | 'gallery'
-    | 'stories'
-    | 'events'
-    | 'projects'
-    | 'counters'
-    | 'volunteers'
-    | 'donations'
-    | 'inquiries'
-    | 'newsletters'
-  >('overview');
+  const [activeTab, setActiveTab] = useState<AdminTab>('overview');
 
-  // Mobile sidebar open state
+  // Mobile sidebar drawer state
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   // Sub-navigation for Website CMS
@@ -111,6 +126,16 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
   const [loading, setLoading] = useState(false);
   const [actionNotice, setActionNotice] = useState<{ text: string; isError: boolean } | null>(null);
   const [isSavingCms, setIsSavingCms] = useState(false);
+
+  // Section Create Form Toggles
+  const [showAddEvent, setShowAddEvent] = useState(false);
+  const [showAddProject, setShowAddProject] = useState(false);
+  const [showAddGallery, setShowAddGallery] = useState(false);
+  const [showAddStory, setShowAddStory] = useState(false);
+  const [showAddVideo, setShowAddVideo] = useState(false);
+
+  // Videos List
+  const [videosList, setVideosList] = useState<VideoItem[]>([]);
 
   // Filter & Search states
   const [volunteerSearch, setVolunteerSearch] = useState('');
@@ -127,6 +152,15 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
   const [editingEvent, setEditingEvent] = useState<ClubEvent | null>(null);
   const [editingGallery, setEditingGallery] = useState<GalleryItem | null>(null);
   const [editingStory, setEditingStory] = useState<StoryItem | null>(null);
+  const [editingVideo, setEditingVideo] = useState<VideoItem | null>(null);
+
+  // New Video Form State
+  const [videoTitle, setVideoTitle] = useState('');
+  const [videoUrl, setVideoUrl] = useState('');
+  const [videoDesc, setVideoDesc] = useState('');
+  const [videoDuration, setVideoDuration] = useState('04:15');
+  const [videoLocation, setVideoLocation] = useState('Chennai');
+  const [videoFeatured, setVideoFeatured] = useState(false);
 
   // New Event Form State
   const [eventTitle, setEventTitle] = useState('');
@@ -175,7 +209,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
   const [counterSatisfaction, setCounterSatisfaction] = useState('98');
 
   // CMS Form States
-  // 1. Hero
   const [heroTag, setHeroTag] = useState(DEFAULT_SITE_CONTENT.hero.tag);
   const [heroTitlePrefix, setHeroTitlePrefix] = useState(DEFAULT_SITE_CONTENT.hero.titlePrefix);
   const [heroTitleGradient, setHeroTitleGradient] = useState(DEFAULT_SITE_CONTENT.hero.titleGradient);
@@ -184,15 +217,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
   const [heroPrimaryCta, setHeroPrimaryCta] = useState(DEFAULT_SITE_CONTENT.hero.primaryCta);
   const [heroSecondaryCta, setHeroSecondaryCta] = useState(DEFAULT_SITE_CONTENT.hero.secondaryCta);
   const [heroTertiaryCta, setHeroTertiaryCta] = useState(DEFAULT_SITE_CONTENT.hero.tertiaryCta);
-  const [heroBadge1, setHeroBadge1] = useState(DEFAULT_SITE_CONTENT.hero.trustBadge1);
-  const [heroBadge2, setHeroBadge2] = useState(DEFAULT_SITE_CONTENT.hero.trustBadge2);
-  const [heroBadge3, setHeroBadge3] = useState(DEFAULT_SITE_CONTENT.hero.trustBadge3);
   const [heroImage, setHeroImage] = useState(DEFAULT_SITE_CONTENT.hero.imageUrl);
   const [heroTagline, setHeroTagline] = useState(DEFAULT_SITE_CONTENT.hero.badgeTagline);
-  const [heroStatTreesLabel, setHeroStatTreesLabel] = useState(DEFAULT_SITE_CONTENT.hero.statTreesLabel || 'Saplings Planted');
-  const [heroStatLivesLabel, setHeroStatLivesLabel] = useState(DEFAULT_SITE_CONTENT.hero.statLivesLabel || 'Lives Impacted');
 
-  // 2. About
+  // About CMS
   const [aboutTag, setAboutTag] = useState(DEFAULT_SITE_CONTENT.about.tag);
   const [aboutTitle, setAboutTitle] = useState(DEFAULT_SITE_CONTENT.about.title);
   const [aboutTitleGradient, setAboutTitleGradient] = useState(DEFAULT_SITE_CONTENT.about.titleGradient);
@@ -204,26 +232,25 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
   const [aboutChecklist2, setAboutChecklist2] = useState(DEFAULT_SITE_CONTENT.about.checklist2);
   const [aboutChecklist3, setAboutChecklist3] = useState(DEFAULT_SITE_CONTENT.about.checklist3);
   const [aboutYears, setAboutYears] = useState(DEFAULT_SITE_CONTENT.about.yearsExperience);
-  const [aboutYearsLabel, setAboutYearsLabel] = useState(DEFAULT_SITE_CONTENT.about.yearsExperienceLabel || 'Years of Active Service');
   const [aboutDrives, setAboutDrives] = useState(DEFAULT_SITE_CONTENT.about.drivesExperience);
   const [aboutImage, setAboutImage] = useState(DEFAULT_SITE_CONTENT.about.imageUrl);
   const [aboutPillarsTitle, setAboutPillarsTitle] = useState(DEFAULT_SITE_CONTENT.about.pillarsTitle || 'Our 4 Core Pillars of Service');
 
-  // 3. Pillars
+  // Pillars CMS
   const [pillarsList, setPillarsList] = useState<PillarItem[]>(DEFAULT_SITE_CONTENT.about.pillars);
 
-  // 4. Contact & Helpline
+  // Contact CMS
   const [contactTag, setContactTag] = useState(DEFAULT_SITE_CONTENT.contact.tag || 'Connect With Us');
   const [contactTitle, setContactTitle] = useState(DEFAULT_SITE_CONTENT.contact.title || 'Have Questions or a ');
   const [contactTitleGradient, setContactTitleGradient] = useState(DEFAULT_SITE_CONTENT.contact.titleGradient || 'Cause to Champion?');
-  const [contactSubtitle, setContactSubtitle] = useState(DEFAULT_SITE_CONTENT.contact.subtitle || 'Every great initiative begins with a conversation. Let us know how we can collaborate.');
+  const [contactSubtitle, setContactSubtitle] = useState(DEFAULT_SITE_CONTENT.contact.subtitle || '');
   const [contactAddress, setContactAddress] = useState(DEFAULT_SITE_CONTENT.contact.officeAddress);
   const [contactPhone, setContactPhone] = useState(DEFAULT_SITE_CONTENT.contact.phone);
   const [contactEmail, setContactEmail] = useState(DEFAULT_SITE_CONTENT.contact.email);
   const [contactHours, setContactHours] = useState(DEFAULT_SITE_CONTENT.contact.hours);
   const [contactEmergency, setContactEmergency] = useState(DEFAULT_SITE_CONTENT.contact.emergencyHotline);
 
-  // 5. Brand & Legal
+  // Brand CMS
   const [brandName, setBrandName] = useState(DEFAULT_SITE_CONTENT.brand.name);
   const [brandSubtitle, setBrandSubtitle] = useState(DEFAULT_SITE_CONTENT.brand.subtitle);
   const [brandMission, setBrandMission] = useState(DEFAULT_SITE_CONTENT.brand.mission);
@@ -259,8 +286,15 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       if (data?.siteContent) {
         populateCmsFields(data.siteContent);
       }
-    } catch {
-      showNotice('Failed to fetch latest server data. Check if backend port 5000 is active.', true);
+
+      if (data?.videos && data.videos.length > 0) {
+        setVideosList(data.videos);
+      } else {
+        const vList = await fetchClubVideos();
+        setVideosList(vList);
+      }
+    } catch (err) {
+      console.warn('Could not connect to backend:', err);
     } finally {
       setLoading(false);
     }
@@ -276,13 +310,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       setHeroPrimaryCta(content.hero.primaryCta || '');
       setHeroSecondaryCta(content.hero.secondaryCta || '');
       setHeroTertiaryCta(content.hero.tertiaryCta || '');
-      setHeroBadge1(content.hero.trustBadge1 || '');
-      setHeroBadge2(content.hero.trustBadge2 || '');
-      setHeroBadge3(content.hero.trustBadge3 || '');
       setHeroImage(content.hero.imageUrl || '');
       setHeroTagline(content.hero.badgeTagline || '');
-      setHeroStatTreesLabel(content.hero.statTreesLabel || 'Saplings Planted');
-      setHeroStatLivesLabel(content.hero.statLivesLabel || 'Lives Impacted');
     }
     if (content.about) {
       setAboutTag(content.about.tag || '');
@@ -296,7 +325,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       setAboutChecklist2(content.about.checklist2 || '');
       setAboutChecklist3(content.about.checklist3 || '');
       setAboutYears(content.about.yearsExperience || '');
-      setAboutYearsLabel(content.about.yearsExperienceLabel || 'Years of Active Service');
       setAboutDrives(content.about.drivesExperience || '');
       setAboutImage(content.about.imageUrl || '');
       setAboutPillarsTitle(content.about.pillarsTitle || 'Our 4 Core Pillars of Service');
@@ -328,7 +356,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
 
   const showNotice = (text: string, isError = false) => {
     setActionNotice({ text, isError });
-    setTimeout(() => setActionNotice(null), 4500);
+    setTimeout(() => setActionNotice(null), 4000);
   };
 
   // Login handler
@@ -340,9 +368,9 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       await adminLoginApi(passcode);
       sessionStorage.setItem('rce_admin_session', 'true');
       setIsAuthenticated(true);
-      showNotice('Authenticated successfully. Welcome to RCE Club Admin Portal!');
+      showNotice('Welcome to RCE Club Admin Portal!');
     } catch (err: any) {
-      setLoginError(err.message || 'Invalid passcode. Default passcode is: rce@admin');
+      setLoginError(err.message || 'Invalid passcode. Default key is: rce@admin');
     } finally {
       setLoginLoading(false);
     }
@@ -360,9 +388,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
     setPasscode('');
   };
 
-  // ==========================================
-  // CMS CONTENT SAVE HANDLER
-  // ==========================================
+  // Save Website CMS Content
   const handleSaveCmsContent = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setIsSavingCms(true);
@@ -386,13 +412,11 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           primaryCta: heroPrimaryCta,
           secondaryCta: heroSecondaryCta,
           tertiaryCta: heroTertiaryCta,
-          trustBadge1: heroBadge1,
-          trustBadge2: heroBadge2,
-          trustBadge3: heroBadge3,
+          trustBadge1: DEFAULT_SITE_CONTENT.hero.trustBadge1,
+          trustBadge2: DEFAULT_SITE_CONTENT.hero.trustBadge2,
+          trustBadge3: DEFAULT_SITE_CONTENT.hero.trustBadge3,
           imageUrl: heroImage,
           badgeTagline: heroTagline,
-          statTreesLabel: heroStatTreesLabel,
-          statLivesLabel: heroStatLivesLabel,
         },
         about: {
           tag: aboutTag,
@@ -406,7 +430,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           checklist2: aboutChecklist2,
           checklist3: aboutChecklist3,
           yearsExperience: aboutYears,
-          yearsExperienceLabel: aboutYearsLabel,
           drivesExperience: aboutDrives,
           imageUrl: aboutImage,
           pillarsTitle: aboutPillarsTitle,
@@ -437,21 +460,18 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
   };
 
   const handleResetCmsToDefaults = () => {
-    if (!window.confirm('Reset all website texts and images to default template content?')) return;
+    if (!window.confirm('Reset all website content fields to template defaults?')) return;
     populateCmsFields(DEFAULT_SITE_CONTENT);
     showNotice('Loaded default template values. Click "Save Website Details" to apply.');
   };
 
-  // Pillar update helper
   const handlePillarChange = (index: number, field: 'title' | 'description', value: string) => {
     const updated = [...pillarsList];
     updated[index] = { ...updated[index], [field]: value };
     setPillarsList(updated);
   };
 
-  // ==========================================
-  // GALLERY HANDLERS
-  // ==========================================
+  // Gallery Handlers
   const handleAddGalleryItem = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newGalTitle.trim() || !newGalImage.trim()) {
@@ -469,6 +489,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       showNotice('Photo added to public gallery!');
       setNewGalTitle('');
       setNewGalImage('');
+      setShowAddGallery(false);
       await loadData();
       if (onDataUpdated) onDataUpdated();
     } catch (err: any) {
@@ -502,9 +523,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
     }
   };
 
-  // ==========================================
-  // STORIES HANDLERS
-  // ==========================================
+  // Stories Handlers
   const handleAddStory = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newStoryName.trim() || !newStoryQuote.trim()) {
@@ -523,6 +542,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       showNotice('Testimonial story published to website!');
       setNewStoryName('');
       setNewStoryQuote('');
+      setShowAddStory(false);
       await loadData();
       if (onDataUpdated) onDataUpdated();
     } catch (err: any) {
@@ -556,9 +576,78 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
     }
   };
 
-  // ==========================================
-  // PROJECT ACTIONS (CREATE, EDIT, DELETE)
-  // ==========================================
+  // YouTube Video Handlers
+  const handleAddVideo = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!videoTitle.trim() || !videoUrl.trim()) {
+      showNotice('Please provide video title and YouTube link or ID', true);
+      return;
+    }
+    const extractedId = extractYouTubeId(videoUrl.trim());
+    if (!extractedId) {
+      showNotice('Invalid YouTube link or ID. Please enter a valid URL (e.g. youtu.be/... or watch?v=...)', true);
+      return;
+    }
+    try {
+      await createClubVideoApi({
+        title: videoTitle.trim(),
+        youtubeUrl: videoUrl.trim(),
+        youtubeId: extractedId,
+        description: videoDesc.trim() || 'RCE social service impact video.',
+        duration: videoDuration.trim() || '04:00',
+        location: videoLocation.trim() || 'Chennai',
+        featured: videoFeatured,
+      });
+      showNotice('YouTube video successfully added to website showcase!');
+      setVideoTitle('');
+      setVideoUrl('');
+      setVideoDesc('');
+      setVideoDuration('04:15');
+      setVideoLocation('Chennai');
+      setVideoFeatured(false);
+      setShowAddVideo(false);
+      await loadData();
+      if (onDataUpdated) onDataUpdated();
+    } catch (err: any) {
+      showNotice(err.message || 'Failed to add video', true);
+    }
+  };
+
+  const handleSaveEditedVideo = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingVideo) return;
+    const extractedId = extractYouTubeId(editingVideo.youtubeUrl || editingVideo.youtubeId);
+    if (!extractedId) {
+      showNotice('Invalid YouTube URL or ID', true);
+      return;
+    }
+    try {
+      await updateClubVideoApi(editingVideo.id, {
+        ...editingVideo,
+        youtubeId: extractedId,
+      });
+      showNotice(`Video "${editingVideo.title}" updated successfully!`);
+      setEditingVideo(null);
+      await loadData();
+      if (onDataUpdated) onDataUpdated();
+    } catch (err: any) {
+      showNotice(err.message || 'Failed to update video', true);
+    }
+  };
+
+  const handleDeleteVideo = async (id: string) => {
+    if (!window.confirm('Remove this YouTube video from the website showcase?')) return;
+    try {
+      await deleteClubVideoApi(id);
+      showNotice('Video removed from showcase');
+      await loadData();
+      if (onDataUpdated) onDataUpdated();
+    } catch (err: any) {
+      showNotice(err.message || 'Failed to delete video', true);
+    }
+  };
+
+  // Projects Handlers
   const handleAddProject = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!projTitle.trim()) {
@@ -580,6 +669,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       showNotice('Project launched and added to the website!');
       setProjTitle('');
       setProjDesc('');
+      setShowAddProject(false);
       await loadData();
       if (onDataUpdated) onDataUpdated();
     } catch (err: any) {
@@ -613,9 +703,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
     }
   };
 
-  // ==========================================
-  // EVENT ACTIONS (CREATE, EDIT, DELETE)
-  // ==========================================
+  // Events Handlers
   const handleAddEvent = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!eventTitle.trim()) {
@@ -636,6 +724,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       showNotice('Drive scheduled and published to the live website!');
       setEventTitle('');
       setEventDesc('');
+      setShowAddEvent(false);
       await loadData();
       if (onDataUpdated) onDataUpdated();
     } catch (err: any) {
@@ -733,6 +822,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       await deleteInquiryApi(id);
       showNotice('Inquiry removed');
       await loadData();
+      if (onDataUpdated) onDataUpdated();
     } catch (err: any) {
       showNotice(err.message || 'Delete failed', true);
     }
@@ -758,24 +848,25 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
     const rows = adminData.volunteerApplications.map((v) => [
       v.id,
       `"${v.fullName}"`,
-      `"${v.department || 'N/A'}"`,
-      `"${v.collegeId || 'N/A'}"`,
-      `"${v.yearOfStudy || 'N/A'}"`,
-      `"${v.bloodGroup || 'N/A'}"`,
+      `"${v.department || ''}"`,
+      v.collegeId || '',
+      v.yearOfStudy || '',
+      v.bloodGroup || '',
       v.email,
       v.phone,
       v.roleType,
-      `"${v.skills}"`,
-      `"${v.availability}"`,
-      `"${v.preferredDomain || 'General'}"`,
+      `"${(v.skills || '').replace(/"/g, '""')}"`,
+      `"${v.availability || ''}"`,
+      `"${v.preferredDomain || ''}"`,
       v.status,
-      v.joinedAt
+      new Date(v.joinedAt || Date.now()).toLocaleDateString('en-IN')
     ]);
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
+
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `RCE_Volunteers_Registry_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute('download', `RCE_Volunteers_Roster_${new Date().toISOString().slice(0, 10)}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -789,14 +880,15 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       `"${d.donorName}"`,
       d.amount,
       d.pan,
-      `"${d.city || 'N/A'}"`,
+      `"${d.city || ''}"`,
       `"${d.cause}"`,
       d.paymentMethod,
-      d.transactionId || 'N/A',
+      d.transactionId || '',
       d.status,
-      d.timestamp
+      new Date(d.timestamp).toLocaleDateString('en-IN')
     ]);
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
+
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
@@ -836,8 +928,20 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
     );
   });
 
+  // Counters configuration for clean grid
+  const counterFields = [
+    { label: 'Lives Impacted', val: counterLives, setVal: setCounterLives, icon: <Heart size={20} className="text-amber-600" /> },
+    { label: 'Active Volunteers', val: counterVolunteers, setVal: setCounterVolunteers, icon: <Users size={20} className="text-blue-600" /> },
+    { label: 'Projects Completed', val: counterProjects, setVal: setCounterProjects, icon: <Layers size={20} className="text-emerald-600" /> },
+    { label: 'Trees Planted', val: counterTrees, setVal: setCounterTrees, icon: <TreePine size={20} className="text-green-700" /> },
+    { label: 'Meals Served', val: counterMeals, setVal: setCounterMeals, icon: <Utensils size={20} className="text-orange-600" /> },
+    { label: 'Medical Camps', val: counterCamps, setVal: setCounterCamps, icon: <Stethoscope size={20} className="text-rose-600" /> },
+    { label: 'Cities Covered', val: counterCities, setVal: setCounterCities, icon: <Building2 size={20} className="text-purple-600" /> },
+    { label: 'Satisfaction Rate (%)', val: counterSatisfaction, setVal: setCounterSatisfaction, icon: <Award size={20} className="text-yellow-600" /> },
+  ];
+
   // ==============================================================
-  // 1. IF NOT LOGGED IN -> RENDER SECURE LOGIN GATEWAY
+  // 1. SECURE LOGIN SCREEN
   // ==============================================================
   if (!isAuthenticated) {
     return (
@@ -850,22 +954,15 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               </div>
               <div className="admin-login-brand-text">
                 <span className="admin-login-brand-title">{brandName || 'RCE'}</span>
-                <span className="admin-login-brand-subtitle">RIGHT CLUB FOR EDUCATION</span>
+                <span className="admin-login-brand-subtitle">ADMIN CONSOLE</span>
               </div>
             </div>
-
-            <div className="admin-login-badge-strip">
-              <span className="admin-login-badge">
-                <ShieldCheck size={14} className="badge-shield-icon" />
-                <span>RESTRICTED ACCESS • ADMIN COMMAND</span>
-              </span>
-            </div>
-            <p className="admin-login-subtext">Authorized Personnel & Trust Officers Access</p>
+            <p className="admin-login-subtext">Sign in to manage club operations, drives, and content</p>
           </div>
 
           <form onSubmit={handleLogin} className="admin-login-form">
             <div className="form-group">
-              <label className="input-sublabel">Security Passcode / Secret Key</label>
+              <label className="input-sublabel">Security Passcode</label>
               <div className="admin-input-icon-box">
                 <Lock size={18} className="text-amber-600" />
                 <input
@@ -878,7 +975,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 />
               </div>
               <p className="admin-pass-hint">
-                Default Access Keys: <code>rce@admin</code> or <code>admin123</code>
+                Default Access Key: <code>rce@admin</code>
               </p>
             </div>
 
@@ -895,24 +992,22 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               className="btn-primary w-full btn-large"
             >
               <ShieldCheck size={18} />
-              <span>{loginLoading ? 'Verifying Credentials...' : 'Sign In to Admin Portal'}</span>
+              <span>{loginLoading ? 'Verifying...' : 'Sign In to Admin Portal'}</span>
             </button>
 
-            <div className="admin-login-quick-demo">
-              <button
-                type="button"
-                onClick={handleQuickDemoLogin}
-                className="btn-outline w-full text-xs"
-              >
-                <span>⚡ Instant One-Click Demo Access</span>
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={handleQuickDemoLogin}
+              className="btn-outline w-full text-xs mt-2"
+            >
+              <span>⚡ One-Click Demo Access</span>
+            </button>
 
             <div className="text-center mt-4">
               <button
                 type="button"
                 onClick={onBackToWebsite}
-                className="text-xs text-amber-700 hover:underline flex items-center justify-center gap-1 mx-auto"
+                className="text-xs text-amber-800 hover:underline flex items-center justify-center gap-1 mx-auto"
               >
                 <ArrowLeft size={13} />
                 <span>Return to Public Website</span>
@@ -925,7 +1020,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
   }
 
   // ==============================================================
-  // 2. MAIN LOGGED-IN ADMIN COMMAND CONSOLE
+  // 2. MAIN LOGGED-IN ADMIN CONSOLE
   // ==============================================================
   return (
     <div className="admin-standalone-wrapper">
@@ -955,7 +1050,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           </div>
           <div className="admin-sidebar-text">
             <h3>{brandName || 'RCE'}</h3>
-            <span>RIGHT CLUB FOR EDUCATION</span>
+            <span>ADMIN PORTAL</span>
           </div>
           <button
             type="button"
@@ -967,94 +1062,35 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           </button>
         </div>
 
-        {/* Live Server Indicator */}
-        <div className="admin-server-badge">
-          <span className="status-ping-dot green"></span>
-          <span>API Connected (Port 5000)</span>
-        </div>
-
-        {/* Nav Links */}
+        {/* Grouped Sidebar Nav */}
         <nav className="admin-sidebar-nav">
+          <div className="admin-nav-group-label">MAIN</div>
           <button
             type="button"
             className={`admin-nav-item ${activeTab === 'overview' ? 'active' : ''}`}
             onClick={() => { setActiveTab('overview'); setMobileSidebarOpen(false); }}
           >
-            <BarChart3 size={18} />
-            <span>Dashboard Overview</span>
+            <div className="flex items-center gap-3">
+              <BarChart3 size={18} />
+              <span>Overview</span>
+            </div>
           </button>
 
-          {/* WEBSITE CONTENT CMS TAB (KEY REQUEST) */}
-          <button
-            type="button"
-            className={`admin-nav-item ${activeTab === 'cms' ? 'active' : ''}`}
-            onClick={() => { setActiveTab('cms'); setMobileSidebarOpen(false); }}
-            style={{ background: activeTab === 'cms' ? '#b45309' : '#fdf5eb', border: '1px solid #fed7aa' }}
-          >
-            <Globe size={18} className="text-amber-700" />
-            <span style={{ fontWeight: 800, color: activeTab === 'cms' ? '#ffffff' : '#78350f' }}>
-              Website Content (CMS)
-            </span>
-            <span className="admin-badge-count gold">Editable</span>
-          </button>
-
-          <button
-            type="button"
-            className={`admin-nav-item ${activeTab === 'gallery' ? 'active' : ''}`}
-            onClick={() => { setActiveTab('gallery'); setMobileSidebarOpen(false); }}
-          >
-            <ImageIcon size={18} />
-            <span>Photo Gallery</span>
-            <span className="admin-badge-count">{adminData?.gallery?.length || 6}</span>
-          </button>
-
-          <button
-            type="button"
-            className={`admin-nav-item ${activeTab === 'stories' ? 'active' : ''}`}
-            onClick={() => { setActiveTab('stories'); setMobileSidebarOpen(false); }}
-          >
-            <Quote size={18} />
-            <span>Voices & Stories</span>
-            <span className="admin-badge-count">{adminData?.stories?.length || 3}</span>
-          </button>
-
-          <button
-            type="button"
-            className={`admin-nav-item ${activeTab === 'projects' ? 'active' : ''}`}
-            onClick={() => { setActiveTab('projects'); setMobileSidebarOpen(false); }}
-          >
-            <Layers size={18} />
-            <span>Projects & Causes</span>
-            <span className="admin-badge-count">{adminData?.projects?.length || 0}</span>
-          </button>
-
-          <button
-            type="button"
-            className={`admin-nav-item ${activeTab === 'events' ? 'active' : ''}`}
-            onClick={() => { setActiveTab('events'); setMobileSidebarOpen(false); }}
-          >
-            <Calendar size={18} />
-            <span>Events & Drives</span>
-            <span className="admin-badge-count">{adminData?.events?.length || 0}</span>
-          </button>
-
-          <button
-            type="button"
-            className={`admin-nav-item ${activeTab === 'counters' ? 'active' : ''}`}
-            onClick={() => { setActiveTab('counters'); setMobileSidebarOpen(false); }}
-          >
-            <Sliders size={18} />
-            <span>Live Counters</span>
-          </button>
-
+          <div className="admin-nav-group-label">OPERATIONS</div>
           <button
             type="button"
             className={`admin-nav-item ${activeTab === 'volunteers' ? 'active' : ''}`}
             onClick={() => { setActiveTab('volunteers'); setMobileSidebarOpen(false); }}
           >
-            <Users size={18} />
-            <span>Volunteers & Members</span>
-            <span className="admin-badge-count">{adminData?.volunteerApplications?.length || 0}</span>
+            <div className="flex items-center gap-3">
+              <Users size={18} />
+              <span>Volunteers</span>
+            </div>
+            {pendingVolunteersCount > 0 ? (
+              <span className="admin-badge-count urgent">{pendingVolunteersCount}</span>
+            ) : (
+              <span className="admin-badge-count">{adminData?.volunteerApplications?.length || 0}</span>
+            )}
           </button>
 
           <button
@@ -1062,9 +1098,35 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             className={`admin-nav-item ${activeTab === 'donations' ? 'active' : ''}`}
             onClick={() => { setActiveTab('donations'); setMobileSidebarOpen(false); }}
           >
-            <Heart size={18} />
-            <span>Donations & 80G Tax</span>
+            <div className="flex items-center gap-3">
+              <Heart size={18} />
+              <span>Donations & 80G</span>
+            </div>
             <span className="admin-badge-count">{adminData?.donationRecords?.length || 0}</span>
+          </button>
+
+          <button
+            type="button"
+            className={`admin-nav-item ${activeTab === 'events' ? 'active' : ''}`}
+            onClick={() => { setActiveTab('events'); setMobileSidebarOpen(false); }}
+          >
+            <div className="flex items-center gap-3">
+              <Calendar size={18} />
+              <span>Drives & Events</span>
+            </div>
+            <span className="admin-badge-count">{adminData?.events?.length || 0}</span>
+          </button>
+
+          <button
+            type="button"
+            className={`admin-nav-item ${activeTab === 'projects' ? 'active' : ''}`}
+            onClick={() => { setActiveTab('projects'); setMobileSidebarOpen(false); }}
+          >
+            <div className="flex items-center gap-3">
+              <Layers size={18} />
+              <span>Projects</span>
+            </div>
+            <span className="admin-badge-count">{adminData?.projects?.length || 0}</span>
           </button>
 
           <button
@@ -1072,11 +1134,72 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             className={`admin-nav-item ${activeTab === 'inquiries' ? 'active' : ''}`}
             onClick={() => { setActiveTab('inquiries'); setMobileSidebarOpen(false); }}
           >
-            <Mail size={18} />
-            <span>Helpline & Inquiries</span>
+            <div className="flex items-center gap-3">
+              <Mail size={18} />
+              <span>Inquiries</span>
+            </div>
             {newInquiriesCount > 0 && (
               <span className="admin-badge-count urgent">{newInquiriesCount} New</span>
             )}
+          </button>
+
+          <div className="admin-nav-group-label">SITE & CONTENT</div>
+          <button
+            type="button"
+            className={`admin-nav-item ${activeTab === 'cms' ? 'active' : ''}`}
+            onClick={() => { setActiveTab('cms'); setMobileSidebarOpen(false); }}
+          >
+            <div className="flex items-center gap-3">
+              <Globe size={18} />
+              <span>Website Content</span>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            className={`admin-nav-item ${activeTab === 'counters' ? 'active' : ''}`}
+            onClick={() => { setActiveTab('counters'); setMobileSidebarOpen(false); }}
+          >
+            <div className="flex items-center gap-3">
+              <Sliders size={18} />
+              <span>Live Counters</span>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            className={`admin-nav-item ${activeTab === 'videos' ? 'active' : ''}`}
+            onClick={() => { setActiveTab('videos'); setMobileSidebarOpen(false); }}
+          >
+            <div className="flex items-center gap-3">
+              <Tv size={18} className="text-red-500" />
+              <span>YouTube Videos</span>
+            </div>
+            <span className="admin-badge-count">{videosList.length}</span>
+          </button>
+
+          <button
+            type="button"
+            className={`admin-nav-item ${activeTab === 'gallery' ? 'active' : ''}`}
+            onClick={() => { setActiveTab('gallery'); setMobileSidebarOpen(false); }}
+          >
+            <div className="flex items-center gap-3">
+              <ImageIcon size={18} />
+              <span>Photo Gallery</span>
+            </div>
+            <span className="admin-badge-count">{adminData?.gallery?.length || 0}</span>
+          </button>
+
+          <button
+            type="button"
+            className={`admin-nav-item ${activeTab === 'stories' ? 'active' : ''}`}
+            onClick={() => { setActiveTab('stories'); setMobileSidebarOpen(false); }}
+          >
+            <div className="flex items-center gap-3">
+              <Quote size={18} />
+              <span>Testimonials</span>
+            </div>
+            <span className="admin-badge-count">{adminData?.stories?.length || 0}</span>
           </button>
 
           <button
@@ -1084,8 +1207,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             className={`admin-nav-item ${activeTab === 'newsletters' ? 'active' : ''}`}
             onClick={() => { setActiveTab('newsletters'); setMobileSidebarOpen(false); }}
           >
-            <Mail size={18} />
-            <span>Newsletter Audience</span>
+            <div className="flex items-center gap-3">
+              <Mail size={18} />
+              <span>Subscribers</span>
+            </div>
             <span className="admin-badge-count">{adminData?.newsletterSubscribers?.length || 0}</span>
           </button>
         </nav>
@@ -1098,7 +1223,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             className="btn-outline w-full mb-2 admin-switch-website-btn"
           >
             <ArrowLeft size={16} />
-            <span>View Public Website</span>
+            <span>View Live Website</span>
           </button>
 
           <button
@@ -1107,12 +1232,12 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             className="admin-logout-btn w-full"
           >
             <LogOut size={16} />
-            <span>Log Out Admin</span>
+            <span>Log Out</span>
           </button>
         </div>
       </aside>
 
-      {/* Main Content Area */}
+      {/* Main Viewport */}
       <main className="admin-main-viewport">
         {/* Top Header Bar */}
         <header className="admin-topbar">
@@ -1121,25 +1246,26 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               type="button"
               className="admin-mobile-menu-toggle"
               onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
-              aria-label="Toggle admin navigation menu"
+              aria-label="Toggle navigation"
             >
-              <Menu size={22} />
+              <Menu size={20} />
             </button>
             <div className="admin-topbar-title">
               <h2>
-                {activeTab === 'overview' && 'Executive Performance Dashboard'}
-                {activeTab === 'cms' && 'Website Content & Details Manager (CMS)'}
-                {activeTab === 'gallery' && 'Public Photo Gallery Management'}
-                {activeTab === 'stories' && 'Voices of Change & Testimonials'}
-                {activeTab === 'events' && 'Social Drives & Event Operations'}
-                {activeTab === 'projects' && 'Flagship Causes & Community Projects'}
-                {activeTab === 'counters' && 'Home Page Live Impact Counters'}
-                {activeTab === 'volunteers' && 'Volunteer & Student Members Registry'}
-                {activeTab === 'donations' && 'Donations & 80G Tax Exemption Receipts'}
+                {activeTab === 'overview' && 'Executive Performance Overview'}
+                {activeTab === 'cms' && 'Website Content & CMS'}
+                {activeTab === 'counters' && 'Home Page Live Counters'}
+                {activeTab === 'videos' && 'YouTube Videos & Impact Media Showcase'}
+                {activeTab === 'gallery' && 'Public Photo Gallery'}
+                {activeTab === 'stories' && 'Voices of Change & Stories'}
+                {activeTab === 'events' && 'Social Drives & Operations'}
+                {activeTab === 'projects' && 'Flagship Causes & Projects'}
+                {activeTab === 'counters' && 'Home Page Live Counters'}
+                {activeTab === 'volunteers' && 'Volunteer & Member Registry'}
+                {activeTab === 'donations' && 'Donations & 80G Receipts'}
                 {activeTab === 'inquiries' && 'Helpline & Citizen Messages'}
-                {activeTab === 'newsletters' && 'Newsletter Audience & Email Subscribers'}
+                {activeTab === 'newsletters' && 'Newsletter Audience'}
               </h2>
-              <p className="admin-topbar-subtitle">Direct manual controls for all live website sections and data</p>
             </div>
           </div>
 
@@ -1159,7 +1285,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               type="button"
               onClick={onBackToWebsite}
               className="btn-primary btn-admin-top"
-              title="Switch to public landing page"
+              title="Open public website"
             >
               <ExternalLink size={15} />
               <span className="admin-btn-text">Live Site ↗</span>
@@ -1167,1052 +1293,21 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           </div>
         </header>
 
-        {/* Quick mobile horizontal tabs strip */}
-        <div className="admin-mobile-quicktabs">
-          <button
-            type="button"
-            className={`quicktab-pill ${activeTab === 'overview' ? 'active' : ''}`}
-            onClick={() => setActiveTab('overview')}
-          >
-            <BarChart3 size={13} /> Overview
-          </button>
-          <button
-            type="button"
-            className={`quicktab-pill ${activeTab === 'cms' ? 'active' : ''}`}
-            onClick={() => setActiveTab('cms')}
-          >
-            <Globe size={13} /> CMS
-          </button>
-          <button
-            type="button"
-            className={`quicktab-pill ${activeTab === 'gallery' ? 'active' : ''}`}
-            onClick={() => setActiveTab('gallery')}
-          >
-            <ImageIcon size={13} /> Gallery
-          </button>
-          <button
-            type="button"
-            className={`quicktab-pill ${activeTab === 'stories' ? 'active' : ''}`}
-            onClick={() => setActiveTab('stories')}
-          >
-            <Quote size={13} /> Stories
-          </button>
-          <button
-            type="button"
-            className={`quicktab-pill ${activeTab === 'projects' ? 'active' : ''}`}
-            onClick={() => setActiveTab('projects')}
-          >
-            <Layers size={13} /> Projects
-          </button>
-          <button
-            type="button"
-            className={`quicktab-pill ${activeTab === 'events' ? 'active' : ''}`}
-            onClick={() => setActiveTab('events')}
-          >
-            <Calendar size={13} /> Events
-          </button>
-          <button
-            type="button"
-            className={`quicktab-pill ${activeTab === 'counters' ? 'active' : ''}`}
-            onClick={() => setActiveTab('counters')}
-          >
-            <Sliders size={13} /> Counters
-          </button>
-          <button
-            type="button"
-            className={`quicktab-pill ${activeTab === 'volunteers' ? 'active' : ''}`}
-            onClick={() => setActiveTab('volunteers')}
-          >
-            <Users size={13} /> Volunteers
-          </button>
-          <button
-            type="button"
-            className={`quicktab-pill ${activeTab === 'donations' ? 'active' : ''}`}
-            onClick={() => setActiveTab('donations')}
-          >
-            <Heart size={13} /> Donations
-          </button>
-          <button
-            type="button"
-            className={`quicktab-pill ${activeTab === 'inquiries' ? 'active' : ''}`}
-            onClick={() => setActiveTab('inquiries')}
-          >
-            <Mail size={13} /> Helpline
-          </button>
-          <button
-            type="button"
-            className={`quicktab-pill ${activeTab === 'newsletters' ? 'active' : ''}`}
-            onClick={() => setActiveTab('newsletters')}
-          >
-            <Mail size={13} /> Newsletter
-          </button>
-        </div>
-
         {/* ==============================================================
-            TAB: WEBSITE CONTENT (CMS) - FULL MANUAL CONTROL OVER ALL SECTIONS
+            TAB: OVERVIEW
            ============================================================== */}
-        {activeTab === 'cms' && (
-          <div className="admin-content-view">
-            {/* Sub-Nav Pills */}
-            <div className="admin-cms-subnav">
-              <button
-                type="button"
-                className={`cms-subnav-btn ${cmsSubTab === 'hero' ? 'active' : ''}`}
-                onClick={() => setCmsSubTab('hero')}
-              >
-                <span>🏷️ Hero Banner</span>
-              </button>
-              <button
-                type="button"
-                className={`cms-subnav-btn ${cmsSubTab === 'about' ? 'active' : ''}`}
-                onClick={() => setCmsSubTab('about')}
-              >
-                <span>📖 About Us & Movement</span>
-              </button>
-              <button
-                type="button"
-                className={`cms-subnav-btn ${cmsSubTab === 'pillars' ? 'active' : ''}`}
-                onClick={() => setCmsSubTab('pillars')}
-              >
-                <span>🏛️ 4 Core Pillars</span>
-              </button>
-              <button
-                type="button"
-                className={`cms-subnav-btn ${cmsSubTab === 'contact' ? 'active' : ''}`}
-                onClick={() => setCmsSubTab('contact')}
-              >
-                <span>📞 Contact & Helpline</span>
-              </button>
-              <button
-                type="button"
-                className={`cms-subnav-btn ${cmsSubTab === 'brand' ? 'active' : ''}`}
-                onClick={() => setCmsSubTab('brand')}
-              >
-                <span>🛡️ Brand & Legal Charter</span>
-              </button>
-            </div>
-
-            {/* CMS Form Card */}
-            <div className="admin-cms-card">
-              <form onSubmit={handleSaveCmsContent}>
-                {/* 1. HERO SECTION SUBTAB */}
-                {cmsSubTab === 'hero' && (
-                  <div>
-                    <div className="cms-section-header">
-                      <div>
-                        <h3>Hero Section Banner</h3>
-                        <p>Change the main headline, tagline, mission description, hero image, and CTA button labels.</p>
-                      </div>
-                      <div className="flex gap-2">
-                        <button
-                          type="button"
-                          onClick={handleResetCmsToDefaults}
-                          className="btn-outline text-xs"
-                        >
-                          <RotateCcw size={14} /> Reset Defaults
-                        </button>
-                        <button
-                          type="submit"
-                          disabled={isSavingCms}
-                          className="btn-primary"
-                        >
-                          <Save size={16} /> {isSavingCms ? 'Saving...' : 'Save Website Details'}
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="cms-preview-banner">
-                      <span className="cms-preview-title">Live Preview Headline</span>
-                      <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#24140c' }}>
-                        {heroTitlePrefix}
-                        <span style={{ color: '#d97706', textDecoration: 'underline' }}>{heroTitleGradient}</span>
-                        {heroTitleSuffix}
-                      </h2>
-                      <p style={{ fontSize: '0.86rem', color: '#6c5448', marginTop: '6px' }}>{heroDesc}</p>
-                    </div>
-
-                    <div className="form-group">
-                      <label className="input-sublabel">Top Pill Tag Text</label>
-                      <input
-                        type="text"
-                        value={heroTag}
-                        onChange={(e) => setHeroTag(e.target.value)}
-                        className="form-input"
-                        placeholder="e.g. A People-Driven Social Movement"
-                      />
-                    </div>
-
-                    <div className="form-row-2">
-                      <div>
-                        <label className="input-sublabel">Headline Prefix Text</label>
-                        <input
-                          type="text"
-                          value={heroTitlePrefix}
-                          onChange={(e) => setHeroTitlePrefix(e.target.value)}
-                          className="form-input"
-                          placeholder="e.g. Dedicated to "
-                        />
-                      </div>
-                      <div>
-                        <label className="input-sublabel">Headline Highlighted Gradient Text</label>
-                        <input
-                          type="text"
-                          value={heroTitleGradient}
-                          onChange={(e) => setHeroTitleGradient(e.target.value)}
-                          className="form-input"
-                          placeholder="e.g. Culture, Service"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-group mt-3">
-                      <label className="input-sublabel">Headline Suffix Text</label>
-                      <input
-                        type="text"
-                        value={heroTitleSuffix}
-                        onChange={(e) => setHeroTitleSuffix(e.target.value)}
-                        className="form-input"
-                        placeholder="e.g.  & Community Upliftment"
-                      />
-                    </div>
-
-                    <div className="form-group">
-                      <label className="input-sublabel">Hero Description Paragraph</label>
-                      <textarea
-                        rows={3}
-                        value={heroDesc}
-                        onChange={(e) => setHeroDesc(e.target.value)}
-                        className="form-input textarea"
-                        placeholder="Explain the movement and mission clearly..."
-                      ></textarea>
-                    </div>
-
-                    <div className="form-row-3 mt-3">
-                      <div>
-                        <label className="input-sublabel">Primary CTA Button</label>
-                        <input
-                          type="text"
-                          value={heroPrimaryCta}
-                          onChange={(e) => setHeroPrimaryCta(e.target.value)}
-                          className="form-input"
-                          placeholder="Join As Volunteer"
-                        />
-                      </div>
-                      <div>
-                        <label className="input-sublabel">Secondary CTA Button</label>
-                        <input
-                          type="text"
-                          value={heroSecondaryCta}
-                          onChange={(e) => setHeroSecondaryCta(e.target.value)}
-                          className="form-input"
-                          placeholder="Support A Cause"
-                        />
-                      </div>
-                      <div>
-                        <label className="input-sublabel">Tertiary CTA Link</label>
-                        <input
-                          type="text"
-                          value={heroTertiaryCta}
-                          onChange={(e) => setHeroTertiaryCta(e.target.value)}
-                          className="form-input"
-                          placeholder="Active Drives"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-row-3 mt-3">
-                      <div>
-                        <label className="input-sublabel">Trust Badge 1</label>
-                        <input
-                          type="text"
-                          value={heroBadge1}
-                          onChange={(e) => setHeroBadge1(e.target.value)}
-                          className="form-input"
-                        />
-                      </div>
-                      <div>
-                        <label className="input-sublabel">Trust Badge 2</label>
-                        <input
-                          type="text"
-                          value={heroBadge2}
-                          onChange={(e) => setHeroBadge2(e.target.value)}
-                          className="form-input"
-                        />
-                      </div>
-                      <div>
-                        <label className="input-sublabel">Trust Badge 3</label>
-                        <input
-                          type="text"
-                          value={heroBadge3}
-                          onChange={(e) => setHeroBadge3(e.target.value)}
-                          className="form-input"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-group mt-3">
-                      <label className="input-sublabel">Hero Main Image URL</label>
-                      <input
-                        type="url"
-                        value={heroImage}
-                        onChange={(e) => setHeroImage(e.target.value)}
-                        className="form-input"
-                        placeholder="https://images.unsplash.com/..."
-                      />
-                      {heroImage && (
-                        <div className="mt-2" style={{ maxWidth: '240px' }}>
-                          <img src={heroImage} alt="Hero Preview" style={{ borderRadius: '8px', maxHeight: '120px', width: '100%', objectFit: 'cover' }} />
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="form-row-3 mt-3">
-                      <div>
-                        <label className="input-sublabel">Badge Tagline</label>
-                        <input
-                          type="text"
-                          value={heroTagline}
-                          onChange={(e) => setHeroTagline(e.target.value)}
-                          className="form-input"
-                          placeholder="✨ Service Above Self • RCE Chapter"
-                        />
-                      </div>
-                      <div>
-                        <label className="input-sublabel">Float Stat 1 Label</label>
-                        <input
-                          type="text"
-                          value={heroStatTreesLabel}
-                          onChange={(e) => setHeroStatTreesLabel(e.target.value)}
-                          className="form-input"
-                          placeholder="Saplings Planted"
-                        />
-                      </div>
-                      <div>
-                        <label className="input-sublabel">Float Stat 2 Label</label>
-                        <input
-                          type="text"
-                          value={heroStatLivesLabel}
-                          onChange={(e) => setHeroStatLivesLabel(e.target.value)}
-                          className="form-input"
-                          placeholder="Lives Impacted"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* 2. ABOUT US SUBTAB */}
-                {cmsSubTab === 'about' && (
-                  <div>
-                    <div className="cms-section-header">
-                      <div>
-                        <h3>About Us & Movement Story</h3>
-                        <p>Customize the about narrative, historical journey, checklist points, and experience badges.</p>
-                      </div>
-                      <button
-                        type="submit"
-                        disabled={isSavingCms}
-                        className="btn-primary"
-                      >
-                        <Save size={16} /> {isSavingCms ? 'Saving...' : 'Save Website Details'}
-                      </button>
-                    </div>
-
-                    <div className="form-row-2">
-                      <div>
-                        <label className="input-sublabel">Section Tag</label>
-                        <input
-                          type="text"
-                          value={aboutTag}
-                          onChange={(e) => setAboutTag(e.target.value)}
-                          className="form-input"
-                          placeholder="About RCE Movement"
-                        />
-                      </div>
-                      <div>
-                        <label className="input-sublabel">Title Highlight Text</label>
-                        <input
-                          type="text"
-                          value={aboutTitleGradient}
-                          onChange={(e) => setAboutTitleGradient(e.target.value)}
-                          className="form-input"
-                          placeholder="Heart & Integrity"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-group mt-3">
-                      <label className="input-sublabel">Main Title Prefix</label>
-                      <input
-                        type="text"
-                        value={aboutTitle}
-                        onChange={(e) => setAboutTitle(e.target.value)}
-                        className="form-input"
-                        placeholder="Empowering Youth to Serve with "
-                      />
-                    </div>
-
-                    <div className="form-group">
-                      <label className="input-sublabel">Section Subtitle</label>
-                      <input
-                        type="text"
-                        value={aboutSubtitle}
-                        onChange={(e) => setAboutSubtitle(e.target.value)}
-                        className="form-input"
-                        placeholder="Just like Kutumb (Family)..."
-                      />
-                    </div>
-
-                    <div className="form-group">
-                      <label className="input-sublabel">Story Heading</label>
-                      <input
-                        type="text"
-                        value={aboutStoryHeading}
-                        onChange={(e) => setAboutStoryHeading(e.target.value)}
-                        className="form-input"
-                        placeholder="From a Small Campus Initiative to a Statewide Movement"
-                      />
-                    </div>
-
-                    <div className="form-group">
-                      <label className="input-sublabel">Story Paragraph 1</label>
-                      <textarea
-                        rows={3}
-                        value={aboutStoryPara1}
-                        onChange={(e) => setAboutStoryPara1(e.target.value)}
-                        className="form-input textarea"
-                      ></textarea>
-                    </div>
-
-                    <div className="form-group">
-                      <label className="input-sublabel">Story Paragraph 2</label>
-                      <textarea
-                        rows={3}
-                        value={aboutStoryPara2}
-                        onChange={(e) => setAboutStoryPara2(e.target.value)}
-                        className="form-input textarea"
-                      ></textarea>
-                    </div>
-
-                    <div className="form-group">
-                      <label className="input-sublabel">Checklist Point 1</label>
-                      <input
-                        type="text"
-                        value={aboutChecklist1}
-                        onChange={(e) => setAboutChecklist1(e.target.value)}
-                        className="form-input"
-                      />
-                    </div>
-
-                    <div className="form-group">
-                      <label className="input-sublabel">Checklist Point 2</label>
-                      <input
-                        type="text"
-                        value={aboutChecklist2}
-                        onChange={(e) => setAboutChecklist2(e.target.value)}
-                        className="form-input"
-                      />
-                    </div>
-
-                    <div className="form-group">
-                      <label className="input-sublabel">Checklist Point 3</label>
-                      <input
-                        type="text"
-                        value={aboutChecklist3}
-                        onChange={(e) => setAboutChecklist3(e.target.value)}
-                        className="form-input"
-                      />
-                    </div>
-
-                    <div className="form-row-3 mt-3">
-                      <div>
-                        <label className="input-sublabel">Years Badge Number</label>
-                        <input
-                          type="text"
-                          value={aboutYears}
-                          onChange={(e) => setAboutYears(e.target.value)}
-                          className="form-input"
-                          placeholder="5+"
-                        />
-                      </div>
-                      <div>
-                        <label className="input-sublabel">Years Badge Text</label>
-                        <input
-                          type="text"
-                          value={aboutYearsLabel}
-                          onChange={(e) => setAboutYearsLabel(e.target.value)}
-                          className="form-input"
-                          placeholder="Years of Active Service"
-                        />
-                      </div>
-                      <div>
-                        <label className="input-sublabel">Drives Badge Text</label>
-                        <input
-                          type="text"
-                          value={aboutDrives}
-                          onChange={(e) => setAboutDrives(e.target.value)}
-                          className="form-input"
-                          placeholder="180+ Successful Drives"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-group mt-3">
-                      <label className="input-sublabel">About Section Image URL</label>
-                      <input
-                        type="url"
-                        value={aboutImage}
-                        onChange={(e) => setAboutImage(e.target.value)}
-                        className="form-input"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* 3. 4 CORE PILLARS SUBTAB */}
-                {cmsSubTab === 'pillars' && (
-                  <div>
-                    <div className="cms-section-header">
-                      <div>
-                        <h3>4 Core Pillars of Service</h3>
-                        <p>Adjust titles and descriptions for the 4 cornerstone service domains of RCE Club.</p>
-                      </div>
-                      <button
-                        type="submit"
-                        disabled={isSavingCms}
-                        className="btn-primary"
-                      >
-                        <Save size={16} /> {isSavingCms ? 'Saving...' : 'Save Website Details'}
-                      </button>
-                    </div>
-
-                    <div className="form-group mb-4">
-                      <label className="input-sublabel">Section Title</label>
-                      <input
-                        type="text"
-                        value={aboutPillarsTitle}
-                        onChange={(e) => setAboutPillarsTitle(e.target.value)}
-                        className="form-input"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {pillarsList.map((pillar, idx) => (
-                        <div key={pillar.id || idx} className="p-4 rounded-xl border border-stone-300 bg-stone-50">
-                          <span className="text-xs font-bold text-amber-800 uppercase tracking-wider">Pillar #{idx + 1}</span>
-                          <div className="form-group mt-2">
-                            <label className="input-sublabel">Pillar Title</label>
-                            <input
-                              type="text"
-                              value={pillar.title}
-                              onChange={(e) => handlePillarChange(idx, 'title', e.target.value)}
-                              className="form-input"
-                            />
-                          </div>
-                          <div className="form-group mt-2">
-                            <label className="input-sublabel">Description</label>
-                            <textarea
-                              rows={3}
-                              value={pillar.description}
-                              onChange={(e) => handlePillarChange(idx, 'description', e.target.value)}
-                              className="form-input textarea"
-                            ></textarea>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* 4. CONTACT & HELPLINE SUBTAB */}
-                {cmsSubTab === 'contact' && (
-                  <div>
-                    <div className="cms-section-header">
-                      <div>
-                        <h3>Contact Desk & Emergency Hotline</h3>
-                        <p>Edit office location, phones, emails, working hours, and emergency numbers.</p>
-                      </div>
-                      <button
-                        type="submit"
-                        disabled={isSavingCms}
-                        className="btn-primary"
-                      >
-                        <Save size={16} /> {isSavingCms ? 'Saving...' : 'Save Website Details'}
-                      </button>
-                    </div>
-
-                    <div className="form-row-2">
-                      <div>
-                        <label className="input-sublabel">Section Title Prefix</label>
-                        <input
-                          type="text"
-                          value={contactTitle}
-                          onChange={(e) => setContactTitle(e.target.value)}
-                          className="form-input"
-                        />
-                      </div>
-                      <div>
-                        <label className="input-sublabel">Title Gradient Highlight</label>
-                        <input
-                          type="text"
-                          value={contactTitleGradient}
-                          onChange={(e) => setContactTitleGradient(e.target.value)}
-                          className="form-input"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-group mt-3">
-                      <label className="input-sublabel">Subtitle Text</label>
-                      <input
-                        type="text"
-                        value={contactSubtitle}
-                        onChange={(e) => setContactSubtitle(e.target.value)}
-                        className="form-input"
-                      />
-                    </div>
-
-                    <div className="form-group">
-                      <label className="input-sublabel">Registered Office Address</label>
-                      <input
-                        type="text"
-                        value={contactAddress}
-                        onChange={(e) => setContactAddress(e.target.value)}
-                        className="form-input"
-                      />
-                    </div>
-
-                    <div className="form-row-2">
-                      <div>
-                        <label className="input-sublabel">Helpline & WhatsApp Number(s)</label>
-                        <input
-                          type="text"
-                          value={contactPhone}
-                          onChange={(e) => setContactPhone(e.target.value)}
-                          className="form-input"
-                        />
-                      </div>
-                      <div>
-                        <label className="input-sublabel">Official Email Desk</label>
-                        <input
-                          type="text"
-                          value={contactEmail}
-                          onChange={(e) => setContactEmail(e.target.value)}
-                          className="form-input"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-row-2 mt-3">
-                      <div>
-                        <label className="input-sublabel">Operating Working Hours</label>
-                        <textarea
-                          rows={2}
-                          value={contactHours}
-                          onChange={(e) => setContactHours(e.target.value)}
-                          className="form-input textarea"
-                        ></textarea>
-                      </div>
-                      <div>
-                        <label className="input-sublabel">24/7 Emergency Blood / Food Aid Hotline</label>
-                        <input
-                          type="text"
-                          value={contactEmergency}
-                          onChange={(e) => setContactEmergency(e.target.value)}
-                          className="form-input"
-                          placeholder="+91 99400 99999"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* 5. BRAND & CHARTER SUBTAB */}
-                {cmsSubTab === 'brand' && (
-                  <div>
-                    <div className="cms-section-header">
-                      <div>
-                        <h3>Brand & Legal Charter</h3>
-                        <p>Change organization name, motto, footer mission statement, and official trust registrations.</p>
-                      </div>
-                      <button
-                        type="submit"
-                        disabled={isSavingCms}
-                        className="btn-primary"
-                      >
-                        <Save size={16} /> {isSavingCms ? 'Saving...' : 'Save Website Details'}
-                      </button>
-                    </div>
-
-                    <div className="form-row-2">
-                      <div>
-                        <label className="input-sublabel">Club Brand Name</label>
-                        <input
-                          type="text"
-                          value={brandName}
-                          onChange={(e) => setBrandName(e.target.value)}
-                          className="form-input"
-                          placeholder="RCE CLUB"
-                        />
-                      </div>
-                      <div>
-                        <label className="input-sublabel">Club Subtitle / Motto</label>
-                        <input
-                          type="text"
-                          value={brandSubtitle}
-                          onChange={(e) => setBrandSubtitle(e.target.value)}
-                          className="form-input"
-                          placeholder="SERVICE • CULTURE • YOUTH"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-group mt-3">
-                      <label className="input-sublabel">Footer Mission Statement</label>
-                      <textarea
-                        rows={3}
-                        value={brandMission}
-                        onChange={(e) => setBrandMission(e.target.value)}
-                        className="form-input textarea"
-                      ></textarea>
-                    </div>
-
-                    <div className="form-row-2">
-                      <div>
-                        <label className="input-sublabel">Trust Registration No</label>
-                        <input
-                          type="text"
-                          value={brandTrustReg}
-                          onChange={(e) => setBrandTrustReg(e.target.value)}
-                          className="form-input"
-                        />
-                      </div>
-                      <div>
-                        <label className="input-sublabel">80G Income Tax Exemption No</label>
-                        <input
-                          type="text"
-                          value={brand80G}
-                          onChange={(e) => setBrand80G(e.target.value)}
-                          className="form-input"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-row-2 mt-3">
-                      <div>
-                        <label className="input-sublabel">12A Income Tax Registration</label>
-                        <input
-                          type="text"
-                          value={brand12A}
-                          onChange={(e) => setBrand12A(e.target.value)}
-                          className="form-input"
-                        />
-                      </div>
-                      <div>
-                        <label className="input-sublabel">Trust PAN Number</label>
-                        <input
-                          type="text"
-                          value={brandPAN}
-                          onChange={(e) => setBrandPAN(e.target.value)}
-                          className="form-input"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div className="mt-8 pt-4 border-t border-stone-200 flex justify-end">
-                  <button
-                    type="submit"
-                    disabled={isSavingCms}
-                    className="btn-primary btn-large"
-                  >
-                    <CheckCircle2 size={18} />
-                    <span>{isSavingCms ? 'Updating Live Website...' : 'Save & Publish Website Details'}</span>
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* ==============================================================
-            TAB: PHOTO GALLERY MANAGEMENT
-           ============================================================== */}
-        {activeTab === 'gallery' && (
-          <div className="admin-content-view">
-            <div className="admin-two-col-layout">
-              {/* Left Column: Add Photo Form */}
-              <div className="admin-box">
-                <h3 className="admin-box-title">📸 Add Photo to Impact Gallery</h3>
-                <form onSubmit={handleAddGalleryItem} className="admin-form-compact">
-                  <div className="form-group">
-                    <label className="input-sublabel">Photo Title *</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Miyawaki Urban Forest Drive"
-                      value={newGalTitle}
-                      onChange={(e) => setNewGalTitle(e.target.value)}
-                      className="form-input"
-                    />
-                  </div>
-
-                  <div className="form-row-2">
-                    <div>
-                      <label className="input-sublabel">Category</label>
-                      <select
-                        value={newGalCategory}
-                        onChange={(e) => setNewGalCategory(e.target.value)}
-                        className="form-input"
-                      >
-                        <option value="Environment">Environment</option>
-                        <option value="Education">Education</option>
-                        <option value="Healthcare">Healthcare</option>
-                        <option value="Relief">Relief</option>
-                        <option value="Youth">Youth</option>
-                        <option value="Empowerment">Empowerment</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="input-sublabel">Year</label>
-                      <input
-                        type="text"
-                        value={newGalYear}
-                        onChange={(e) => setNewGalYear(e.target.value)}
-                        className="form-input"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="form-group mt-3">
-                    <label className="input-sublabel">Location / Ground Venue</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Kattivakkam Lake"
-                      value={newGalLocation}
-                      onChange={(e) => setNewGalLocation(e.target.value)}
-                      className="form-input"
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label className="input-sublabel">Image URL *</label>
-                    <input
-                      type="url"
-                      required
-                      placeholder="https://images.unsplash.com/..."
-                      value={newGalImage}
-                      onChange={(e) => setNewGalImage(e.target.value)}
-                      className="form-input"
-                    />
-                  </div>
-
-                  <button type="submit" className="btn-primary w-full mt-2">
-                    <PlusCircle size={17} />
-                    <span>Upload / Add Photo</span>
-                  </button>
-                </form>
-              </div>
-
-              {/* Right Column: Live Gallery Cards */}
-              <div className="admin-box">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="admin-box-title">Published Gallery Photos ({adminData?.gallery?.length || 0})</h3>
-                </div>
-
-                <div className="admin-gallery-grid">
-                  {(adminData?.gallery || []).map((item) => (
-                    <div key={item.id} className="admin-gallery-card">
-                      <img src={item.image} alt={item.title} className="admin-gallery-thumb" />
-                      <div className="admin-gallery-info">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="event-cat-chip">{item.category}</span>
-                          <span className="text-xs text-stone-500">{item.year}</span>
-                        </div>
-                        <h4 className="font-bold text-stone-900 text-sm">{item.title}</h4>
-                        <span className="text-xs text-stone-500 mb-3">{item.location}</span>
-
-                        <div className="mt-auto pt-2 border-t border-stone-200 flex justify-end gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setEditingGallery(item)}
-                            className="admin-icon-btn blue"
-                            title="Edit Photo"
-                          >
-                            <Edit3 size={15} />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteGalleryItem(item.id)}
-                            className="admin-icon-btn red"
-                            title="Delete Photo"
-                          >
-                            <Trash2 size={15} />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ==============================================================
-            TAB: VOICES OF CHANGE & TESTIMONIAL STORIES
-           ============================================================== */}
-        {activeTab === 'stories' && (
-          <div className="admin-content-view">
-            <div className="admin-two-col-layout">
-              {/* Left Column: Add Story Form */}
-              <div className="admin-box">
-                <h3 className="admin-box-title">💬 Publish Impact Story / Testimonial</h3>
-                <form onSubmit={handleAddStory} className="admin-form-compact">
-                  <div className="form-group">
-                    <label className="input-sublabel">Full Name *</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Kavitha M."
-                      value={newStoryName}
-                      onChange={(e) => setNewStoryName(e.target.value)}
-                      className="form-input"
-                    />
-                  </div>
-
-                  <div className="form-row-2">
-                    <div>
-                      <label className="input-sublabel">Role / Association</label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Mother of 8th Grade Student"
-                        value={newStoryRole}
-                        onChange={(e) => setNewStoryRole(e.target.value)}
-                        className="form-input"
-                      />
-                    </div>
-                    <div>
-                      <label className="input-sublabel">Location</label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Rural Tiruvallur"
-                        value={newStoryLocation}
-                        onChange={(e) => setNewStoryLocation(e.target.value)}
-                        className="form-input"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="form-group mt-3">
-                    <label className="input-sublabel">Impact Tag</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Education Beneficiary"
-                      value={newStoryImpactTag}
-                      onChange={(e) => setNewStoryImpactTag(e.target.value)}
-                      className="form-input"
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label className="input-sublabel">Avatar Image URL</label>
-                    <input
-                      type="url"
-                      placeholder="https://images.unsplash.com/..."
-                      value={newStoryAvatar}
-                      onChange={(e) => setNewStoryAvatar(e.target.value)}
-                      className="form-input"
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label className="input-sublabel">Testimonial Quote *</label>
-                    <textarea
-                      rows={3}
-                      required
-                      placeholder="What impact did RCE bring to this person or community?"
-                      value={newStoryQuote}
-                      onChange={(e) => setNewStoryQuote(e.target.value)}
-                      className="form-input textarea"
-                    ></textarea>
-                  </div>
-
-                  <button type="submit" className="btn-primary w-full mt-2">
-                    <PlusCircle size={17} />
-                    <span>Publish Story to Live Site</span>
-                  </button>
-                </form>
-              </div>
-
-              {/* Right Column: Published Stories */}
-              <div className="admin-box">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="admin-box-title">Published Stories ({adminData?.stories?.length || 0})</h3>
-                </div>
-
-                <div className="admin-stories-grid">
-                  {(adminData?.stories || []).map((story) => (
-                    <div key={story.id} className="admin-story-card">
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="event-cat-chip">{story.impactTag}</span>
-                          <div className="flex gap-1">
-                            <button
-                              type="button"
-                              onClick={() => setEditingStory(story)}
-                              className="admin-icon-btn blue"
-                              title="Edit Story"
-                            >
-                              <Edit3 size={15} />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteStory(story.id)}
-                              className="admin-icon-btn red"
-                              title="Delete Story"
-                            >
-                              <Trash2 size={15} />
-                            </button>
-                          </div>
-                        </div>
-
-                        <p className="text-sm italic text-stone-700 my-3">"{story.quote}"</p>
-                      </div>
-
-                      <div className="flex items-center gap-3 pt-3 border-t border-stone-200">
-                        <img
-                          src={story.avatar}
-                          alt={story.name}
-                          style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }}
-                        />
-                        <div>
-                          <h4 className="font-bold text-stone-900 text-sm">{story.name}</h4>
-                          <span className="text-xs text-stone-500">{story.role} &bull; {story.location}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Tab 1: OVERVIEW */}
         {activeTab === 'overview' && (
           <div className="admin-content-view">
-            {/* KPI Cards */}
+            {/* KPI Cards Grid */}
             <div className="admin-kpi-grid">
               <div className="admin-kpi-card gold-border">
                 <div className="kpi-icon-wrap gold">
-                  <Users size={24} />
+                  <Users size={22} />
                 </div>
                 <div className="kpi-info">
-                  <span className="kpi-label">Registered Volunteers</span>
+                  <span className="kpi-label">Volunteers</span>
                   <h3 className="kpi-value">{adminData?.volunteerApplications?.length || 0}</h3>
-                  <span className="kpi-subtext text-emerald-600">
+                  <span className="kpi-subtext text-emerald-600 font-semibold">
                     +{pendingVolunteersCount} Pending Review
                   </span>
                 </div>
@@ -2220,65 +1315,55 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
 
               <div className="admin-kpi-card emerald-border">
                 <div className="kpi-icon-wrap green">
-                  <Heart size={24} />
+                  <Heart size={22} />
                 </div>
                 <div className="kpi-info">
-                  <span className="kpi-label">Total Donations Raised</span>
+                  <span className="kpi-label">Donations Raised</span>
                   <h3 className="kpi-value">₹{totalDonationSum.toLocaleString('en-IN')}</h3>
-                  <span className="kpi-subtext">Across {adminData?.donationRecords?.length || 0} Contributors</span>
+                  <span className="kpi-subtext">Across {adminData?.donationRecords?.length || 0} Donors</span>
                 </div>
               </div>
 
               <div className="admin-kpi-card blue-border">
                 <div className="kpi-icon-wrap blue">
-                  <Calendar size={24} />
+                  <Calendar size={22} />
                 </div>
                 <div className="kpi-info">
-                  <span className="kpi-label">Active & Planned Drives</span>
+                  <span className="kpi-label">Active Drives</span>
                   <h3 className="kpi-value">{adminData?.events?.length || 0}</h3>
-                  <span className="kpi-subtext">Next: Upcoming Drives</span>
+                  <span className="kpi-subtext">{adminData?.projects?.length || 0} Flagship Causes</span>
                 </div>
               </div>
 
               <div className="admin-kpi-card purple-border">
                 <div className="kpi-icon-wrap purple">
-                  <Mail size={24} />
+                  <Mail size={22} />
                 </div>
                 <div className="kpi-info">
-                  <span className="kpi-label">Helpline Inquiries</span>
+                  <span className="kpi-label">Inquiries</span>
                   <h3 className="kpi-value">{adminData?.contactMessages?.length || 0}</h3>
-                  <span className="kpi-subtext text-amber-700">{newInquiriesCount} Require Action</span>
+                  <span className="kpi-subtext text-amber-700 font-semibold">
+                    {newInquiriesCount} Require Action
+                  </span>
                 </div>
               </div>
             </div>
 
-            {/* Quick Actions & Recent Submissions Grid */}
-            <div className="admin-overview-grid mt-6">
-              {/* Left Column: Quick Actions & Live Stats summary */}
+            {/* Quick Actions & Recent Activity Feed */}
+            <div className="admin-overview-grid mt-4">
+              {/* Quick Actions */}
               <div className="admin-box">
                 <h3 className="admin-box-title">⚡ Quick Management Actions</h3>
                 <div className="admin-quick-actions-list">
                   <button
                     type="button"
-                    onClick={() => setActiveTab('cms')}
+                    onClick={() => setActiveTab('volunteers')}
                     className="admin-action-tile"
                   >
-                    <Globe size={20} className="text-amber-700" />
+                    <Users size={20} className="text-amber-700" />
                     <div>
-                      <strong>Edit Website Content & Details</strong>
-                      <p>Update hero, about text, 4 pillars, helpline contact, and logo charter</p>
-                    </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab('gallery')}
-                    className="admin-action-tile"
-                  >
-                    <ImageIcon size={20} className="text-emerald-700" />
-                    <div>
-                      <strong>Manage Photo Gallery</strong>
-                      <p>Upload new event photos, edit titles, and organize categories</p>
+                      <strong>Manage Volunteers</strong>
+                      <p>Review new student registrations and assign domains</p>
                     </div>
                   </button>
 
@@ -2287,10 +1372,22 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     onClick={() => setActiveTab('events')}
                     className="admin-action-tile"
                   >
-                    <PlusCircle size={20} className="text-amber-600" />
+                    <PlusCircle size={20} className="text-emerald-700" />
                     <div>
-                      <strong>Schedule New Social Drive</strong>
-                      <p>Publish an upcoming beach clean-up, health camp or tree planting</p>
+                      <strong>Schedule a Drive</strong>
+                      <p>Publish upcoming community, health, or clean-up drives</p>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('cms')}
+                    className="admin-action-tile"
+                  >
+                    <Globe size={20} className="text-blue-700" />
+                    <div>
+                      <strong>Update Website CMS</strong>
+                      <p>Edit hero texts, about story, contact helpline, and pillars</p>
                     </div>
                   </button>
 
@@ -2301,18 +1398,18 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   >
                     <FileSpreadsheet size={20} className="text-emerald-600" />
                     <div>
-                      <strong>Export Volunteers Registry (.CSV)</strong>
-                      <p>Download full student roster for NAAC/College accreditation</p>
+                      <strong>Export Volunteer CSV</strong>
+                      <p>Download full roster for NAAC/College accreditation</p>
                     </div>
                   </button>
                 </div>
               </div>
 
-              {/* Right Column: Recent Activity Feed */}
+              {/* Recent Activity Feed */}
               <div className="admin-box">
                 <h3 className="admin-box-title">🕒 Recent Submissions Feed</h3>
                 <div className="admin-activity-stream">
-                  {adminData?.volunteerApplications?.slice(0, 4).map((v) => (
+                  {(adminData?.volunteerApplications || []).slice(0, 3).map((v) => (
                     <div key={v.id} className="activity-item">
                       <div className="activity-icon-badge">
                         <Users size={16} />
@@ -2322,7 +1419,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                           <strong>{v.fullName}</strong>
                           <span className="activity-time">{v.department || v.roleType}</span>
                         </div>
-                        <p>Joined as <b>{v.roleType}</b> • Blood Group: <b>{v.bloodGroup || 'N/A'}</b></p>
+                        <p>{v.roleType} • Blood Group: {v.bloodGroup || 'O+'}</p>
                         <span className={`status-chip ${v.status.toLowerCase().includes('approved') ? 'green' : 'amber'}`}>
                           {v.status}
                         </span>
@@ -2330,7 +1427,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     </div>
                   ))}
 
-                  {adminData?.donationRecords?.slice(0, 2).map((d) => (
+                  {(adminData?.donationRecords || []).slice(0, 2).map((d) => (
                     <div key={d.receiptNo} className="activity-item">
                       <div className="activity-icon-badge green">
                         <Heart size={16} />
@@ -2340,7 +1437,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                           <strong>{d.donorName}</strong>
                           <span className="activity-time">₹{d.amount.toLocaleString('en-IN')}</span>
                         </div>
-                        <p>Contributed to <i>{d.cause}</i> • 80G Receipt #{d.receiptNo}</p>
+                        <p>Contributed to <i>{d.cause}</i> • 80G #{d.receiptNo}</p>
                       </div>
                     </div>
                   ))}
@@ -2350,7 +1447,9 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           </div>
         )}
 
-        {/* Tab 2: VOLUNTEERS */}
+        {/* ==============================================================
+            TAB: VOLUNTEERS
+           ============================================================== */}
         {activeTab === 'volunteers' && (
           <div className="admin-content-view">
             <div className="admin-toolbar">
@@ -2358,7 +1457,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 <Search size={18} className="text-stone-400" />
                 <input
                   type="text"
-                  placeholder="Search by Name, Roll No, Dept, Blood Group, Phone..."
+                  placeholder="Search by Name, Dept, Blood Group, Phone..."
                   value={volunteerSearch}
                   onChange={(e) => setVolunteerSearch(e.target.value)}
                   className="admin-search-input"
@@ -2372,7 +1471,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   className="admin-select"
                 >
                   <option value="All">All Departments</option>
-                  <option value="Computer Science">Computer Science & Eng</option>
+                  <option value="Computer Science">Computer Science</option>
                   <option value="Information Tech">Information Tech</option>
                   <option value="AI & Data">AI & Data Science</option>
                   <option value="Electronics">Electronics (ECE)</option>
@@ -2410,19 +1509,19 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   <tr>
                     <th>Ref ID</th>
                     <th>Volunteer Name</th>
-                    <th>Profile & Background</th>
-                    <th>Blood Group</th>
-                    <th>Phone / WhatsApp</th>
-                    <th>Domain & Skills</th>
+                    <th>Profile & Dept</th>
+                    <th>Blood</th>
+                    <th>Contact</th>
+                    <th>Domain</th>
                     <th>Status</th>
-                    <th>Actions</th>
+                    <th className="text-center">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredVolunteers.length === 0 ? (
                     <tr>
                       <td colSpan={8} className="text-center py-8 text-stone-500">
-                        No volunteer records matching your filters.
+                        No volunteer records matching current filter.
                       </td>
                     </tr>
                   ) : (
@@ -2434,10 +1533,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                         <td>
                           <div className="font-bold text-stone-900">{vol.fullName}</div>
                           <div className="text-xs text-stone-500">{vol.email}</div>
-                          <span className="text-xs text-amber-700 font-semibold">{vol.roleType}</span>
+                          <span className="text-xs text-amber-800 font-semibold">{vol.roleType}</span>
                         </td>
                         <td>
-                          <div className="text-xs font-bold text-stone-800">{vol.occupation || 'Volunteer'}</div>
+                          <div className="text-xs font-bold text-stone-800">{vol.occupation || 'Student'}</div>
                           <div className="text-xs text-stone-500">{vol.department || vol.city || 'General Citizen'}</div>
                         </td>
                         <td>
@@ -2449,7 +1548,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                             href={`https://wa.me/${vol.phone.replace(/[^0-9]/g, '')}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs text-emerald-600 hover:underline flex items-center gap-1 mt-1"
+                            className="text-xs text-emerald-600 hover:underline flex items-center gap-1 mt-1 font-semibold"
                           >
                             <Phone size={11} /> WhatsApp
                           </a>
@@ -2472,12 +1571,12 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                           </span>
                         </td>
                         <td>
-                          <div className="admin-action-row">
+                          <div className="admin-action-row justify-center">
                             <button
                               type="button"
                               onClick={() => setSelectedVolunteer(vol)}
                               className="admin-icon-btn blue"
-                              title="View Full Profile"
+                              title="View Dossier"
                             >
                               <Eye size={15} />
                             </button>
@@ -2486,7 +1585,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                                 type="button"
                                 onClick={() => handleUpdateVolunteerStatus(vol.id, 'Approved')}
                                 className="admin-icon-btn green"
-                                title="Approve Volunteer"
+                                title="Approve"
                               >
                                 <CheckCircle2 size={15} />
                               </button>
@@ -2496,7 +1595,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                                 type="button"
                                 onClick={() => handleUpdateVolunteerStatus(vol.id, 'Rejected')}
                                 className="admin-icon-btn amber"
-                                title="Reject Application"
+                                title="Reject"
                               >
                                 <XCircle size={15} />
                               </button>
@@ -2520,7 +1619,9 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           </div>
         )}
 
-        {/* Tab 3: DONATIONS & 80G */}
+        {/* ==============================================================
+            TAB: DONATIONS & 80G
+           ============================================================== */}
         {activeTab === 'donations' && (
           <div className="admin-content-view">
             <div className="admin-toolbar">
@@ -2528,7 +1629,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 <Search size={18} className="text-stone-400" />
                 <input
                   type="text"
-                  placeholder="Search by Donor Name, 80G Receipt No, PAN, Cause..."
+                  placeholder="Search by Donor, Receipt No, PAN, Cause..."
                   value={donationSearch}
                   onChange={(e) => setDonationSearch(e.target.value)}
                   className="admin-search-input"
@@ -2547,7 +1648,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   className="btn-outline btn-admin-top"
                 >
                   <Download size={15} />
-                  <span>Export 80G Ledger (.CSV)</span>
+                  <span>Export 80G CSV</span>
                 </button>
               </div>
             </div>
@@ -2556,14 +1657,14 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               <table className="admin-data-table">
                 <thead>
                   <tr>
-                    <th>80G Receipt No</th>
-                    <th>Donor Details</th>
-                    <th>Amount (INR)</th>
-                    <th>PAN Card No</th>
-                    <th>Cause Supported</th>
-                    <th>Payment Details</th>
+                    <th>Receipt No</th>
+                    <th>Donor Name</th>
+                    <th>Amount</th>
+                    <th>PAN Card</th>
+                    <th>Allocated Cause</th>
+                    <th>Payment Mode</th>
                     <th>Date</th>
-                    <th>Actions</th>
+                    <th className="text-center">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -2610,7 +1711,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                           </span>
                         </td>
                         <td>
-                          <div className="admin-action-row">
+                          <div className="admin-action-row justify-center">
                             <button
                               type="button"
                               onClick={() => setSelectedDonation(d)}
@@ -2623,7 +1724,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                               type="button"
                               onClick={() => handleDeleteDonation(d.receiptNo)}
                               className="admin-icon-btn red"
-                              title="Delete Record"
+                              title="Void Record"
                             >
                               <Trash2 size={15} />
                             </button>
@@ -2638,29 +1739,50 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           </div>
         )}
 
-        {/* Tab 4: EVENTS & DRIVES */}
+        {/* ==============================================================
+            TAB: DRIVES & EVENTS
+           ============================================================== */}
         {activeTab === 'events' && (
           <div className="admin-content-view">
-            <div className="admin-two-col-layout">
-              {/* Left Column: Create Event Form */}
-              <div className="admin-box">
-                <h3 className="admin-box-title">📅 Schedule New Social Drive</h3>
-                <form onSubmit={handleAddEvent} className="admin-form-compact">
-                  <div className="form-group">
-                    <label className="input-sublabel">Event / Drive Title *</label>
+            {/* Header + Add Toggle Button */}
+            <div className="admin-section-header-bar">
+              <div>
+                <h3 className="admin-section-title">Published Social Drives ({adminData?.events?.length || 0})</h3>
+                <p className="admin-section-subtitle">Manage upcoming community service camps and outreach drives</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAddEvent(!showAddEvent)}
+                className="btn-primary"
+              >
+                {showAddEvent ? <ChevronUp size={16} /> : <PlusCircle size={16} />}
+                <span>{showAddEvent ? 'Close Form' : '+ Schedule New Drive'}</span>
+              </button>
+            </div>
+
+            {/* Expandable Add Event Form */}
+            {showAddEvent && (
+              <div className="admin-box mb-6 border-amber-300 bg-amber-50/30">
+                <h4 className="font-bold text-amber-950 mb-4 flex items-center gap-2">
+                  <PlusCircle size={18} className="text-amber-700" />
+                  <span>Create & Publish New Social Drive</span>
+                </h4>
+                <form onSubmit={handleAddEvent}>
+                  <div className="form-group mb-3">
+                    <label className="input-sublabel">Drive Title *</label>
                     <input
                       type="text"
                       required
-                      placeholder="e.g. Mega Beach Clean-up Drive: Mission Marina"
+                      placeholder="e.g. Miyawaki Urban Afforestation Drive"
                       value={eventTitle}
                       onChange={(e) => setEventTitle(e.target.value)}
                       className="form-input"
                     />
                   </div>
 
-                  <div className="form-row-2">
+                  <div className="form-row-3 mb-3">
                     <div>
-                      <label className="input-sublabel">Date *</label>
+                      <label className="input-sublabel">Drive Date *</label>
                       <input
                         type="date"
                         required
@@ -2673,165 +1795,180 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                       <label className="input-sublabel">Time Window</label>
                       <input
                         type="text"
-                        placeholder="07:30 AM - 11:30 AM"
+                        placeholder="07:30 AM - 12:30 PM"
                         value={eventTime}
                         onChange={(e) => setEventTime(e.target.value)}
                         className="form-input"
                       />
                     </div>
-                  </div>
-
-                  <div className="form-row-2 mt-3">
                     <div>
-                      <label className="input-sublabel">Category / Domain</label>
+                      <label className="input-sublabel">Category</label>
                       <select
                         value={eventCategory}
                         onChange={(e) => setEventCategory(e.target.value)}
                         className="form-input"
                       >
-                        <option value="Environment">Environment & Plantation</option>
-                        <option value="Healthcare">Healthcare & Blood Camp</option>
-                        <option value="Education">Education & School Tutoring</option>
-                        <option value="Relief">Relief & Food Drive</option>
-                        <option value="Culture & Youth">Culture & Youth Workshop</option>
+                        <option value="Environment">Environment & Greenery</option>
+                        <option value="Healthcare">Healthcare & Blood Aid</option>
+                        <option value="Education">Education & Coaching</option>
+                        <option value="Relief">Relief & Hunger</option>
+                        <option value="Culture & Youth">Culture & Youth</option>
                       </select>
                     </div>
+                  </div>
+
+                  <div className="form-row-3 mb-3">
                     <div>
-                      <label className="input-sublabel">Volunteer Slots</label>
+                      <label className="input-sublabel">Venue / Ground Location</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Ennore Coastline, Chennai"
+                        value={eventLocation}
+                        onChange={(e) => setEventLocation(e.target.value)}
+                        className="form-input"
+                      />
+                    </div>
+                    <div>
+                      <label className="input-sublabel">Total Volunteer Slots</label>
                       <input
                         type="number"
-                        placeholder="100"
+                        placeholder="120"
                         value={eventSlots}
                         onChange={(e) => setEventSlots(e.target.value)}
                         className="form-input"
                       />
                     </div>
+                    <div>
+                      <label className="input-sublabel">Coordinator Name</label>
+                      <input
+                        type="text"
+                        placeholder="RCE Student Coordinator"
+                        value={eventLeader}
+                        onChange={(e) => setEventLeader(e.target.value)}
+                        className="form-input"
+                      />
+                    </div>
                   </div>
 
-                  <div className="form-group mt-3">
-                    <label className="input-sublabel">Location / Landmark Venue</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Lakeview Biodiversity Park, Sector 4"
-                      value={eventLocation}
-                      onChange={(e) => setEventLocation(e.target.value)}
-                      className="form-input"
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label className="input-sublabel">Student Lead Coordinator</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Arunachalam (3rd Year CSE)"
-                      value={eventLeader}
-                      onChange={(e) => setEventLeader(e.target.value)}
-                      className="form-input"
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label className="input-sublabel">Drive Instructions & Objectives</label>
+                  <div className="form-group mb-4">
+                    <label className="input-sublabel">Description & Instructions</label>
                     <textarea
-                      rows={3}
-                      placeholder="Describe the drive goals, what volunteers should bring, assembly point..."
+                      rows={2}
+                      placeholder="Brief what volunteers should bring, exact meeting spot, and goals..."
                       value={eventDesc}
                       onChange={(e) => setEventDesc(e.target.value)}
                       className="form-input textarea"
                     ></textarea>
                   </div>
 
-                  <button type="submit" className="btn-primary w-full mt-2">
-                    <PlusCircle size={17} />
-                    <span>Publish Drive to Website</span>
-                  </button>
+                  <div className="flex justify-end gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowAddEvent(false)}
+                      className="btn-outline"
+                    >
+                      Cancel
+                    </button>
+                    <button type="submit" className="btn-primary">
+                      <Save size={16} />
+                      <span>Publish Drive</span>
+                    </button>
+                  </div>
                 </form>
               </div>
+            )}
 
-              {/* Right Column: Live Drives List with EDIT capability */}
-              <div className="admin-box">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="admin-box-title">🚀 Active & Published Drives ({adminData?.events?.length || 0})</h3>
-                  <div className="text-xs text-stone-500">Live on Homepage</div>
-                </div>
+            {/* Drives Cards Grid */}
+            <div className="admin-cards-grid">
+              {(adminData?.events || []).map((ev) => (
+                <div key={ev.id} className="admin-event-card">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="event-cat-chip">{ev.category}</span>
+                    <span className={`status-chip ${ev.status === 'Completed' ? 'green' : 'amber'}`}>
+                      {ev.status || 'Upcoming'}
+                    </span>
+                  </div>
 
-                <div className="admin-events-list">
-                  {adminData?.events?.map((ev) => (
-                    <div key={ev.id} className="admin-event-card">
-                      <div className="admin-event-card-header">
-                        <div>
-                          <span className="event-cat-chip">{ev.category}</span>
-                          <h4 className="admin-event-card-title">{ev.title}</h4>
-                        </div>
-                        <div className="flex gap-1">
-                          <button
-                            type="button"
-                            onClick={() => setEditingEvent(ev)}
-                            className="admin-icon-btn blue"
-                            title="Edit Event Details"
-                          >
-                            <Edit3 size={15} />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteEvent(ev.id)}
-                            className="admin-icon-btn red"
-                            title="Delete Event"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </div>
+                  <h4 className="admin-event-card-title">{ev.title}</h4>
 
-                      <div className="admin-event-meta-grid">
-                        <div className="meta-pill">
-                          <Calendar size={13} />
-                          <span>{ev.date} • {ev.time}</span>
-                        </div>
-                        <div className="meta-pill">
-                          <MapPin size={13} />
-                          <span className="truncate">{ev.location}</span>
-                        </div>
-                        <div className="meta-pill">
-                          <Users size={13} />
-                          <span>Slots: {ev.slotsBooked || 0} / {ev.slotsTotal || 100}</span>
-                        </div>
-                        <div className="meta-pill">
-                          <Award size={13} />
-                          <span>Lead: {ev.leader}</span>
-                        </div>
-                      </div>
+                  <div className="admin-event-meta-grid">
+                    <span className="meta-pill">📅 {ev.date}</span>
+                    <span className="meta-pill">⏰ {ev.time}</span>
+                    <span className="meta-pill">📍 {ev.location}</span>
+                    <span className="meta-pill">👥 {ev.slotsBooked || 0} / {ev.slotsTotal} slots</span>
+                  </div>
 
-                      <p className="admin-event-desc">{ev.description}</p>
+                  <p className="admin-event-desc line-clamp-2">{ev.description}</p>
+
+                  <div className="flex items-center justify-between mt-4 pt-3 border-t border-stone-200">
+                    <span className="text-xs text-stone-500">Lead: {ev.leader}</span>
+                    <div className="flex gap-1">
+                      <button
+                        type="button"
+                        onClick={() => setEditingEvent(ev)}
+                        className="admin-icon-btn blue"
+                        title="Edit Drive"
+                      >
+                        <Edit3 size={15} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteEvent(ev.id)}
+                        className="admin-icon-btn red"
+                        title="Delete Drive"
+                      >
+                        <Trash2 size={15} />
+                      </button>
                     </div>
-                  ))}
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
         )}
 
-        {/* Tab 5: PROJECTS */}
+        {/* ==============================================================
+            TAB: PROJECTS & CAUSES
+           ============================================================== */}
         {activeTab === 'projects' && (
           <div className="admin-content-view">
-            <div className="admin-two-col-layout">
-              {/* Left Column: Create Project Form */}
-              <div className="admin-box">
-                <h3 className="admin-box-title">🚀 Launch New Social Project</h3>
-                <form onSubmit={handleAddProject} className="admin-form-compact">
-                  <div className="form-group">
+            {/* Header + Add Toggle Button */}
+            <div className="admin-section-header-bar">
+              <div>
+                <h3 className="admin-section-title">Flagship Initiatives ({adminData?.projects?.length || 0})</h3>
+                <p className="admin-section-subtitle">Long-term social causes and community development projects</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAddProject(!showAddProject)}
+                className="btn-primary"
+              >
+                {showAddProject ? <ChevronUp size={16} /> : <PlusCircle size={16} />}
+                <span>{showAddProject ? 'Close Form' : '+ Launch New Project'}</span>
+              </button>
+            </div>
+
+            {/* Expandable Add Project Form */}
+            {showAddProject && (
+              <div className="admin-box mb-6 border-amber-300 bg-amber-50/30">
+                <h4 className="font-bold text-amber-950 mb-4 flex items-center gap-2">
+                  <PlusCircle size={18} className="text-amber-700" />
+                  <span>Launch New Flagship Social Project</span>
+                </h4>
+                <form onSubmit={handleAddProject}>
+                  <div className="form-group mb-3">
                     <label className="input-sublabel">Project Title *</label>
                     <input
                       type="text"
                       required
-                      placeholder="e.g. Vidhya Connect: Rural School Tutoring"
+                      placeholder="e.g. Vidhya Connect: Rural School Mentorship"
                       value={projTitle}
                       onChange={(e) => setProjTitle(e.target.value)}
                       className="form-input"
                     />
                   </div>
 
-                  <div className="form-row-2">
+                  <div className="form-row-3 mb-3">
                     <div>
                       <label className="input-sublabel">Category</label>
                       <select
@@ -2844,11 +1981,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                         <option value="Healthcare">Healthcare</option>
                         <option value="Relief">Relief & Hunger</option>
                         <option value="Culture & Youth">Culture & Youth</option>
-                        <option value="Empowerment">Women Empowerment</option>
                       </select>
                     </div>
                     <div>
-                      <label className="input-sublabel">Target Goal (₹)</label>
+                      <label className="input-sublabel">Funding Goal (₹)</label>
                       <input
                         type="number"
                         placeholder="300000"
@@ -2857,11 +1993,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                         className="form-input"
                       />
                     </div>
-                  </div>
-
-                  <div className="form-row-2 mt-3">
                     <div>
-                      <label className="input-sublabel">Funds Already Raised (₹)</label>
+                      <label className="input-sublabel">Funds Raised So Far (₹)</label>
                       <input
                         type="number"
                         placeholder="0"
@@ -2870,30 +2003,32 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                         className="form-input"
                       />
                     </div>
+                  </div>
+
+                  <div className="form-row-2 mb-3">
                     <div>
-                      <label className="input-sublabel">Beneficiaries Count</label>
+                      <label className="input-sublabel">Beneficiaries Tag</label>
                       <input
                         type="text"
-                        placeholder="1,500+ Students"
+                        placeholder="1,200+ Students"
                         value={projBeneficiaries}
                         onChange={(e) => setProjBeneficiaries(e.target.value)}
                         className="form-input"
                       />
                     </div>
+                    <div>
+                      <label className="input-sublabel">Short Tagline</label>
+                      <input
+                        type="text"
+                        placeholder="Empowering rural children through weekly tutoring & kits"
+                        value={projTagline}
+                        onChange={(e) => setProjTagline(e.target.value)}
+                        className="form-input"
+                      />
+                    </div>
                   </div>
 
-                  <div className="form-group mt-3">
-                    <label className="input-sublabel">Tagline / Short Hook</label>
-                    <input
-                      type="text"
-                      placeholder="Empowering 1,500+ rural students with weekend tutoring & kits"
-                      value={projTagline}
-                      onChange={(e) => setProjTagline(e.target.value)}
-                      className="form-input"
-                    />
-                  </div>
-
-                  <div className="form-group">
+                  <div className="form-group mb-3">
                     <label className="input-sublabel">Banner Image URL</label>
                     <input
                       type="url"
@@ -2904,88 +2039,97 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     />
                   </div>
 
-                  <div className="form-group">
-                    <label className="input-sublabel">Key Highlights (Comma-separated)</label>
+                  <div className="form-group mb-3">
+                    <label className="input-sublabel">Highlights (comma separated)</label>
                     <input
                       type="text"
-                      placeholder="Free STEM kits, Mentorship, High school scholarships"
+                      placeholder="STEM kits, Weekend classes, Mentorship"
                       value={projHighlights}
                       onChange={(e) => setProjHighlights(e.target.value)}
                       className="form-input"
                     />
                   </div>
 
-                  <div className="form-group">
-                    <label className="input-sublabel">Detailed Project Description</label>
+                  <div className="form-group mb-4">
+                    <label className="input-sublabel">Full Description</label>
                     <textarea
-                      rows={3}
-                      placeholder="Provide quality learning kits, mentorship, and weekend coaching..."
+                      rows={2}
+                      placeholder="Detailed mission, community impact, and volunteer role..."
                       value={projDesc}
                       onChange={(e) => setProjDesc(e.target.value)}
                       className="form-input textarea"
                     ></textarea>
                   </div>
 
-                  <button type="submit" className="btn-primary w-full mt-2">
-                    <PlusCircle size={17} />
-                    <span>Launch & Add to Website</span>
-                  </button>
+                  <div className="flex justify-end gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowAddProject(false)}
+                      className="btn-outline"
+                    >
+                      Cancel
+                    </button>
+                    <button type="submit" className="btn-primary">
+                      <Save size={16} />
+                      <span>Launch Project</span>
+                    </button>
+                  </div>
                 </form>
               </div>
+            )}
 
-              {/* Right Column: Existing Projects with EDIT capability */}
-              <div className="admin-box">
-                <h3 className="admin-box-title">Flagship Initiatives ({adminData?.projects?.length || 0})</h3>
-                <div className="admin-projects-grid">
-                  {adminData?.projects?.map((proj) => {
-                    const percent = Math.min(100, Math.round(((proj.raised || 0) / (proj.goal || 1)) * 100));
-                    return (
-                      <div key={proj.id} className="admin-project-card">
-                        <img src={proj.image} alt={proj.title} className="admin-project-thumb" />
-                        <div className="admin-project-body">
-                          <div className="flex items-center justify-between">
-                            <span className="event-cat-chip">{proj.category}</span>
-                            <div className="flex gap-1">
-                              <button
-                                type="button"
-                                onClick={() => setEditingProject(proj)}
-                                className="admin-icon-btn blue"
-                                title="Edit Project Details"
-                              >
-                                <Edit3 size={15} />
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => handleDeleteProject(proj.id)}
-                                className="admin-icon-btn red"
-                                title="Delete Project"
-                              >
-                                <Trash2 size={15} />
-                              </button>
-                            </div>
-                          </div>
-                          <h4 className="admin-project-title">{proj.title}</h4>
-                          <p className="admin-project-tagline">{proj.tagline}</p>
-
-                          <div className="admin-project-fund-bar">
-                            <div className="fund-bar-fill" style={{ width: `${percent}%` }}></div>
-                          </div>
-
-                          <div className="admin-project-stats-row">
-                            <span>₹{(proj.raised || 0).toLocaleString('en-IN')} raised ({percent}%)</span>
-                            <span>Goal: ₹{(proj.goal || 0).toLocaleString('en-IN')}</span>
-                          </div>
+            {/* Projects Grid */}
+            <div className="admin-cards-grid">
+              {(adminData?.projects || []).map((proj) => {
+                const percent = Math.min(100, Math.round(((proj.raised || 0) / (proj.goal || 1)) * 100));
+                return (
+                  <div key={proj.id} className="admin-project-card">
+                    <img src={proj.image} alt={proj.title} className="admin-project-thumb" />
+                    <div className="admin-project-body">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="event-cat-chip">{proj.category}</span>
+                        <div className="flex gap-1">
+                          <button
+                            type="button"
+                            onClick={() => setEditingProject(proj)}
+                            className="admin-icon-btn blue"
+                            title="Edit Project"
+                          >
+                            <Edit3 size={15} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteProject(proj.id)}
+                            className="admin-icon-btn red"
+                            title="Delete Project"
+                          >
+                            <Trash2 size={15} />
+                          </button>
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-              </div>
+
+                      <h4 className="admin-project-title">{proj.title}</h4>
+                      <p className="admin-project-tagline">{proj.tagline}</p>
+
+                      <div className="admin-project-fund-bar">
+                        <div className="fund-bar-fill" style={{ width: `${percent}%` }}></div>
+                      </div>
+
+                      <div className="admin-project-stats-row">
+                        <span>₹{(proj.raised || 0).toLocaleString('en-IN')} ({percent}%)</span>
+                        <span>Goal: ₹{(proj.goal || 0).toLocaleString('en-IN')}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
 
-        {/* Tab 6: INQUIRIES & HELPLINE */}
+        {/* ==============================================================
+            TAB: INQUIRIES & HELPLINE
+           ============================================================== */}
         {activeTab === 'inquiries' && (
           <div className="admin-content-view">
             <div className="admin-card-table-wrap">
@@ -2998,14 +2142,14 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     <th>Message Details</th>
                     <th>Priority</th>
                     <th>Status</th>
-                    <th>Actions</th>
+                    <th className="text-center">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {(adminData?.contactMessages || []).length === 0 ? (
                     <tr>
                       <td colSpan={7} className="text-center py-8 text-stone-500">
-                        No inquiries received yet.
+                        No inquiries or helpline messages.
                       </td>
                     </tr>
                   ) : (
@@ -3017,14 +2161,14 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                         <td>
                           <div className="font-bold text-stone-900">{msg.name}</div>
                           <div className="text-xs text-stone-500">{msg.email}</div>
-                          <div className="text-xs text-stone-500">{msg.phone || 'Phone not provided'}</div>
+                          <div className="text-xs text-stone-500">{msg.phone || 'Phone not given'}</div>
                         </td>
                         <td>
                           <div className="font-semibold text-stone-800 text-sm">{msg.subject}</div>
-                          <span className="text-xs text-amber-700">{msg.category || 'General'}</span>
+                          <span className="text-xs text-amber-800">{msg.category || 'General'}</span>
                         </td>
                         <td>
-                          <p className="text-xs text-stone-600 line-clamp-3 max-w-sm">{msg.message}</p>
+                          <p className="text-xs text-stone-600 line-clamp-2 max-w-sm">{msg.message}</p>
                         </td>
                         <td>
                           <span className={`priority-chip ${msg.priority?.toLowerCase() === 'high' ? 'high' : 'normal'}`}>
@@ -3037,11 +2181,11 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                           </span>
                         </td>
                         <td>
-                          <div className="admin-action-row">
+                          <div className="admin-action-row justify-center">
                             <a
                               href={`mailto:${msg.email}?subject=Re: ${encodeURIComponent(msg.subject)}`}
                               className="admin-icon-btn blue"
-                              title="Send Email Reply"
+                              title="Email Reply"
                             >
                               <Mail size={15} />
                             </a>
@@ -3059,7 +2203,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                               type="button"
                               onClick={() => handleDeleteInquiry(msg.id)}
                               className="admin-icon-btn red"
-                              title="Delete Record"
+                              title="Delete Message"
                             >
                               <Trash2 size={15} />
                             </button>
@@ -3074,141 +2218,1162 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           </div>
         )}
 
-        {/* Tab 7: NEWSLETTERS */}
-        {activeTab === 'newsletters' && (
+        {/* ==============================================================
+            TAB: WEBSITE CONTENT (CMS)
+           ============================================================== */}
+        {activeTab === 'cms' && (
           <div className="admin-content-view">
-            <div className="admin-box max-w-2xl">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="admin-box-title">Newsletter Subscribers List</h3>
-                  <p className="text-xs text-stone-500">Audience receiving monthly impact digests and drive invitations</p>
-                </div>
-                <div className="text-sm font-bold text-amber-900 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
-                  {adminData?.newsletterSubscribers?.length || 0} Emails
-                </div>
-              </div>
+            {/* Sub-Nav Pills */}
+            <div className="admin-cms-subnav">
+              <button
+                type="button"
+                className={`cms-subnav-btn ${cmsSubTab === 'hero' ? 'active' : ''}`}
+                onClick={() => setCmsSubTab('hero')}
+              >
+                <span>🏷️ Hero Banner</span>
+              </button>
+              <button
+                type="button"
+                className={`cms-subnav-btn ${cmsSubTab === 'about' ? 'active' : ''}`}
+                onClick={() => setCmsSubTab('about')}
+              >
+                <span>📖 About Story</span>
+              </button>
+              <button
+                type="button"
+                className={`cms-subnav-btn ${cmsSubTab === 'pillars' ? 'active' : ''}`}
+                onClick={() => setCmsSubTab('pillars')}
+              >
+                <span>🏛️ 4 Pillars</span>
+              </button>
+              <button
+                type="button"
+                className={`cms-subnav-btn ${cmsSubTab === 'contact' ? 'active' : ''}`}
+                onClick={() => setCmsSubTab('contact')}
+              >
+                <span>📞 Contact & Helpline</span>
+              </button>
+              <button
+                type="button"
+                className={`cms-subnav-btn ${cmsSubTab === 'brand' ? 'active' : ''}`}
+                onClick={() => setCmsSubTab('brand')}
+              >
+                <span>🛡️ Brand & Legal</span>
+              </button>
+            </div>
 
-              <div className="admin-newsletter-list-box">
-                {adminData?.newsletterSubscribers?.map((email, idx) => (
-                  <div key={idx} className="admin-newsletter-row">
-                    <span className="font-mono text-sm text-stone-800">{email}</span>
-                    <span className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
-                      <CheckCircle2 size={12} /> Active
-                    </span>
+            {/* CMS Form Card */}
+            <div className="admin-cms-card">
+              <form onSubmit={handleSaveCmsContent}>
+                {/* 1. HERO SUBTAB */}
+                {cmsSubTab === 'hero' && (
+                  <div>
+                    <div className="cms-section-header">
+                      <div>
+                        <h3>Hero Section Banner</h3>
+                        <p>Change main headline, tagline, description, and hero background</p>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={handleResetCmsToDefaults}
+                          className="btn-outline text-xs"
+                        >
+                          <RotateCcw size={14} /> Reset
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={isSavingCms}
+                          className="btn-primary text-xs"
+                        >
+                          <Save size={14} /> {isSavingCms ? 'Saving...' : 'Save Changes'}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="form-group mb-3">
+                      <label className="input-sublabel">Top Pill Tag Text</label>
+                      <input
+                        type="text"
+                        value={heroTag}
+                        onChange={(e) => setHeroTag(e.target.value)}
+                        className="form-input"
+                        placeholder="A People-Driven Social Movement"
+                      />
+                    </div>
+
+                    <div className="form-row-3 mb-3">
+                      <div>
+                        <label className="input-sublabel">Headline Prefix</label>
+                        <input
+                          type="text"
+                          value={heroTitlePrefix}
+                          onChange={(e) => setHeroTitlePrefix(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                      <div>
+                        <label className="input-sublabel">Headline Gradient Text</label>
+                        <input
+                          type="text"
+                          value={heroTitleGradient}
+                          onChange={(e) => setHeroTitleGradient(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                      <div>
+                        <label className="input-sublabel">Headline Suffix</label>
+                        <input
+                          type="text"
+                          value={heroTitleSuffix}
+                          onChange={(e) => setHeroTitleSuffix(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-group mb-3">
+                      <label className="input-sublabel">Mission Description</label>
+                      <textarea
+                        rows={3}
+                        value={heroDesc}
+                        onChange={(e) => setHeroDesc(e.target.value)}
+                        className="form-input textarea"
+                      ></textarea>
+                    </div>
+
+                    <div className="form-row-2 mb-3">
+                      <div>
+                        <label className="input-sublabel">Primary CTA Button Label</label>
+                        <input
+                          type="text"
+                          value={heroPrimaryCta}
+                          onChange={(e) => setHeroPrimaryCta(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                      <div>
+                        <label className="input-sublabel">Secondary CTA Button Label</label>
+                        <input
+                          type="text"
+                          value={heroSecondaryCta}
+                          onChange={(e) => setHeroSecondaryCta(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-row-2 mb-3">
+                      <div>
+                        <label className="input-sublabel">Hero Image URL</label>
+                        <input
+                          type="url"
+                          value={heroImage}
+                          onChange={(e) => setHeroImage(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                      <div>
+                        <label className="input-sublabel">Trust Badge Tagline</label>
+                        <input
+                          type="text"
+                          value={heroTagline}
+                          onChange={(e) => setHeroTagline(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                    </div>
                   </div>
-                ))}
-              </div>
+                )}
+
+                {/* 2. ABOUT US SUBTAB */}
+                {cmsSubTab === 'about' && (
+                  <div>
+                    <div className="cms-section-header">
+                      <div>
+                        <h3>About Us & Movement Story</h3>
+                        <p>Customize the narrative, checklist, and experience counters</p>
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={isSavingCms}
+                        className="btn-primary text-xs"
+                      >
+                        <Save size={14} /> {isSavingCms ? 'Saving...' : 'Save Changes'}
+                      </button>
+                    </div>
+
+                    <div className="form-row-2 mb-3">
+                      <div>
+                        <label className="input-sublabel">Section Tag</label>
+                        <input
+                          type="text"
+                          value={aboutTag}
+                          onChange={(e) => setAboutTag(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                      <div>
+                        <label className="input-sublabel">Main Heading</label>
+                        <input
+                          type="text"
+                          value={aboutTitle}
+                          onChange={(e) => setAboutTitle(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-group mb-3">
+                      <label className="input-sublabel">Section Subtitle</label>
+                      <input
+                        type="text"
+                        value={aboutSubtitle}
+                        onChange={(e) => setAboutSubtitle(e.target.value)}
+                        className="form-input"
+                      />
+                    </div>
+
+                    <div className="form-group mb-3">
+                      <label className="input-sublabel">Story Heading</label>
+                      <input
+                        type="text"
+                        value={aboutStoryHeading}
+                        onChange={(e) => setAboutStoryHeading(e.target.value)}
+                        className="form-input"
+                      />
+                    </div>
+
+                    <div className="form-row-2 mb-3">
+                      <div>
+                        <label className="input-sublabel">Story Paragraph 1</label>
+                        <textarea
+                          rows={3}
+                          value={aboutStoryPara1}
+                          onChange={(e) => setAboutStoryPara1(e.target.value)}
+                          className="form-input textarea"
+                        ></textarea>
+                      </div>
+                      <div>
+                        <label className="input-sublabel">Story Paragraph 2</label>
+                        <textarea
+                          rows={3}
+                          value={aboutStoryPara2}
+                          onChange={(e) => setAboutStoryPara2(e.target.value)}
+                          className="form-input textarea"
+                        ></textarea>
+                      </div>
+                    </div>
+
+                    <div className="form-row-3 mb-3">
+                      <div>
+                        <label className="input-sublabel">Checklist Point 1</label>
+                        <input
+                          type="text"
+                          value={aboutChecklist1}
+                          onChange={(e) => setAboutChecklist1(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                      <div>
+                        <label className="input-sublabel">Checklist Point 2</label>
+                        <input
+                          type="text"
+                          value={aboutChecklist2}
+                          onChange={(e) => setAboutChecklist2(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                      <div>
+                        <label className="input-sublabel">Checklist Point 3</label>
+                        <input
+                          type="text"
+                          value={aboutChecklist3}
+                          onChange={(e) => setAboutChecklist3(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-row-3 mb-3">
+                      <div>
+                        <label className="input-sublabel">Years Active</label>
+                        <input
+                          type="text"
+                          value={aboutYears}
+                          onChange={(e) => setAboutYears(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                      <div>
+                        <label className="input-sublabel">Drives Experience Text</label>
+                        <input
+                          type="text"
+                          value={aboutDrives}
+                          onChange={(e) => setAboutDrives(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                      <div>
+                        <label className="input-sublabel">About Photo URL</label>
+                        <input
+                          type="url"
+                          value={aboutImage}
+                          onChange={(e) => setAboutImage(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. PILLARS SUBTAB */}
+                {cmsSubTab === 'pillars' && (
+                  <div>
+                    <div className="cms-section-header">
+                      <div>
+                        <h3>4 Core Pillars of Service</h3>
+                        <p>Adjust titles and descriptions for RCE Club's 4 cornerstone domains</p>
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={isSavingCms}
+                        className="btn-primary text-xs"
+                      >
+                        <Save size={14} /> {isSavingCms ? 'Saving...' : 'Save Changes'}
+                      </button>
+                    </div>
+
+                    <div className="form-group mb-4">
+                      <label className="input-sublabel">Section Title</label>
+                      <input
+                        type="text"
+                        value={aboutPillarsTitle}
+                        onChange={(e) => setAboutPillarsTitle(e.target.value)}
+                        className="form-input"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {pillarsList.map((pillar, idx) => (
+                        <div key={pillar.id || idx} className="p-4 rounded-xl border border-stone-200 bg-stone-50">
+                          <span className="text-xs font-bold text-amber-800 uppercase tracking-wider">Pillar #{idx + 1}</span>
+                          <div className="form-group mt-2">
+                            <label className="input-sublabel">Title</label>
+                            <input
+                              type="text"
+                              value={pillar.title}
+                              onChange={(e) => handlePillarChange(idx, 'title', e.target.value)}
+                              className="form-input"
+                            />
+                          </div>
+                          <div className="form-group mt-2">
+                            <label className="input-sublabel">Description</label>
+                            <textarea
+                              rows={2}
+                              value={pillar.description}
+                              onChange={(e) => handlePillarChange(idx, 'description', e.target.value)}
+                              className="form-input textarea"
+                            ></textarea>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. CONTACT SUBTAB */}
+                {cmsSubTab === 'contact' && (
+                  <div>
+                    <div className="cms-section-header">
+                      <div>
+                        <h3>Contact Desk & Helpline</h3>
+                        <p>Edit office location, phones, emails, working hours, and emergency helpline</p>
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={isSavingCms}
+                        className="btn-primary text-xs"
+                      >
+                        <Save size={14} /> {isSavingCms ? 'Saving...' : 'Save Changes'}
+                      </button>
+                    </div>
+
+                    <div className="form-group mb-3">
+                      <label className="input-sublabel">Office Address</label>
+                      <input
+                        type="text"
+                        value={contactAddress}
+                        onChange={(e) => setContactAddress(e.target.value)}
+                        className="form-input"
+                      />
+                    </div>
+
+                    <div className="form-row-2 mb-3">
+                      <div>
+                        <label className="input-sublabel">Helpline Phone(s)</label>
+                        <input
+                          type="text"
+                          value={contactPhone}
+                          onChange={(e) => setContactPhone(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                      <div>
+                        <label className="input-sublabel">Official Email</label>
+                        <input
+                          type="text"
+                          value={contactEmail}
+                          onChange={(e) => setContactEmail(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-row-2 mb-3">
+                      <div>
+                        <label className="input-sublabel">Operating Hours</label>
+                        <input
+                          type="text"
+                          value={contactHours}
+                          onChange={(e) => setContactHours(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                      <div>
+                        <label className="input-sublabel">24/7 Emergency Helpline</label>
+                        <input
+                          type="text"
+                          value={contactEmergency}
+                          onChange={(e) => setContactEmergency(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. BRAND SUBTAB */}
+                {cmsSubTab === 'brand' && (
+                  <div>
+                    <div className="cms-section-header">
+                      <div>
+                        <h3>Brand & Legal Charter</h3>
+                        <p>Change organization name, motto, mission statement, and trust registrations</p>
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={isSavingCms}
+                        className="btn-primary text-xs"
+                      >
+                        <Save size={14} /> {isSavingCms ? 'Saving...' : 'Save Changes'}
+                      </button>
+                    </div>
+
+                    <div className="form-row-2 mb-3">
+                      <div>
+                        <label className="input-sublabel">Organization Name</label>
+                        <input
+                          type="text"
+                          value={brandName}
+                          onChange={(e) => setBrandName(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                      <div>
+                        <label className="input-sublabel">Motto / Subtitle</label>
+                        <input
+                          type="text"
+                          value={brandSubtitle}
+                          onChange={(e) => setBrandSubtitle(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-group mb-3">
+                      <label className="input-sublabel">Footer Mission Statement</label>
+                      <textarea
+                        rows={2}
+                        value={brandMission}
+                        onChange={(e) => setBrandMission(e.target.value)}
+                        className="form-input textarea"
+                      ></textarea>
+                    </div>
+
+                    <div className="form-row-2 mb-3">
+                      <div>
+                        <label className="input-sublabel">Trust Registration No</label>
+                        <input
+                          type="text"
+                          value={brandTrustReg}
+                          onChange={(e) => setBrandTrustReg(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                      <div>
+                        <label className="input-sublabel">80G Income Tax Order</label>
+                        <input
+                          type="text"
+                          value={brand80G}
+                          onChange={(e) => setBrand80G(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-row-2 mb-3">
+                      <div>
+                        <label className="input-sublabel">12A Registration</label>
+                        <input
+                          type="text"
+                          value={brand12A}
+                          onChange={(e) => setBrand12A(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                      <div>
+                        <label className="input-sublabel">Trust PAN</label>
+                        <input
+                          type="text"
+                          value={brandPAN}
+                          onChange={(e) => setBrandPAN(e.target.value)}
+                          className="form-input"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="mt-6 pt-4 border-t border-stone-200 flex justify-end">
+                  <button
+                    type="submit"
+                    disabled={isSavingCms}
+                    className="btn-primary"
+                  >
+                    <CheckCircle2 size={16} />
+                    <span>{isSavingCms ? 'Saving Changes...' : 'Save & Publish All CMS Changes'}</span>
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         )}
 
-        {/* Tab 8: WEBSITE LIVE COUNTERS */}
+        {/* ==============================================================
+            TAB: LIVE COUNTERS
+           ============================================================== */}
         {activeTab === 'counters' && (
           <div className="admin-content-view">
-            <div className="admin-box max-w-2xl">
-              <h3 className="admin-box-title">📊 Live Website Stats Ribbon Manager</h3>
-              <p className="text-xs text-stone-500 mb-6">
-                Directly adjust the dynamic metric numbers displayed on the homepage stats ribbon.
-              </p>
+            <div className="admin-section-header-bar mb-4">
+              <div>
+                <h3 className="admin-section-title">Home Page Live Counters</h3>
+                <p className="admin-section-subtitle">Real-time stats displayed on the public landing page ribbon</p>
+              </div>
+            </div>
 
-              <form onSubmit={handleSaveCounters} className="admin-form-compact">
-                <div className="form-row-2">
-                  <div>
-                    <label className="input-sublabel">Total Lives Impacted</label>
+            <form onSubmit={handleSaveCounters} className="admin-box">
+              <div className="admin-counters-grid">
+                {counterFields.map((field, idx) => (
+                  <div key={idx} className="admin-counter-tile">
+                    <div className="counter-tile-header">
+                      {field.icon}
+                      <span className="counter-tile-label">{field.label}</span>
+                    </div>
                     <input
                       type="number"
                       required
-                      value={counterLives}
-                      onChange={(e) => setCounterLives(e.target.value)}
-                      className="form-input"
+                      value={field.val}
+                      onChange={(e) => field.setVal(e.target.value)}
+                      className="form-input counter-tile-input"
                     />
                   </div>
-                  <div>
-                    <label className="input-sublabel">Active Volunteers</label>
-                    <input
-                      type="number"
-                      required
-                      value={counterVolunteers}
-                      onChange={(e) => setCounterVolunteers(e.target.value)}
-                      className="form-input"
-                    />
-                  </div>
-                </div>
+                ))}
+              </div>
 
-                <div className="form-row-2 mt-3">
-                  <div>
-                    <label className="input-sublabel">Projects & Drives Completed</label>
-                    <input
-                      type="number"
-                      required
-                      value={counterProjects}
-                      onChange={(e) => setCounterProjects(e.target.value)}
-                      className="form-input"
-                    />
-                  </div>
-                  <div>
-                    <label className="input-sublabel">Miyawaki Trees Planted</label>
-                    <input
-                      type="number"
-                      required
-                      value={counterTrees}
-                      onChange={(e) => setCounterTrees(e.target.value)}
-                      className="form-input"
-                    />
-                  </div>
-                </div>
-
-                <div className="form-row-2 mt-3">
-                  <div>
-                    <label className="input-sublabel">Nutritious Meals Served</label>
-                    <input
-                      type="number"
-                      required
-                      value={counterMeals}
-                      onChange={(e) => setCounterMeals(e.target.value)}
-                      className="form-input"
-                    />
-                  </div>
-                  <div>
-                    <label className="input-sublabel">Medical & Eye Screening Camps</label>
-                    <input
-                      type="number"
-                      required
-                      value={counterCamps}
-                      onChange={(e) => setCounterCamps(e.target.value)}
-                      className="form-input"
-                    />
-                  </div>
-                </div>
-
-                <div className="form-row-2 mt-3">
-                  <div>
-                    <label className="input-sublabel">Cities Covered</label>
-                    <input
-                      type="number"
-                      required
-                      value={counterCities}
-                      onChange={(e) => setCounterCities(e.target.value)}
-                      className="form-input"
-                    />
-                  </div>
-                  <div>
-                    <label className="input-sublabel">Satisfaction Rate (%)</label>
-                    <input
-                      type="number"
-                      required
-                      value={counterSatisfaction}
-                      onChange={(e) => setCounterSatisfaction(e.target.value)}
-                      className="form-input"
-                    />
-                  </div>
-                </div>
-
-                <button type="submit" className="btn-primary w-full mt-6 btn-large">
+              <div className="mt-6 pt-4 border-t border-stone-200 flex justify-end">
+                <button type="submit" className="btn-primary btn-large">
                   <CheckCircle2 size={18} />
                   <span>Update Live Counters On Website</span>
                 </button>
-              </form>
+              </div>
+            </form>
+          </div>
+        )}
+
+        {/* ==============================================================
+            TAB: YOUTUBE VIDEOS SHOWCASE
+           ============================================================== */}
+        {activeTab === 'videos' && (
+          <div className="admin-content-view">
+            <div className="admin-section-header-bar">
+              <div>
+                <h3 className="admin-section-title">YouTube Videos Showcase ({videosList.length})</h3>
+                <p className="admin-section-subtitle">
+                  Manage YouTube impact videos displayed on the home page cinema theater and side playlist
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAddVideo(!showAddVideo)}
+                className="btn-primary"
+              >
+                {showAddVideo ? <ChevronUp size={16} /> : <PlusCircle size={16} />}
+                <span>{showAddVideo ? 'Close Form' : '+ Add YouTube Video'}</span>
+              </button>
+            </div>
+
+            {showAddVideo && (
+              <div className="admin-box mb-6 border-red-300 bg-red-50/20">
+                <h4 className="font-bold text-red-950 mb-4 flex items-center gap-2">
+                  <Tv size={18} className="text-red-600" />
+                  <span>Add New YouTube Video to Public Showcase</span>
+                </h4>
+                <form onSubmit={handleAddVideo}>
+                  <div className="form-group mb-3">
+                    <label className="input-sublabel">YouTube Video Link or ID *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ or https://youtu.be/..."
+                      value={videoUrl}
+                      onChange={(e) => setVideoUrl(e.target.value)}
+                      className="form-input"
+                    />
+                    <span className="text-xs text-stone-500 mt-1 block">
+                      Supports full YouTube URLs, short links (youtu.be), embed URLs, or direct 11-character video IDs.
+                    </span>
+
+                    {/* Live Preview Card */}
+                    {videoUrl.trim() && (
+                      <div className="admin-video-preview-banner">
+                        {extractYouTubeId(videoUrl) ? (
+                          <>
+                            <img
+                              src={getYouTubeThumbnail(extractYouTubeId(videoUrl)!)}
+                              alt="YouTube Preview"
+                              className="admin-video-preview-thumb"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=400&q=80';
+                              }}
+                            />
+                            <div className="flex-1">
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 mb-1">
+                                <CheckCircle2 size={13} /> Valid YouTube Video (ID: {extractYouTubeId(videoUrl)})
+                              </span>
+                              <div className="text-xs text-stone-600">
+                                This thumbnail and video stream will be featured on the live website cinema screen.
+                              </div>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="text-xs text-amber-700 flex items-center gap-2">
+                            <AlertCircle size={15} />
+                            <span>Unable to detect video ID. Please check the YouTube link format.</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="form-group mb-3">
+                    <label className="input-sublabel">Video Title *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Mega Beach Cleanup & Turtle Conservation Drive"
+                      value={videoTitle}
+                      onChange={(e) => setVideoTitle(e.target.value)}
+                      className="form-input"
+                    />
+                  </div>
+
+                  <div className="form-row-2 mb-3">
+                    <div>
+                      <label className="input-sublabel">Duration</label>
+                      <input
+                        type="text"
+                        placeholder="04:15"
+                        value={videoDuration}
+                        onChange={(e) => setVideoDuration(e.target.value)}
+                        className="form-input"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="input-sublabel">Location</label>
+                      <input
+                        type="text"
+                        placeholder="Chennai"
+                        value={videoLocation}
+                        onChange={(e) => setVideoLocation(e.target.value)}
+                        className="form-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group mb-3">
+                    <label className="flex items-center gap-2 cursor-pointer text-sm font-semibold text-stone-800">
+                      <input
+                        type="checkbox"
+                        checked={videoFeatured}
+                        onChange={(e) => setVideoFeatured(e.target.checked)}
+                        className="rounded text-amber-600 focus:ring-amber-500 w-4 h-4"
+                      />
+                      <span>Featured Video (Spotlight on Main Cinema Screen)</span>
+                    </label>
+                  </div>
+
+                  <div className="form-group mb-4">
+                    <label className="input-sublabel">Description / Drive Summary</label>
+                    <textarea
+                      rows={3}
+                      placeholder="Brief description of the activity and community impact captured in this video..."
+                      value={videoDesc}
+                      onChange={(e) => setVideoDesc(e.target.value)}
+                      className="form-input textarea"
+                    ></textarea>
+                  </div>
+
+                  <div className="flex justify-end gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowAddVideo(false)}
+                      className="btn-outline"
+                    >
+                      Cancel
+                    </button>
+                    <button type="submit" className="btn-primary">
+                      <Save size={16} />
+                      <span>Add to Cinema Showcase</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
+            {/* Video Cards Grid */}
+            {videosList.length === 0 ? (
+              <div className="admin-box text-center py-12">
+                <Tv size={42} className="mx-auto text-stone-400 mb-3" />
+                <h4 className="font-bold text-stone-700 text-lg">No YouTube Videos Added Yet</h4>
+                <p className="text-sm text-stone-500 mb-4">
+                  Add YouTube video links above to feature them on the website's theater showcase.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setShowAddVideo(true)}
+                  className="btn-primary"
+                >
+                  <PlusCircle size={16} />
+                  <span>Add First YouTube Video</span>
+                </button>
+              </div>
+            ) : (
+              <div className="admin-video-grid">
+                {videosList.map((v) => (
+                  <div key={v.id} className="admin-video-card">
+                    <div className="admin-video-thumb-wrap">
+                      <img
+                        src={getYouTubeThumbnail(v.youtubeId)}
+                        alt={v.title}
+                        className="admin-video-thumb-img"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=400&q=80';
+                        }}
+                      />
+                      <div className="admin-video-play-watermark">
+                        <div className="admin-play-circle-red">
+                          <Play size={18} fill="currentColor" className="ml-0.5" />
+                        </div>
+                      </div>
+                      <span className="admin-video-duration-badge">{v.duration || 'Video'}</span>
+                      {v.featured && (
+                        <span className="admin-video-featured-badge">
+                          ★ Main Stage
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="admin-video-info">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-xs text-stone-600 font-medium">📍 {v.location || 'Chennai'}</span>
+                        {v.duration && <span className="text-xs text-stone-500 font-mono">{v.duration}</span>}
+                      </div>
+
+                      <h4 className="font-bold text-stone-900 text-sm mb-1 leading-snug line-clamp-2">
+                        {v.title}
+                      </h4>
+
+                      <p className="text-xs text-stone-600 line-clamp-2 mb-3">
+                        {v.description}
+                      </p>
+
+                      <div className="mt-auto pt-3 border-t border-stone-200 flex items-center justify-between">
+                        <a
+                          href={`https://www.youtube.com/watch?v=${v.youtubeId}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-red-600 hover:text-red-700 font-semibold inline-flex items-center gap-1"
+                        >
+                          <ExternalLink size={13} />
+                          <span>YouTube</span>
+                        </a>
+
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => setEditingVideo(v)}
+                            className="admin-icon-btn blue"
+                            title="Edit Video"
+                          >
+                            <Edit3 size={15} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteVideo(v.id)}
+                            className="admin-icon-btn red"
+                            title="Delete Video"
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ==============================================================
+            TAB: PHOTO GALLERY
+           ============================================================== */}
+        {activeTab === 'gallery' && (
+          <div className="admin-content-view">
+            <div className="admin-section-header-bar">
+              <div>
+                <h3 className="admin-section-title">Photo Gallery ({adminData?.gallery?.length || 0})</h3>
+                <p className="admin-section-subtitle">Impact drive photographs showcase on the website</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAddGallery(!showAddGallery)}
+                className="btn-primary"
+              >
+                {showAddGallery ? <ChevronUp size={16} /> : <PlusCircle size={16} />}
+                <span>{showAddGallery ? 'Close Form' : '+ Add New Photo'}</span>
+              </button>
+            </div>
+
+            {showAddGallery && (
+              <div className="admin-box mb-6 border-amber-300 bg-amber-50/30">
+                <h4 className="font-bold text-amber-950 mb-4 flex items-center gap-2">
+                  <PlusCircle size={18} className="text-amber-700" />
+                  <span>Add Photo to Public Impact Gallery</span>
+                </h4>
+                <form onSubmit={handleAddGalleryItem}>
+                  <div className="form-group mb-3">
+                    <label className="input-sublabel">Photo Title *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Miyawaki Urban Forest Drive"
+                      value={newGalTitle}
+                      onChange={(e) => setNewGalTitle(e.target.value)}
+                      className="form-input"
+                    />
+                  </div>
+
+                  <div className="form-row-3 mb-3">
+                    <div>
+                      <label className="input-sublabel">Category</label>
+                      <select
+                        value={newGalCategory}
+                        onChange={(e) => setNewGalCategory(e.target.value)}
+                        className="form-input"
+                      >
+                        <option value="Environment">Environment</option>
+                        <option value="Education">Education</option>
+                        <option value="Healthcare">Healthcare</option>
+                        <option value="Relief">Relief</option>
+                        <option value="Youth">Youth</option>
+                        <option value="Empowerment">Empowerment</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="input-sublabel">Year</label>
+                      <input
+                        type="text"
+                        value={newGalYear}
+                        onChange={(e) => setNewGalYear(e.target.value)}
+                        className="form-input"
+                      />
+                    </div>
+                    <div>
+                      <label className="input-sublabel">Location</label>
+                      <input
+                        type="text"
+                        placeholder="Chennai"
+                        value={newGalLocation}
+                        onChange={(e) => setNewGalLocation(e.target.value)}
+                        className="form-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group mb-4">
+                    <label className="input-sublabel">Image URL *</label>
+                    <input
+                      type="url"
+                      required
+                      placeholder="https://images.unsplash.com/..."
+                      value={newGalImage}
+                      onChange={(e) => setNewGalImage(e.target.value)}
+                      className="form-input"
+                    />
+                  </div>
+
+                  <div className="flex justify-end gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowAddGallery(false)}
+                      className="btn-outline"
+                    >
+                      Cancel
+                    </button>
+                    <button type="submit" className="btn-primary">
+                      <Save size={16} />
+                      <span>Upload Photo</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
+            <div className="admin-gallery-grid">
+              {(adminData?.gallery || []).map((item) => (
+                <div key={item.id} className="admin-gallery-card">
+                  <img src={item.image} alt={item.title} className="admin-gallery-thumb" />
+                  <div className="admin-gallery-info">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="event-cat-chip">{item.category}</span>
+                      <span className="text-xs text-stone-500">{item.year}</span>
+                    </div>
+                    <h4 className="font-bold text-stone-900 text-sm">{item.title}</h4>
+                    <span className="text-xs text-stone-500 mb-3">{item.location}</span>
+
+                    <div className="mt-auto pt-2 border-t border-stone-200 flex justify-end gap-1">
+                      <button
+                        type="button"
+                        onClick={() => setEditingGallery(item)}
+                        className="admin-icon-btn blue"
+                        title="Edit Photo"
+                      >
+                        <Edit3 size={15} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteGalleryItem(item.id)}
+                        className="admin-icon-btn red"
+                        title="Delete Photo"
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ==============================================================
+            TAB: TESTIMONIAL STORIES
+           ============================================================== */}
+        {activeTab === 'stories' && (
+          <div className="admin-content-view">
+            <div className="admin-section-header-bar">
+              <div>
+                <h3 className="admin-section-title">Voices of Change ({adminData?.stories?.length || 0})</h3>
+                <p className="admin-section-subtitle">Beneficiary quotes and volunteer stories featured on the website</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAddStory(!showAddStory)}
+                className="btn-primary"
+              >
+                {showAddStory ? <ChevronUp size={16} /> : <PlusCircle size={16} />}
+                <span>{showAddStory ? 'Close Form' : '+ Add Testimonial'}</span>
+              </button>
+            </div>
+
+            {showAddStory && (
+              <div className="admin-box mb-6 border-amber-300 bg-amber-50/30">
+                <h4 className="font-bold text-amber-950 mb-4 flex items-center gap-2">
+                  <PlusCircle size={18} className="text-amber-700" />
+                  <span>Publish Beneficiary / Volunteer Testimonial</span>
+                </h4>
+                <form onSubmit={handleAddStory}>
+                  <div className="form-group mb-3">
+                    <label className="input-sublabel">Full Name *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Kavitha M."
+                      value={newStoryName}
+                      onChange={(e) => setNewStoryName(e.target.value)}
+                      className="form-input"
+                    />
+                  </div>
+
+                  <div className="form-row-3 mb-3">
+                    <div>
+                      <label className="input-sublabel">Role / Association</label>
+                      <input
+                        type="text"
+                        placeholder="Mother of Student"
+                        value={newStoryRole}
+                        onChange={(e) => setNewStoryRole(e.target.value)}
+                        className="form-input"
+                      />
+                    </div>
+                    <div>
+                      <label className="input-sublabel">Location</label>
+                      <input
+                        type="text"
+                        placeholder="Tiruvallur"
+                        value={newStoryLocation}
+                        onChange={(e) => setNewStoryLocation(e.target.value)}
+                        className="form-input"
+                      />
+                    </div>
+                    <div>
+                      <label className="input-sublabel">Impact Tag</label>
+                      <input
+                        type="text"
+                        placeholder="Education Beneficiary"
+                        value={newStoryImpactTag}
+                        onChange={(e) => setNewStoryImpactTag(e.target.value)}
+                        className="form-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group mb-3">
+                    <label className="input-sublabel">Avatar Image URL</label>
+                    <input
+                      type="url"
+                      value={newStoryAvatar}
+                      onChange={(e) => setNewStoryAvatar(e.target.value)}
+                      className="form-input"
+                    />
+                  </div>
+
+                  <div className="form-group mb-4">
+                    <label className="input-sublabel">Quote / Experience Statement *</label>
+                    <textarea
+                      rows={3}
+                      required
+                      placeholder="What impact did RCE bring to this person or community?"
+                      value={newStoryQuote}
+                      onChange={(e) => setNewStoryQuote(e.target.value)}
+                      className="form-input textarea"
+                    ></textarea>
+                  </div>
+
+                  <div className="flex justify-end gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowAddStory(false)}
+                      className="btn-outline"
+                    >
+                      Cancel
+                    </button>
+                    <button type="submit" className="btn-primary">
+                      <Save size={16} />
+                      <span>Publish Story</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
+            <div className="admin-stories-grid">
+              {(adminData?.stories || []).map((story) => (
+                <div key={story.id} className="admin-story-card">
+                  <div>
+                    <div className="flex items-center gap-3 mb-3">
+                      <img
+                        src={story.avatar}
+                        alt={story.name}
+                        className="w-12 h-12 rounded-full object-cover border border-amber-300"
+                      />
+                      <div>
+                        <h4 className="font-bold text-stone-900 text-sm leading-tight">{story.name}</h4>
+                        <span className="text-xs text-stone-500 block">{story.role}</span>
+                        <span className="text-xs text-amber-800 font-semibold">{story.location}</span>
+                      </div>
+                    </div>
+                    <span className="event-cat-chip mb-2">{story.impactTag}</span>
+                    <p className="text-xs text-stone-700 italic mt-2">"{story.quote}"</p>
+                  </div>
+
+                  <div className="mt-4 pt-2 border-t border-stone-200 flex justify-end gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setEditingStory(story)}
+                      className="admin-icon-btn blue"
+                      title="Edit Story"
+                    >
+                      <Edit3 size={15} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteStory(story.id)}
+                      className="admin-icon-btn red"
+                      title="Delete Story"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ==============================================================
+            TAB: NEWSLETTERS
+           ============================================================== */}
+        {activeTab === 'newsletters' && (
+          <div className="admin-content-view">
+            <div className="admin-box max-w-3xl">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="admin-box-title">Newsletter Email Audience</h3>
+                  <p className="text-xs text-stone-500">Subscribers receiving monthly newsletters and campaign notices</p>
+                </div>
+                <div className="text-sm font-bold text-amber-900 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+                  {adminData?.newsletterSubscribers?.length || 0} Subscribers
+                </div>
+              </div>
+
+              <div className="admin-newsletter-list-box">
+                {(adminData?.newsletterSubscribers || []).length === 0 ? (
+                  <p className="text-sm text-stone-500 py-4 text-center">No email subscribers yet.</p>
+                ) : (
+                  (adminData?.newsletterSubscribers || []).map((email, idx) => (
+                    <div key={idx} className="admin-newsletter-row">
+                      <span className="font-mono text-sm text-stone-800">{email}</span>
+                      <span className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
+                        <CheckCircle2 size={13} /> Active Subscriber
+                      </span>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -3235,7 +3400,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             </div>
 
             <form onSubmit={handleSaveEditedProject} className="modal-body p-6">
-              <div className="form-group">
+              <div className="form-group mb-3">
                 <label className="input-sublabel">Project Title *</label>
                 <input
                   type="text"
@@ -3246,7 +3411,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 />
               </div>
 
-              <div className="form-row-2">
+              <div className="form-row-2 mb-3">
                 <div>
                   <label className="input-sublabel">Category</label>
                   <select
@@ -3259,24 +3424,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     <option value="Healthcare">Healthcare</option>
                     <option value="Relief">Relief & Hunger</option>
                     <option value="Culture & Youth">Culture & Youth</option>
-                    <option value="Empowerment">Women Empowerment</option>
                   </select>
                 </div>
                 <div>
-                  <label className="input-sublabel">Badge Tag</label>
-                  <input
-                    type="text"
-                    value={editingProject.badge || ''}
-                    onChange={(e) => setEditingProject({ ...editingProject, badge: e.target.value })}
-                    className="form-input"
-                    placeholder="Flagship Initiative"
-                  />
-                </div>
-              </div>
-
-              <div className="form-row-2 mt-3">
-                <div>
-                  <label className="input-sublabel">Target Goal (₹)</label>
+                  <label className="input-sublabel">Goal (₹)</label>
                   <input
                     type="number"
                     value={editingProject.goal}
@@ -3284,8 +3435,11 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     className="form-input"
                   />
                 </div>
+              </div>
+
+              <div className="form-row-2 mb-3">
                 <div>
-                  <label className="input-sublabel">Raised Amount (₹)</label>
+                  <label className="input-sublabel">Raised (₹)</label>
                   <input
                     type="number"
                     value={editingProject.raised}
@@ -3293,9 +3447,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     className="form-input"
                   />
                 </div>
-              </div>
-
-              <div className="form-row-2 mt-3">
                 <div>
                   <label className="input-sublabel">Beneficiaries Tag</label>
                   <input
@@ -3305,18 +3456,9 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     className="form-input"
                   />
                 </div>
-                <div>
-                  <label className="input-sublabel">Banner Image URL</label>
-                  <input
-                    type="url"
-                    value={editingProject.image}
-                    onChange={(e) => setEditingProject({ ...editingProject, image: e.target.value })}
-                    className="form-input"
-                  />
-                </div>
               </div>
 
-              <div className="form-group mt-3">
+              <div className="form-group mb-3">
                 <label className="input-sublabel">Tagline</label>
                 <input
                   type="text"
@@ -3326,20 +3468,20 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 />
               </div>
 
-              <div className="form-group">
-                <label className="input-sublabel">Highlights (Comma-separated)</label>
+              <div className="form-group mb-3">
+                <label className="input-sublabel">Banner Image URL</label>
                 <input
-                  type="text"
-                  value={Array.isArray(editingProject.highlights) ? editingProject.highlights.join(', ') : editingProject.highlights}
-                  onChange={(e) => setEditingProject({ ...editingProject, highlights: e.target.value.split(',').map(s => s.trim()) })}
+                  type="url"
+                  value={editingProject.image}
+                  onChange={(e) => setEditingProject({ ...editingProject, image: e.target.value })}
                   className="form-input"
                 />
               </div>
 
-              <div className="form-group">
+              <div className="form-group mb-3">
                 <label className="input-sublabel">Description</label>
                 <textarea
-                  rows={4}
+                  rows={3}
                   value={editingProject.description}
                   onChange={(e) => setEditingProject({ ...editingProject, description: e.target.value })}
                   className="form-input textarea"
@@ -3354,10 +3496,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="btn-primary flex-1"
-                >
+                <button type="submit" className="btn-primary flex-1">
                   <Save size={16} /> Save Changes
                 </button>
               </div>
@@ -3387,7 +3526,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             </div>
 
             <form onSubmit={handleSaveEditedEvent} className="modal-body p-6">
-              <div className="form-group">
+              <div className="form-group mb-3">
                 <label className="input-sublabel">Event Title *</label>
                 <input
                   type="text"
@@ -3398,7 +3537,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 />
               </div>
 
-              <div className="form-row-2">
+              <div className="form-row-2 mb-3">
                 <div>
                   <label className="input-sublabel">Date *</label>
                   <input
@@ -3420,7 +3559,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 </div>
               </div>
 
-              <div className="form-row-2 mt-3">
+              <div className="form-row-2 mb-3">
                 <div>
                   <label className="input-sublabel">Category</label>
                   <select
@@ -3428,11 +3567,11 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     onChange={(e) => setEditingEvent({ ...editingEvent, category: e.target.value })}
                     className="form-input"
                   >
-                    <option value="Environment">Environment & Plantation</option>
-                    <option value="Healthcare">Healthcare & Blood Camp</option>
-                    <option value="Education">Education & School Tutoring</option>
-                    <option value="Relief">Relief & Food Drive</option>
-                    <option value="Culture & Youth">Culture & Youth Workshop</option>
+                    <option value="Environment">Environment</option>
+                    <option value="Healthcare">Healthcare</option>
+                    <option value="Education">Education</option>
+                    <option value="Relief">Relief</option>
+                    <option value="Culture & Youth">Culture & Youth</option>
                   </select>
                 </div>
                 <div>
@@ -3449,7 +3588,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 </div>
               </div>
 
-              <div className="form-row-2 mt-3">
+              <div className="form-row-2 mb-3">
                 <div>
                   <label className="input-sublabel">Total Slots</label>
                   <input
@@ -3470,7 +3609,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 </div>
               </div>
 
-              <div className="form-group mt-3">
+              <div className="form-group mb-3">
                 <label className="input-sublabel">Location / Venue</label>
                 <input
                   type="text"
@@ -3480,7 +3619,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 />
               </div>
 
-              <div className="form-group">
+              <div className="form-group mb-3">
                 <label className="input-sublabel">Lead Coordinator</label>
                 <input
                   type="text"
@@ -3490,10 +3629,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 />
               </div>
 
-              <div className="form-group">
+              <div className="form-group mb-4">
                 <label className="input-sublabel">Description & Instructions</label>
                 <textarea
-                  rows={3}
+                  rows={2}
                   value={editingEvent.description}
                   onChange={(e) => setEditingEvent({ ...editingEvent, description: e.target.value })}
                   className="form-input textarea"
@@ -3508,10 +3647,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="btn-primary flex-1"
-                >
+                <button type="submit" className="btn-primary flex-1">
                   <Save size={16} /> Save Changes
                 </button>
               </div>
@@ -3541,7 +3677,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             </div>
 
             <form onSubmit={handleUpdateGalleryItem} className="modal-body p-6">
-              <div className="form-group">
+              <div className="form-group mb-3">
                 <label className="input-sublabel">Photo Title *</label>
                 <input
                   type="text"
@@ -3552,7 +3688,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 />
               </div>
 
-              <div className="form-row-2">
+              <div className="form-row-2 mb-3">
                 <div>
                   <label className="input-sublabel">Category</label>
                   <select
@@ -3579,8 +3715,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 </div>
               </div>
 
-              <div className="form-group mt-3">
-                <label className="input-sublabel">Location / Ground Venue</label>
+              <div className="form-group mb-3">
+                <label className="input-sublabel">Location</label>
                 <input
                   type="text"
                   value={editingGallery.location}
@@ -3589,7 +3725,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 />
               </div>
 
-              <div className="form-group">
+              <div className="form-group mb-4">
                 <label className="input-sublabel">Image URL *</label>
                 <input
                   type="url"
@@ -3600,16 +3736,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 />
               </div>
 
-              {editingGallery.image && (
-                <div className="mb-4">
-                  <img
-                    src={editingGallery.image}
-                    alt="Preview"
-                    style={{ maxHeight: '160px', width: '100%', objectFit: 'cover', borderRadius: '8px' }}
-                  />
-                </div>
-              )}
-
               <div className="modal-actions-bar mt-4">
                 <button
                   type="button"
@@ -3618,10 +3744,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="btn-primary flex-1"
-                >
+                <button type="submit" className="btn-primary flex-1">
                   <Save size={16} /> Save Changes
                 </button>
               </div>
@@ -3651,7 +3774,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             </div>
 
             <form onSubmit={handleUpdateStory} className="modal-body p-6">
-              <div className="form-group">
+              <div className="form-group mb-3">
                 <label className="input-sublabel">Full Name *</label>
                 <input
                   type="text"
@@ -3662,7 +3785,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 />
               </div>
 
-              <div className="form-row-2">
+              <div className="form-row-2 mb-3">
                 <div>
                   <label className="input-sublabel">Role / Association</label>
                   <input
@@ -3683,7 +3806,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 </div>
               </div>
 
-              <div className="form-group mt-3">
+              <div className="form-group mb-3">
                 <label className="input-sublabel">Impact Tag</label>
                 <input
                   type="text"
@@ -3693,7 +3816,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 />
               </div>
 
-              <div className="form-group">
+              <div className="form-group mb-3">
                 <label className="input-sublabel">Avatar Image URL</label>
                 <input
                   type="url"
@@ -3703,10 +3826,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 />
               </div>
 
-              <div className="form-group">
+              <div className="form-group mb-4">
                 <label className="input-sublabel">Testimonial Quote *</label>
                 <textarea
-                  rows={4}
+                  rows={3}
                   required
                   value={editingStory.quote}
                   onChange={(e) => setEditingStory({ ...editingStory, quote: e.target.value })}
@@ -3722,10 +3845,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="btn-primary flex-1"
-                >
+                <button type="submit" className="btn-primary flex-1">
                   <Save size={16} /> Save Changes
                 </button>
               </div>
@@ -3735,7 +3855,136 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       )}
 
       {/* ==============================================================
-          VOLUNTEER FULL PROFILE MODAL
+          MODAL: EDIT YOUTUBE VIDEO
+         ============================================================== */}
+      {editingVideo && (
+        <div className="modal-overlay" onClick={() => setEditingVideo(null)}>
+          <div className="modal-content admin-modal-edit" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <div className="modal-title-group">
+                <span className="admin-edit-badge"><Edit3 size={12} /> EDIT YOUTUBE VIDEO</span>
+                <h2 className="modal-title">{editingVideo.title}</h2>
+              </div>
+              <button
+                type="button"
+                className="modal-close-btn"
+                onClick={() => setEditingVideo(null)}
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEditedVideo} className="modal-body p-6">
+              <div className="form-group mb-3">
+                <label className="input-sublabel">Video Title *</label>
+                <input
+                  type="text"
+                  required
+                  value={editingVideo.title}
+                  onChange={(e) => setEditingVideo({ ...editingVideo, title: e.target.value })}
+                  className="form-input"
+                />
+              </div>
+
+              <div className="form-group mb-3">
+                <label className="input-sublabel">YouTube Video Link or ID *</label>
+                <input
+                  type="text"
+                  required
+                  value={editingVideo.youtubeUrl || editingVideo.youtubeId}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    const extracted = extractYouTubeId(val) || val;
+                    setEditingVideo({ ...editingVideo, youtubeUrl: val, youtubeId: extracted });
+                  }}
+                  className="form-input"
+                />
+
+                {/* Live Preview in Edit modal */}
+                {editingVideo.youtubeId && (
+                  <div className="admin-video-preview-banner mt-2">
+                    <img
+                      src={getYouTubeThumbnail(editingVideo.youtubeId)}
+                      alt="Thumbnail Preview"
+                      className="admin-video-preview-thumb"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=400&q=80';
+                      }}
+                    />
+                    <div className="flex-1">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 mb-1">
+                        <CheckCircle2 size={13} /> Active YouTube ID: {editingVideo.youtubeId}
+                      </span>
+                      <div className="text-xs text-stone-600">
+                        Live thumbnail retrieved from YouTube CDN.
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="form-row-2 mb-3">
+                <div>
+                  <label className="input-sublabel">Duration</label>
+                  <input
+                    type="text"
+                    value={editingVideo.duration}
+                    onChange={(e) => setEditingVideo({ ...editingVideo, duration: e.target.value })}
+                    className="form-input"
+                  />
+                </div>
+                <div>
+                  <label className="input-sublabel">Location</label>
+                  <input
+                    type="text"
+                    value={editingVideo.location}
+                    onChange={(e) => setEditingVideo({ ...editingVideo, location: e.target.value })}
+                    className="form-input"
+                  />
+                </div>
+              </div>
+
+              <div className="form-group mb-3">
+                <label className="flex items-center gap-2 cursor-pointer text-sm font-semibold text-stone-800">
+                  <input
+                    type="checkbox"
+                    checked={editingVideo.featured ?? false}
+                    onChange={(e) => setEditingVideo({ ...editingVideo, featured: e.target.checked })}
+                    className="rounded text-amber-600 focus:ring-amber-500 w-4 h-4"
+                  />
+                  <span>Featured Video (Spotlight on Main Cinema Screen)</span>
+                </label>
+              </div>
+
+              <div className="form-group mb-4">
+                <label className="input-sublabel">Description</label>
+                <textarea
+                  rows={3}
+                  value={editingVideo.description}
+                  onChange={(e) => setEditingVideo({ ...editingVideo, description: e.target.value })}
+                  className="form-input textarea"
+                ></textarea>
+              </div>
+
+              <div className="modal-actions-bar mt-4">
+                <button
+                  type="button"
+                  onClick={() => setEditingVideo(null)}
+                  className="btn-outline flex-1"
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="btn-primary flex-1">
+                  <Save size={16} /> Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ==============================================================
+          MODAL: VOLUNTEER FULL PROFILE DOSSIER
          ============================================================== */}
       {selectedVolunteer && (
         <div className="modal-overlay" onClick={() => setSelectedVolunteer(null)}>
@@ -3754,7 +4003,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               </button>
             </div>
 
-            <div className="modal-body">
+            <div className="modal-body p-6">
               <div className="volunteer-profile-hero">
                 <div className="volunteer-avatar-circle">
                   {selectedVolunteer.fullName.slice(0, 2).toUpperCase()}
@@ -3772,7 +4021,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               <div className="volunteer-detail-grid mt-4">
                 <div className="detail-item">
                   <span className="detail-label">Occupation / Profile:</span>
-                  <span className="detail-val">{selectedVolunteer.occupation || 'General Citizen'}</span>
+                  <span className="detail-val">{selectedVolunteer.occupation || 'Student'}</span>
                 </div>
                 <div className="detail-item">
                   <span className="detail-label">Organization / College:</span>
@@ -3781,10 +4030,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 <div className="detail-item">
                   <span className="detail-label">City / Location:</span>
                   <span className="detail-val">{selectedVolunteer.city || 'Chennai'}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">Emergency Phone:</span>
-                  <span className="detail-val font-mono">{selectedVolunteer.emergencyContact || 'Not provided'}</span>
                 </div>
                 <div className="detail-item">
                   <span className="detail-label">Primary Email:</span>
@@ -3796,17 +4041,13 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 </div>
                 <div className="detail-item">
                   <span className="detail-label">Preferred Cause:</span>
-                  <span className="detail-val font-semibold text-amber-900">{selectedVolunteer.preferredDomain || 'Child Education'}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">Availability:</span>
-                  <span className="detail-val">{selectedVolunteer.availability}</span>
+                  <span className="detail-val font-semibold text-amber-900">{selectedVolunteer.preferredDomain || 'Field Drives'}</span>
                 </div>
               </div>
 
-              <div className="detail-box-full mt-4">
-                <span className="detail-label">Core Skills & Strengths:</span>
-                <p className="detail-paragraph">{selectedVolunteer.skills}</p>
+              <div className="detail-box-full mt-3">
+                <span className="detail-label">Skills & Strengths:</span>
+                <p className="detail-paragraph">{selectedVolunteer.skills || 'General Volunteering'}</p>
               </div>
 
               {selectedVolunteer.message && (
@@ -3821,7 +4062,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   href={`tel:${selectedVolunteer.phone}`}
                   className="btn-outline flex-1"
                 >
-                  <Phone size={15} /> Call Candidate
+                  <Phone size={15} /> Call
                 </a>
                 <a
                   href={`https://wa.me/${selectedVolunteer.phone.replace(/[^0-9]/g, '')}`}
@@ -3851,13 +4092,13 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       )}
 
       {/* ==============================================================
-          80G TAX EXEMPTION PRINTABLE RECEIPT MODAL
+          MODAL: 80G PRINTABLE TAX RECEIPT
          ============================================================== */}
       {selectedDonation && (
         <div className="modal-overlay" onClick={() => setSelectedDonation(null)}>
           <div className="modal-content modal-receipt-preview" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <span className="section-tag gold">OFFICIAL RECEIPT</span>
+              <span className="section-tag gold">OFFICIAL 80G RECEIPT</span>
               <button
                 type="button"
                 className="modal-close-btn"
@@ -3876,21 +4117,21 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   <h2>{brandName || 'RCE SOCIAL SERVICE CLUB CHARITABLE TRUST'}</h2>
                   <p>Registered Public Charitable Trust • Chennai, Tamil Nadu</p>
                   <p className="text-xs text-stone-500">
-                    Trust Reg: {brandTrustReg || 'TN/CH/2021/84920'} • PAN: {brandPAN || 'AAATR8492G'} • 12A Reg: {brand12A || 'AAATR8492GE20210'}
+                    Trust Reg: {brandTrustReg || 'TN/CH/2021/84920'} • PAN: {brandPAN || 'AAATR8492G'} • 12A: {brand12A || 'AAATR8492GE20210'}
                   </p>
                   <div className="receipt-80g-badge">
-                    <strong>80G Approval Order:</strong> {brand80G || 'CIT(E)/CHN/80G/2021-22/A-412'}
+                    <strong>80G Approval:</strong> {brand80G || 'CIT(E)/CHN/80G/2021-22/A-412'}
                   </div>
                 </div>
               </div>
 
               <div className="receipt-serial-strip">
                 <div>
-                  <span className="text-xs text-stone-500">Receipt Serial Number:</span>
+                  <span className="text-xs text-stone-500">Receipt Serial:</span>
                   <div className="font-mono font-bold text-amber-900">{selectedDonation.receiptNo}</div>
                 </div>
                 <div>
-                  <span className="text-xs text-stone-500">Date of Contribution:</span>
+                  <span className="text-xs text-stone-500">Date:</span>
                   <div className="font-bold text-stone-800">
                     {new Date(selectedDonation.timestamp).toLocaleDateString('en-IN', {
                       day: '2-digit',
@@ -3903,7 +4144,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
 
               <div className="receipt-body-content">
                 <p>
-                  Received with gratitude from <strong>{selectedDonation.donorName}</strong>, resident of <strong>{selectedDonation.city || 'Tamil Nadu, India'}</strong> (PAN: <strong>{selectedDonation.pan}</strong>), the sum of:
+                  Received with gratitude from <strong>{selectedDonation.donorName}</strong> (PAN: <strong>{selectedDonation.pan}</strong>), the sum of:
                 </p>
 
                 <div className="receipt-amount-display">
@@ -3911,14 +4152,14 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 </div>
 
                 <div className="receipt-particulars-grid">
-                  <div><strong>Allocated Cause:</strong> {selectedDonation.cause}</div>
-                  <div><strong>Payment Mode:</strong> {selectedDonation.paymentMethod}</div>
-                  <div><strong>Txn / UTR Reference:</strong> {selectedDonation.transactionId || 'UPI Verified'}</div>
-                  <div><strong>Donor Contact:</strong> {selectedDonation.email} • {selectedDonation.phone}</div>
+                  <div><strong>Cause:</strong> {selectedDonation.cause}</div>
+                  <div><strong>Mode:</strong> {selectedDonation.paymentMethod}</div>
+                  <div><strong>Txn Ref:</strong> {selectedDonation.transactionId || 'UPI Verified'}</div>
+                  <div><strong>Contact:</strong> {selectedDonation.email}</div>
                 </div>
 
                 <div className="receipt-tax-clause">
-                  <strong>Tax Benefit Note:</strong> All unconditional donations made to {brandName} are eligible for 50% deduction under Section 80G of the Indian Income Tax Act, 1961.
+                  <strong>Tax Benefit:</strong> Donations made to {brandName} are eligible for 50% deduction under Section 80G of the Income Tax Act, 1961.
                 </div>
 
                 <div className="receipt-sign-row">

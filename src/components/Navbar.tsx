@@ -49,6 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({ brand, onOpenJoin, onOpenDonate 
         {/* Desktop Navigation Pills (Inspired by MyKutumb pill-navbar) */}
         <nav className="desktop-nav-pill">
           <a href="#hero" className="nav-link">Home</a>
+          <a href="#videos" className="nav-link">Videos</a>
           <a href="#about" className="nav-link">About Us</a>
           <a href="#projects" className="nav-link">Projects</a>
           <a href="#events" className="nav-link">Events</a>
@@ -130,6 +131,7 @@ export const Navbar: React.FC<NavbarProps> = ({ brand, onOpenJoin, onOpenDonate 
         <div className="mobile-menu-drawer">
           <div className="mobile-nav-links">
             <a href="#hero" onClick={() => setMobileMenuOpen(false)} className="mobile-nav-link">Home</a>
+            <a href="#videos" onClick={() => setMobileMenuOpen(false)} className="mobile-nav-link">YouTube Cinema</a>
             <a href="#about" onClick={() => setMobileMenuOpen(false)} className="mobile-nav-link">About Us</a>
             <a href="#projects" onClick={() => setMobileMenuOpen(false)} className="mobile-nav-link">Projects & Drives</a>
             <a href="#events" onClick={() => setMobileMenuOpen(false)} className="mobile-nav-link">Upcoming Events</a>

@@ -336,6 +336,68 @@
       "year": "2026"
     }
   ],
+  "videosList": [
+    {
+      "id": "vid-1793086628068",
+      "title": "WHITE MARATHON - 2022 | RIGHT CLUB FOR EDUCATION",
+      "youtubeUrl": "https://youtu.be/Ftle5THUD-M?si=kqW6XJdOxyC7pK38",
+      "youtubeId": "Ftle5THUD-M",
+      "category": "General",
+      "description": "RCE social service impact video.",
+      "duration": "04:15",
+      "location": "Sivakasii",
+      "featured": false,
+      "createdAt": "2026-10-27T07:37:08.068Z"
+    },
+    {
+      "id": "vid-1",
+      "title": " 75th Independence day | World Record Event ",
+      "youtubeUrl": "https://youtu.be/t4CsWRQDWYU?si=Ux2rpkWHCxiaPXZ0",
+      "youtubeId": "t4CsWRQDWYU",
+      "category": "Environment",
+      "description": "",
+      "duration": "04:12",
+      "location": "Sivakasi,Tamilnadu",
+      "featured": true,
+      "createdAt": "2026-10-20T10:00:00.000Z"
+    },
+    {
+      "id": "vid-2",
+      "title": " மனம் தாண்டி மனிதம் வென்றோம்!",
+      "youtubeUrl": "https://youtu.be/t0wNWaJIBCM?si=UHS6LcFj11plJK2L",
+      "youtubeId": "t0wNWaJIBCM",
+      "category": "Healthcare",
+      "description": "",
+      "duration": "05:30",
+      "location": "Tiruvallur District",
+      "featured": false,
+      "createdAt": "2026-10-18T10:00:00.000Z"
+    },
+    {
+      "id": "vid-3",
+      "title": " RCE | நல்லாசிரியர் விருது | K.Annamalai Ex.IPS Speech ",
+      "youtubeUrl": "https://youtu.be/j-4RyG3S1l4?si=KS1-p04iFqpN89B4",
+      "youtubeId": "j-4RyG3S1l4",
+      "category": "Healthcare",
+      "description": "",
+      "duration": "03:45",
+      "location": "Sivakasi,Tamilnadu",
+      "featured": false,
+      "createdAt": "2026-10-15T10:00:00.000Z"
+    },
+    {
+      "id": "vid-4",
+      "title": " RCE's APJ DREAM EXPO - 2021 | அறிவியல் கண்காட்சி ",
+      "youtubeUrl": "https://youtu.be/IXj0j1G0UtA?si=B92GxPvDno_TCi7D",
+      "youtubeId": "IXj0j1G0UtA",
+      "category": "Relief & Hunger",
+      "description": "",
+      "duration": "04:55",
+      "location": "Sivakasi,Tamilnadu",
+      "featured": false,
+      "createdAt": "2026-10-10T10:00:00.000Z"
+    }
+  ],
   "volunteerApplications": [
     {
       "id": "RCE-MEN-241490",

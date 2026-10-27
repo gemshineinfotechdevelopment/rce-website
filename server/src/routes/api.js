@@ -8,6 +8,10 @@ const {
   createGalleryItem,
   updateGalleryItem,
   deleteGalleryItem,
+  getVideos,
+  createVideo,
+  updateVideo,
+  deleteVideo,
   getStats,
   getProjects,
   getEvents,
@@ -57,6 +61,10 @@ router.get("/projects", getProjects);
 router.get("/events", getEvents);
 router.get("/stories", getStories);
 router.get("/gallery", getGallery);
+router.get("/videos", getVideos);
+router.post("/videos", createVideo);
+router.put("/videos/:id", updateVideo);
+router.delete("/videos/:id", deleteVideo);
 
 // Public User Form Submissions
 router.post("/join", joinClub);

@@ -63,6 +63,85 @@ export interface GalleryItem {
   year: string;
 }
 
+export interface VideoItem {
+  id: string;
+  title: string;
+  youtubeUrl: string;
+  youtubeId: string;
+  category?: string;
+  description?: string;
+  duration?: string;
+  location?: string;
+  featured?: boolean;
+  createdAt?: string;
+}
+
+export const extractYouTubeId = (url = ''): string => {
+  if (!url) return '';
+  const clean = url.trim();
+  const match = clean.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/|watch\?.+&v=))([\w-]{11})/);
+  if (match && match[1]) return match[1];
+  if (/^[\w-]{11}$/.test(clean)) return clean;
+  return clean;
+};
+
+export const getYouTubeThumbnail = (videoId: string): string => {
+  if (!videoId) return '';
+  return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+};
+
+export const getYouTubeEmbedUrl = (videoId: string, autoplay = false): string => {
+  if (!videoId) return '';
+  return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=${autoplay ? 1 : 0}&rel=0&modestbranding=1`;
+};
+
+export const DEFAULT_VIDEOS: VideoItem[] = [
+  {
+    id: 'vid-1',
+    title: 'Miyawaki Afforestation: 12,400 Native Trees Planted',
+    youtubeUrl: 'https://www.youtube.com/watch?v=0h9VqFq5b5I',
+    youtubeId: '0h9VqFq5b5I',
+    category: 'Environment',
+    description: 'Witness 450+ passionate youth volunteers transform dry wasteland into a lush biodiverse Miyawaki urban forest in Chennai.',
+    duration: '04:12',
+    location: 'Kattivakkam, Chennai',
+    featured: true,
+  },
+  {
+    id: 'vid-2',
+    title: 'Vidhya Connect: Free STEM Labs & Weekend Mentorship',
+    youtubeUrl: 'https://www.youtube.com/watch?v=ScMzIvxBSi4',
+    youtubeId: 'ScMzIvxBSi4',
+    category: 'Education',
+    description: 'Bringing high quality science experiments, math kits, and university mentors to 1,200+ rural government school students.',
+    duration: '05:30',
+    location: 'Tiruvallur District',
+    featured: false,
+  },
+  {
+    id: 'vid-3',
+    title: 'Arogya Mega Blood Donation & Eye Screening Camp',
+    youtubeUrl: 'https://www.youtube.com/watch?v=L_LUpnjgPso',
+    youtubeId: 'L_LUpnjgPso',
+    category: 'Healthcare',
+    description: 'Over 680 emergency blood units mobilized for government hospitals, alongside free cataract surgeries and medicine kits.',
+    duration: '03:45',
+    location: 'Kanchipuram Outskirts',
+    featured: false,
+  },
+  {
+    id: 'vid-4',
+    title: 'Annapoorna Relief: 45,000 Nutritious Meals Served',
+    youtubeUrl: 'https://www.youtube.com/watch?v=jNQXAC9IVRw',
+    youtubeId: 'jNQXAC9IVRw',
+    category: 'Relief & Hunger',
+    description: 'Delivering freshly cooked hot meals every weekend to hospital attendants, elderly shelters, and migrant worker communities.',
+    duration: '04:55',
+    location: 'Central Chennai',
+    featured: false,
+  },
+];
+
 export interface PillarItem {
   id: string;
   title: string;
@@ -213,6 +292,7 @@ export interface AdminData {
   events: ClubEvent[];
   stories?: StoryItem[];
   gallery?: GalleryItem[];
+  videos?: VideoItem[];
   siteContent?: SiteContent;
 }
 
@@ -453,6 +533,122 @@ export const deleteClubStoryApi = async (id: string) => {
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || 'Failed to delete story');
   return data;
+};
+
+// ==========================================
+// YOUTUBE VIDEOS API CALLS
+// ==========================================
+
+export const fetchClubVideos = async (): Promise<VideoItem[]> => {
+  try {
+    const res = await fetch(`${API_BASE}/api/videos`);
+    if (res.ok) {
+      const json = await res.json();
+      if (json.data && json.data.length > 0) {
+        localStorage.setItem('rce_club_videos', JSON.stringify(json.data));
+        return json.data;
+      }
+    }
+  } catch (error) {
+    console.warn('Backend unavailable, using saved or default videos:', error);
+  }
+
+  const local = localStorage.getItem('rce_club_videos');
+  if (local) {
+    try {
+      const parsed = JSON.parse(local);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    } catch {
+      // fallback to DEFAULT_VIDEOS
+    }
+  }
+  return DEFAULT_VIDEOS;
+};
+
+export const createClubVideoApi = async (payload: Partial<VideoItem>) => {
+  let createdVideo: VideoItem | null = null;
+  try {
+    const res = await fetch(`${API_BASE}/api/videos`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      createdVideo = data.data;
+    }
+  } catch (e) {
+    console.warn('Backend offline, saving video to local state:', e);
+  }
+
+  const cleanId = payload.youtubeId || extractYouTubeId(payload.youtubeUrl || '');
+  if (!createdVideo) {
+    createdVideo = {
+      id: `vid-${Date.now()}`,
+      title: payload.title || 'Community Service Highlight',
+      youtubeUrl: payload.youtubeUrl || `https://www.youtube.com/watch?v=${cleanId}`,
+      youtubeId: cleanId,
+      category: payload.category || 'General',
+      description: payload.description || '',
+      duration: payload.duration || '04:00',
+      location: payload.location || 'Chennai',
+      featured: Boolean(payload.featured),
+      createdAt: new Date().toISOString(),
+    };
+  }
+
+  const current = await fetchClubVideos();
+  const updated = [createdVideo, ...current.filter((v) => v.id !== createdVideo?.id)];
+  localStorage.setItem('rce_club_videos', JSON.stringify(updated));
+  return { success: true, data: createdVideo };
+};
+
+export const updateClubVideoApi = async (id: string, payload: Partial<VideoItem>) => {
+  let updatedVideo: VideoItem | null = null;
+  try {
+    const res = await fetch(`${API_BASE}/api/videos/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      updatedVideo = data.data;
+    }
+  } catch (e) {
+    console.warn('Backend offline, updating video in local state:', e);
+  }
+
+  const current = await fetchClubVideos();
+  const cleanId = payload.youtubeId || (payload.youtubeUrl ? extractYouTubeId(payload.youtubeUrl) : undefined);
+  const updated = current.map((v) => {
+    if (v.id === id) {
+      const merged = { ...v, ...payload, ...(cleanId ? { youtubeId: cleanId } : {}) };
+      if (!updatedVideo) updatedVideo = merged;
+      return merged;
+    }
+    return v;
+  });
+  localStorage.setItem('rce_club_videos', JSON.stringify(updated));
+  return { success: true, data: updatedVideo };
+};
+
+export const deleteClubVideoApi = async (id: string) => {
+  try {
+    const res = await fetch(`${API_BASE}/api/videos/${id}`, {
+      method: 'DELETE',
+    });
+    if (res.ok) {
+      // deleted on backend
+    }
+  } catch (e) {
+    console.warn('Backend offline, removing from local state:', e);
+  }
+
+  const current = await fetchClubVideos();
+  const updated = current.filter((v) => v.id !== id);
+  localStorage.setItem('rce_club_videos', JSON.stringify(updated));
+  return { success: true };
 };
 
 export const submitJoinApplication = async (payload: JoinPayload) => {

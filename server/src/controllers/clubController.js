@@ -465,6 +465,63 @@ let galleryList = [
   },
 ];
 
+function extractYoutubeId(url = "") {
+  if (!url) return "";
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/|watch\?.+&v=))([\w-]{11})/);
+  return match ? match[1] : (url.trim().length === 11 ? url.trim() : url);
+}
+
+let videosList = [
+  {
+    id: "vid-1",
+    title: "Miyawaki Afforestation: 12,400 Native Trees Planted",
+    youtubeUrl: "https://www.youtube.com/watch?v=0h9VqFq5b5I",
+    youtubeId: "0h9VqFq5b5I",
+    category: "Environment",
+    description: "Witness 450+ passionate youth volunteers transform dry wasteland into a lush biodiverse Miyawaki urban forest in Chennai.",
+    duration: "04:12",
+    location: "Kattivakkam, Chennai",
+    featured: true,
+    createdAt: "2026-10-20T10:00:00.000Z"
+  },
+  {
+    id: "vid-2",
+    title: "Vidhya Connect: Free STEM Labs & Weekend Mentorship",
+    youtubeUrl: "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+    youtubeId: "ScMzIvxBSi4",
+    category: "Education",
+    description: "Bringing high quality science experiments, math kits, and university mentors to 1,200+ rural government school students.",
+    duration: "05:30",
+    location: "Tiruvallur District",
+    featured: false,
+    createdAt: "2026-10-18T10:00:00.000Z"
+  },
+  {
+    id: "vid-3",
+    title: "Arogya Mega Blood Donation & Eye Screening Camp",
+    youtubeUrl: "https://www.youtube.com/watch?v=L_LUpnjgPso",
+    youtubeId: "L_LUpnjgPso",
+    category: "Healthcare",
+    description: "Over 680 emergency blood units mobilized for government hospitals, alongside free cataract surgeries and medicine kits.",
+    duration: "03:45",
+    location: "Kanchipuram Outskirts",
+    featured: false,
+    createdAt: "2026-10-15T10:00:00.000Z"
+  },
+  {
+    id: "vid-4",
+    title: "Annapoorna Relief: 45,000 Nutritious Meals Served",
+    youtubeUrl: "https://www.youtube.com/watch?v=jNQXAC9IVRw",
+    youtubeId: "jNQXAC9IVRw",
+    category: "Relief & Hunger",
+    description: "Delivering freshly cooked hot meals every weekend to hospital attendants, elderly shelters, and migrant worker communities.",
+    duration: "04:55",
+    location: "Central Chennai",
+    featured: false,
+    createdAt: "2026-10-10T10:00:00.000Z"
+  }
+];
+
 // Persistence Helpers
 function saveDataToFile() {
   try {
@@ -479,6 +536,7 @@ function saveDataToFile() {
       eventsList,
       storiesList,
       galleryList,
+      videosList,
       volunteerApplications,
       donationRecords,
       contactMessages,
@@ -501,6 +559,7 @@ function loadDataFromFile() {
       if (state.eventsList) eventsList = state.eventsList;
       if (state.storiesList) storiesList = state.storiesList;
       if (state.galleryList) galleryList = state.galleryList;
+      if (state.videosList && state.videosList.length > 0) videosList = state.videosList;
       if (state.volunteerApplications) volunteerApplications = state.volunteerApplications;
       if (state.donationRecords) donationRecords = state.donationRecords;
       if (state.contactMessages) contactMessages = state.contactMessages;
@@ -627,6 +686,85 @@ const deleteGalleryItem = (req, res) => {
   res.json({
     success: true,
     message: "Photo removed from gallery."
+  });
+};
+
+// ==========================================
+// YOUTUBE VIDEOS CONTROLLERS
+// ==========================================
+
+const getVideos = (req, res) => {
+  res.json({
+    success: true,
+    count: videosList.length,
+    data: videosList
+  });
+};
+
+const createVideo = (req, res) => {
+  const { title, youtubeUrl, youtubeId, category, description, duration, location, featured } = req.body;
+  if (!title || (!youtubeUrl && !youtubeId)) {
+    return res.status(400).json({ success: false, message: "Video title and YouTube link/ID are required" });
+  }
+
+  const cleanId = youtubeId || extractYoutubeId(youtubeUrl);
+  const newVideo = {
+    id: `vid-${Date.now()}`,
+    title: title.trim(),
+    youtubeUrl: youtubeUrl ? youtubeUrl.trim() : `https://www.youtube.com/watch?v=${cleanId}`,
+    youtubeId: cleanId,
+    category: category || "General",
+    description: description || "",
+    duration: duration || "03:45",
+    location: location || "Chennai",
+    featured: Boolean(featured),
+    createdAt: new Date().toISOString()
+  };
+
+  videosList.unshift(newVideo);
+  saveDataToFile();
+
+  res.status(201).json({
+    success: true,
+    message: "YouTube video added to showcase!",
+    data: newVideo
+  });
+};
+
+const updateVideo = (req, res) => {
+  const { id } = req.params;
+  const index = videosList.findIndex(v => v.id === id);
+  if (index === -1) {
+    return res.status(404).json({ success: false, message: "Video not found" });
+  }
+
+  const { youtubeUrl, youtubeId } = req.body;
+  let cleanId = youtubeId || (youtubeUrl ? extractYoutubeId(youtubeUrl) : videosList[index].youtubeId);
+
+  videosList[index] = {
+    ...videosList[index],
+    ...req.body,
+    youtubeId: cleanId,
+    id: videosList[index].id
+  };
+
+  saveDataToFile();
+
+  res.json({
+    success: true,
+    message: "Video details updated successfully!",
+    data: videosList[index]
+  });
+};
+
+const deleteVideo = (req, res) => {
+  const { id } = req.params;
+  videosList = videosList.filter(v => v.id !== id);
+  saveDataToFile();
+
+  res.json({
+    success: true,
+    message: "Video removed from showcase."
   });
 };
 
@@ -1077,6 +1215,7 @@ const getAdminData = (req, res) => {
       events: eventsList,
       stories: storiesList,
       gallery: galleryList,
+      videos: videosList,
       siteContent: siteContent
     }
   });
@@ -1162,6 +1301,10 @@ module.exports = {
   createGalleryItem,
   updateGalleryItem,
   deleteGalleryItem,
+  getVideos,
+  createVideo,
+  updateVideo,
+  deleteVideo,
   getStats,
   getProjects,
   getEvents,

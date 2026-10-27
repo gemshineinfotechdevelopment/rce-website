@@ -6,6 +6,7 @@ import { AboutSection } from './components/AboutSection';
 import { ProjectsSection } from './components/ProjectsSection';
 import { EventsSection } from './components/EventsSection';
 import { StoriesSection } from './components/StoriesSection';
+import { VideoShowcase } from './components/VideoShowcase';
 import { GallerySection } from './components/GallerySection';
 import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
@@ -18,6 +19,7 @@ import {
   fetchClubEvents,
   fetchClubStories,
   fetchGallery,
+  fetchClubVideos,
   fetchSiteContent,
   DEFAULT_SITE_CONTENT,
 } from './services/api';
@@ -27,6 +29,7 @@ import type {
   ClubEvent,
   StoryItem,
   GalleryItem,
+  VideoItem,
   SiteContent,
 } from './services/api';
 import './App.css';
@@ -47,6 +50,7 @@ function App() {
   const [events, setEvents] = useState<ClubEvent[]>([]);
   const [stories, setStories] = useState<StoryItem[]>([]);
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
+  const [videos, setVideos] = useState<VideoItem[]>([]);
   const [siteContent, setSiteContent] = useState<SiteContent>(DEFAULT_SITE_CONTENT);
   const [isSyncingStats, setIsSyncingStats] = useState(false);
 
@@ -85,12 +89,13 @@ function App() {
   const loadAllData = async () => {
     setIsSyncingStats(true);
     try {
-      const [statsData, projectsData, eventsData, storiesData, galleryData, contentData] = await Promise.all([
+      const [statsData, projectsData, eventsData, storiesData, galleryData, videosData, contentData] = await Promise.all([
         fetchClubStats(),
         fetchClubProjects(),
         fetchClubEvents(),
         fetchClubStories(),
         fetchGallery(),
+        fetchClubVideos(),
         fetchSiteContent(),
       ]);
 
@@ -99,6 +104,7 @@ function App() {
       if (eventsData?.length) setEvents(eventsData);
       if (storiesData?.length) setStories(storiesData);
       if (galleryData?.length) setGallery(galleryData);
+      if (videosData?.length) setVideos(videosData);
       if (contentData) setSiteContent(contentData);
     } catch (err) {
       console.warn('Error loading club data from backend:', err);
@@ -179,6 +185,8 @@ function App() {
           onRefreshStats={handleRefreshStats}
           isLoading={isSyncingStats}
         />
+
+        <VideoShowcase videos={videos} />
 
         <AboutSection
           content={siteContent.about}
