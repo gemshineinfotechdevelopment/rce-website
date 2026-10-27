@@ -1,6 +1,7 @@
-import React from 'react';
-import { Heart, Users, ArrowRight, ShieldCheck, Sparkles, Award } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Heart, Users, ArrowRight, ShieldCheck, Sparkles, Award, Maximize2, X } from 'lucide-react';
 import type { ClubStats, HeroContent } from '../services/api';
+import defaultHeroBanner from '../assets/Screenshot_27-10-2026_13299_www.instagram.com.jpeg';
 
 interface HeroProps {
   stats: ClubStats;
@@ -9,7 +10,9 @@ interface HeroProps {
   onOpenDonate: () => void;
 }
 
-export const Hero: React.FC<HeroProps> = ({ stats, content, onOpenJoin, onOpenDonate }) => {
+export const Hero: React.FC<HeroProps> = ({ content, onOpenJoin, onOpenDonate }) => {
+  const [isFullViewOpen, setIsFullViewOpen] = useState(false);
+
   const tag = content?.tag || 'A People-Driven Social Movement';
   const titlePrefix = content?.titlePrefix ?? 'Dedicated to ';
   const titleGradient = content?.titleGradient || 'Culture, Service';
@@ -22,10 +25,20 @@ export const Hero: React.FC<HeroProps> = ({ stats, content, onOpenJoin, onOpenDo
   const trustBadge1 = content?.trustBadge1 || '80G Tax Exemption';
   const trustBadge2 = content?.trustBadge2 || 'Govt. Registered NGO';
   const trustBadge3 = content?.trustBadge3 || '100% Volunteer Driven';
-  const imageUrl = content?.imageUrl || 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=900&q=80';
-  const badgeTagline = content?.badgeTagline || '✨ Service Above Self • RCE Chapter';
-  const statTreesLabel = content?.statTreesLabel || 'Saplings Planted';
-  const statLivesLabel = content?.statLivesLabel || 'Lives Impacted';
+  const imageUrl = (content?.imageUrl && !content.imageUrl.includes('unsplash.com/photo-1488521787991'))
+    ? content.imageUrl
+    : defaultHeroBanner;
+
+  // Handle ESC key to close full-screen modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isFullViewOpen) {
+        setIsFullViewOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isFullViewOpen]);
 
   return (
     <section id="hero" className="hero-section">
@@ -103,42 +116,67 @@ export const Hero: React.FC<HeroProps> = ({ stats, content, onOpenJoin, onOpenDo
             </div>
           </div>
 
-          {/* Right Visual Composition */}
+          {/* Right Visual Composition - Clean Banner Image */}
           <div className="hero-visual">
-            <div className="hero-card-main">
+            <div 
+              className="hero-card-main hero-clickable-card"
+              onClick={() => setIsFullViewOpen(true)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setIsFullViewOpen(true);
+                }
+              }}
+              title="Click to view full photo"
+              aria-label="View full banner photo"
+            >
               <img 
                 src={imageUrl} 
-                alt="RCE Volunteers helping children and communities"
+                alt="RCE Social Service Club Banner"
                 className="hero-main-img"
               />
-              <div className="hero-img-overlay"></div>
 
-              {/* Floating Glass Badges */}
-              <div className="floating-stat-badge top-right">
-                <div className="badge-icon-wrap gold">🌿</div>
-                <div>
-                  <div className="badge-stat-num">{stats.treesPlanted.toLocaleString()}+</div>
-                  <div className="badge-stat-label">{statTreesLabel}</div>
-                </div>
+              {/* Discreet view full photo badge */}
+              <div className="hero-expand-badge">
+                <Maximize2 size={13} />
+                <span>View Full Photo</span>
               </div>
-
-              <div className="floating-stat-badge bottom-left">
-                <div className="badge-icon-wrap brown">🎓</div>
-                <div>
-                  <div className="badge-stat-num">{stats.livesImpacted.toLocaleString()}+</div>
-                  <div className="badge-stat-label">{statLivesLabel}</div>
-                </div>
-              </div>
-
-              {badgeTagline && (
-                <div className="hero-badge-tagline">
-                  <span>{badgeTagline}</span>
-                </div>
-              )}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Full-view Lightbox Modal for Hero Banner */}
+      {isFullViewOpen && (
+        <div 
+          className="modal-overlay hero-banner-lightbox-overlay" 
+          onClick={() => setIsFullViewOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Full size banner preview"
+        >
+          <div 
+            className="hero-banner-lightbox-card"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="hero-lightbox-close-btn"
+              onClick={() => setIsFullViewOpen(false)}
+              aria-label="Close full view"
+            >
+              <X size={22} />
+            </button>
+            <img 
+              src={imageUrl} 
+              alt="RCE Official Banner Full View" 
+              className="hero-banner-full-img"
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 };

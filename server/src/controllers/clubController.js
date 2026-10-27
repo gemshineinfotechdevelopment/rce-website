@@ -26,7 +26,7 @@ const defaultSiteContent = {
     trustBadge1: "80G Tax Exemption",
     trustBadge2: "Govt. Registered NGO",
     trustBadge3: "100% Volunteer Driven",
-    imageUrl: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=900&q=80",
+    imageUrl: "/hero-banner.jpeg",
     badgeTagline: "✨ Service Above Self • RCE Chapter",
     statTreesLabel: "Saplings Planted",
     statLivesLabel: "Lives Impacted"
