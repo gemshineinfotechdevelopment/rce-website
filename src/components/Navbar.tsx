@@ -63,7 +63,7 @@ export const Navbar: React.FC<NavbarProps> = ({ brand, onOpenJoin, onOpenDonate 
           {/* Backend Status indicator */}
           <div 
             className={`server-status-pill ${backendOnline ? 'online' : backendOnline === false ? 'offline' : 'checking'}`} 
-            title={backendOnline ? 'Backend API Connected (Port 5000)' : 'Backend Server Offline'}
+            title={backendOnline ? 'Backend API Connected (Port 5024)' : 'Backend Server Offline'}
           >
             {backendOnline ? (
               <>

@@ -5,11 +5,27 @@ const { notFound, errorHandler } = require("./middleware/errorHandler");
 
 const app = express();
 
-// CORS configuration - Allow frontend port
-const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+// CORS configuration - Allow frontend port & production domain
+const clientUrl = process.env.CLIENT_URL || "https://rce.gemshine.tech";
+const allowedOrigins = [
+  clientUrl,
+  "https://rce.gemshine.tech",
+  "http://rce.gemshine.tech",
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "http://localhost:5024",
+  "http://127.0.0.1:5173",
+  "http://127.0.0.1:5024"
+];
+
 app.use(
   cors({
-    origin: [clientUrl, "http://localhost:3000", "http://127.0.0.1:5173"],
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin) || origin.endsWith("gemshine.tech")) {
+        return callback(null, true);
+      }
+      return callback(null, true); // Permissive behind reverse proxy
+    },
     credentials: true,
   })
 );

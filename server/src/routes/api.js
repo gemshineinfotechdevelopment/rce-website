@@ -38,7 +38,7 @@ const {
   deleteDonation,
   adminLogin
 } = require("../controllers/clubController");
-
+bb
 // Health check endpoint
 router.get("/health", getHealthStatus);
 
@@ -48,6 +48,7 @@ router.get("/message", (req, res) => {
     message: "Vanakkam! RCE Social Service Club Backend is active on port " + (process.env.PORT || 5000),
   });
 });
+
 
 // ==========================================
 // Public Content & Site Data Endpoints

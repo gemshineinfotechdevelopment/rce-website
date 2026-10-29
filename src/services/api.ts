@@ -1,6 +1,6 @@
-// API service connecting to backend on port 5000 (or via Vite proxy)
+// API service connecting to backend on port 5024 (or relative path in production)
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? '' : 'http://localhost:5024');
 
 export interface ClubStats {
   livesImpacted: number;

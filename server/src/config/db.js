@@ -1,19 +1,17 @@
 const mongoose = require("mongoose");
 
 const connectDB = async () => {
-  const uri = process.env.MONGO_URI;
-  if (!uri) {
-    console.warn("⚠️ MONGO_URI not provided. Skipping MongoDB connection.");
-    return;
-  }
+  const uri = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/rce_website";
 
   try {
     const conn = await mongoose.connect(uri, {
-      serverSelectionTimeoutMS: 2000,
+      serverSelectionTimeoutMS: 5000,
     });
-    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
+    console.log(`✅ MongoDB Connected: ${conn.connection.host} (Database: ${conn.connection.name || "rce_website"})`);
+    return conn;
   } catch (error) {
-    console.warn(`⚠️ MongoDB Connection Skipped: ${error.message}`);
+    console.warn(`⚠️ MongoDB Connection Skipped/Failed (${uri}): ${error.message}`);
+    console.warn(`ℹ️ Server will continue operating with local clubData.json file backup.`);
   }
 };
 

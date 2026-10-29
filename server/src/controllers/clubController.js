@@ -1,5 +1,7 @@
 const fs = require("fs");
 const path = require("path");
+const mongoose = require("mongoose");
+const { ClubData } = require("../models/ClubData");
 
 const DATA_FILE = path.join(__dirname, "../data/clubData.json");
 
@@ -522,8 +524,72 @@ let videosList = [
   }
 ];
 
-// Persistence Helpers
-function saveDataToFile() {
+// Persistence Helpers: MongoDB (Primary) + Local File (Backup)
+async function saveDataToDB() {
+  try {
+    if (mongoose.connection.readyState !== 1) {
+      return; // DB not connected yet, skipping
+    }
+    const state = {
+      siteContent,
+      currentStats,
+      projectsList,
+      eventsList,
+      storiesList,
+      galleryList,
+      videosList,
+      volunteerApplications,
+      donationRecords,
+      contactMessages,
+      newsletterSubscribers: Array.from(newsletterSubscribers),
+    };
+    await ClubData.findOneAndUpdate(
+      { key: "rce_master" },
+      { $set: state },
+      { upsert: true, new: true }
+    );
+  } catch (err) {
+    console.warn("⚠️ Could not write to MongoDB:", err.message);
+  }
+}
+
+async function syncWithDatabase() {
+  try {
+    if (mongoose.connection.readyState !== 1) return;
+    const existing = await ClubData.findOne({ key: "rce_master" });
+    if (existing) {
+      if (existing.siteContent) siteContent = existing.siteContent;
+      if (existing.currentStats) currentStats = existing.currentStats;
+      if (existing.projectsList?.length) projectsList = existing.projectsList;
+      if (existing.eventsList?.length) eventsList = existing.eventsList;
+      if (existing.storiesList?.length) storiesList = existing.storiesList;
+      if (existing.galleryList?.length) galleryList = existing.galleryList;
+      if (existing.videosList?.length) videosList = existing.videosList;
+      if (existing.volunteerApplications?.length) volunteerApplications = existing.volunteerApplications;
+      if (existing.donationRecords?.length) donationRecords = existing.donationRecords;
+      if (existing.contactMessages?.length) contactMessages = existing.contactMessages;
+      if (existing.newsletterSubscribers?.length) {
+        newsletterSubscribers = new Set(existing.newsletterSubscribers);
+      }
+      console.log("✅ Successfully synced and loaded live club data from MongoDB (rce_website)");
+      // Keep local file backup in sync with MongoDB
+      saveDataToFile(false);
+    } else {
+      console.log("🌱 Seeding initial club data into MongoDB database (rce_website)...");
+      await saveDataToDB();
+      console.log("✅ MongoDB initial seed complete!");
+    }
+  } catch (err) {
+    console.warn("⚠️ MongoDB sync notice:", err.message);
+  }
+}
+
+// Auto-trigger sync as soon as MongoDB connects
+mongoose.connection.on("connected", () => {
+  syncWithDatabase();
+});
+
+function saveDataToFile(syncToDB = true) {
   try {
     const dir = path.dirname(DATA_FILE);
     if (!fs.existsSync(dir)) {
@@ -543,6 +609,9 @@ function saveDataToFile() {
       newsletterSubscribers: Array.from(newsletterSubscribers),
     };
     fs.writeFileSync(DATA_FILE, JSON.stringify(state, null, 2), "utf8");
+    if (syncToDB) {
+      saveDataToDB().catch(() => {});
+    }
   } catch (err) {
     console.warn("⚠️ Could not write clubData.json:", err.message);
   }
@@ -573,7 +642,7 @@ function loadDataFromFile() {
   }
 }
 
-// Initial load from file
+// Initial load from file (instant startup, doesn't block)
 loadDataFromFile();
 
 // ==========================================
@@ -1329,5 +1398,6 @@ module.exports = {
   updateInquiryStatus,
   deleteInquiry,
   deleteDonation,
-  adminLogin
+  adminLogin,
+  syncWithDatabase
 };

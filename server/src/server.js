@@ -3,7 +3,8 @@ const http = require("http");
 const app = require("./app");
 const connectDB = require("./config/db");
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5024;
+const { syncWithDatabase } = require("./controllers/clubController");
 
 async function startServer() {
   try {
@@ -18,9 +19,13 @@ async function startServer() {
     });
 
     // Connect to DB asynchronously (doesn't block server listening)
-    connectDB().catch((err) => {
-      console.warn("MongoDB connection notice:", err.message);
-    });
+    connectDB()
+      .then(() => {
+        return syncWithDatabase();
+      })
+      .catch((err) => {
+        console.warn("MongoDB connection notice:", err.message);
+      });
   } catch (err) {
     console.error("❌ Failed to start server:", err);
     process.exit(1);

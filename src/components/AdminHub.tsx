@@ -84,7 +84,7 @@ export const AdminHub: React.FC<AdminHubProps> = ({ isOpen, onClose, onDataUpdat
         setStatsCamps(String(data.stats.medicalCamps));
       }
     } catch {
-      setActionMsg({ text: 'Failed to load submissions. Ensure backend port 5000 is running.', isError: true });
+      setActionMsg({ text: 'Failed to load submissions. Ensure backend port 5024 is running.', isError: true });
     } finally {
       setLoading(false);
     }
