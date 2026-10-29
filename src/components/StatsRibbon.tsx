@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, Heart, TreePine, Award, Stethoscope, Utensils, RefreshCw } from 'lucide-react';
+import { Users, TreePine, Award, RefreshCw } from 'lucide-react';
 import type { ClubStats } from '../services/api';
 
 interface StatsRibbonProps {
@@ -11,13 +11,6 @@ interface StatsRibbonProps {
 export const StatsRibbon: React.FC<StatsRibbonProps> = ({ stats, onRefreshStats, isLoading }) => {
   const statCards = [
     {
-      label: 'Lives Impacted',
-      value: stats.livesImpacted.toLocaleString() + '+',
-      desc: 'Through education & relief',
-      icon: <Heart size={24} color="#b45309" fill="#fef3c7" />,
-      colorClass: 'card-orange',
-    },
-    {
       label: 'Active Volunteers',
       value: stats.activeVolunteers.toLocaleString() + '+',
       desc: 'Youth & community mentors',
@@ -25,32 +18,18 @@ export const StatsRibbon: React.FC<StatsRibbonProps> = ({ stats, onRefreshStats,
       colorClass: 'card-green',
     },
     {
+      label: 'Completed Drives',
+      value: stats.projectsCompleted + '+',
+      desc: 'Educational & social programs',
+      icon: <Award size={24} color="#d97706" />,
+      colorClass: 'card-purple',
+    },
+    {
       label: 'Saplings Planted',
       value: stats.treesPlanted.toLocaleString() + '+',
       desc: 'Native Miyawaki groves',
       icon: <TreePine size={24} color="#92400e" />,
       colorClass: 'card-emerald',
-    },
-    {
-      label: 'Free Health Camps',
-      value: stats.medicalCamps + '+',
-      desc: 'Eye screenings & diagnostics',
-      icon: <Stethoscope size={24} color="#d97706" />,
-      colorClass: 'card-blue',
-    },
-    {
-      label: 'Nutritious Meals',
-      value: stats.mealsServed.toLocaleString() + '+',
-      desc: 'Zero-hunger weekend drives',
-      icon: <Utensils size={24} color="#b45309" />,
-      colorClass: 'card-amber',
-    },
-    {
-      label: 'Completed Drives',
-      value: stats.projectsCompleted + '+',
-      desc: 'Across 14 cities & towns',
-      icon: <Award size={24} color="#d97706" />,
-      colorClass: 'card-purple',
     },
   ];
 

@@ -34,8 +34,6 @@ import {
   FileSpreadsheet,
   ChevronUp,
   TreePine,
-  Utensils,
-  Stethoscope,
   Building2,
   Award,
   Tv,
@@ -945,13 +943,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
 
   // Counters configuration for clean grid
   const counterFields = [
-    { label: 'Lives Impacted', val: counterLives, setVal: setCounterLives, icon: <Heart size={20} className="text-amber-600" /> },
     { label: 'Active Volunteers', val: counterVolunteers, setVal: setCounterVolunteers, icon: <Users size={20} className="text-blue-600" /> },
-    { label: 'Projects Completed', val: counterProjects, setVal: setCounterProjects, icon: <Layers size={20} className="text-emerald-600" /> },
-    { label: 'Trees Planted', val: counterTrees, setVal: setCounterTrees, icon: <TreePine size={20} className="text-green-700" /> },
-    { label: 'Meals Served', val: counterMeals, setVal: setCounterMeals, icon: <Utensils size={20} className="text-orange-600" /> },
-    { label: 'Medical Camps', val: counterCamps, setVal: setCounterCamps, icon: <Stethoscope size={20} className="text-rose-600" /> },
-    { label: 'Cities Covered', val: counterCities, setVal: setCounterCities, icon: <Building2 size={20} className="text-purple-600" /> },
+    { label: 'Completed Drives', val: counterProjects, setVal: setCounterProjects, icon: <Layers size={20} className="text-emerald-600" /> },
+    { label: 'Saplings Planted', val: counterTrees, setVal: setCounterTrees, icon: <TreePine size={20} className="text-green-700" /> },
+    { label: 'Cities & Regions Covered', val: counterCities, setVal: setCounterCities, icon: <Building2 size={20} className="text-purple-600" /> },
     { label: 'Satisfaction Rate (%)', val: counterSatisfaction, setVal: setCounterSatisfaction, icon: <Award size={20} className="text-yellow-600" /> },
   ];
 
