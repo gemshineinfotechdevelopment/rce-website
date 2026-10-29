@@ -165,11 +165,15 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
   // New Event Form State
   const [eventTitle, setEventTitle] = useState('');
   const [eventDate, setEventDate] = useState('');
-  const [eventTime, setEventTime] = useState('08:00 AM - 12:30 PM');
+  const [eventTime, setEventTime] = useState('10:00 AM - 01:00 PM');
   const [eventLocation, setEventLocation] = useState('');
-  const [eventCategory, setEventCategory] = useState('Environment');
-  const [eventSlots, setEventSlots] = useState('120');
-  const [eventLeader, setEventLeader] = useState('RCE Student Coordinator');
+  const [eventCategory, setEventCategory] = useState('₹5 Paadasaalai');
+  const [eventStudentsImpacted, setEventStudentsImpacted] = useState('1,200+ Students Benefited');
+  const [eventImage, setEventImage] = useState('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80');
+  const [eventStatus, setEventStatus] = useState('Conducted');
+  const [eventLeader, setEventLeader] = useState('RCE Educational Team');
+  const [eventChiefGuest, setEventChiefGuest] = useState('');
+  const [eventHighlights, setEventHighlights] = useState('Daily evening tutoring, Spoken English, Free stationery');
   const [eventDesc, setEventDesc] = useState('');
 
   // New Project Form State
@@ -712,18 +716,28 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
     }
     try {
       await createClubEvent({
-        title: eventTitle,
+        title: eventTitle.trim(),
         date: eventDate || new Date().toISOString().slice(0, 10),
         time: eventTime,
-        location: eventLocation || 'RCE Campus & Outreach Ground',
+        location: eventLocation || 'Sivakasi & Rural Hubs, Tamil Nadu',
         category: eventCategory,
-        slotsTotal: Number(eventSlots) || 100,
-        leader: eventLeader,
-        description: eventDesc || 'Community volunteer drive organized by RCE Social Service Club.',
+        status: eventStatus || 'Conducted',
+        studentsImpacted: eventStudentsImpacted || '1,000+ Students Benefited',
+        image:
+          eventImage ||
+          'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80',
+        highlights: eventHighlights
+          ? eventHighlights.split(',').map((s) => s.trim()).filter(Boolean)
+          : ['Educational initiative', 'Volunteer led'],
+        leader: eventLeader || 'RCE Educational Team',
+        chiefGuest: eventChiefGuest,
+        slotsTotal: 100,
+        description: eventDesc || 'Educational program conducted by Right Club for Education.',
       });
-      showNotice('Drive scheduled and published to the live website!');
+      showNotice('Educational event uploaded and published to the live website!');
       setEventTitle('');
       setEventDesc('');
+      setEventChiefGuest('');
       setShowAddEvent(false);
       await loadData();
       if (onDataUpdated) onDataUpdated();
@@ -1112,7 +1126,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           >
             <div className="flex items-center gap-3">
               <Calendar size={18} />
-              <span>Drives & Events</span>
+              <span>Educational Events</span>
             </div>
             <span className="admin-badge-count">{adminData?.events?.length || 0}</span>
           </button>
@@ -1258,7 +1272,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 {activeTab === 'videos' && 'YouTube Videos & Impact Media Showcase'}
                 {activeTab === 'gallery' && 'Public Photo Gallery'}
                 {activeTab === 'stories' && 'Voices of Change & Stories'}
-                {activeTab === 'events' && 'Social Drives & Operations'}
+                {activeTab === 'events' && 'Educational Events & Impact Showcase'}
                 {activeTab === 'projects' && 'Flagship Causes & Projects'}
                 {activeTab === 'counters' && 'Home Page Live Counters'}
                 {activeTab === 'volunteers' && 'Volunteer & Member Registry'}
@@ -1740,15 +1754,15 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
         )}
 
         {/* ==============================================================
-            TAB: DRIVES & EVENTS
+            TAB: EDUCATIONAL EVENTS & INITIATIVES
            ============================================================== */}
         {activeTab === 'events' && (
           <div className="admin-content-view">
             {/* Header + Add Toggle Button */}
             <div className="admin-section-header-bar">
               <div>
-                <h3 className="admin-section-title">Published Social Drives ({adminData?.events?.length || 0})</h3>
-                <p className="admin-section-subtitle">Manage upcoming community service camps and outreach drives</p>
+                <h3 className="admin-section-title">Educational Events & Initiatives ({adminData?.events?.length || 0})</h3>
+                <p className="admin-section-subtitle">Upload and showcase completed education programs, ₹5 Paadasaalai centers, Kalvi Melas, and honors</p>
               </div>
               <button
                 type="button"
@@ -1756,7 +1770,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 className="btn-primary"
               >
                 {showAddEvent ? <ChevronUp size={16} /> : <PlusCircle size={16} />}
-                <span>{showAddEvent ? 'Close Form' : '+ Schedule New Drive'}</span>
+                <span>{showAddEvent ? 'Close Form' : '+ Upload Educational Event'}</span>
               </button>
             </div>
 
@@ -1765,15 +1779,15 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               <div className="admin-box mb-6 border-amber-300 bg-amber-50/30">
                 <h4 className="font-bold text-amber-950 mb-4 flex items-center gap-2">
                   <PlusCircle size={18} className="text-amber-700" />
-                  <span>Create & Publish New Social Drive</span>
+                  <span>Upload Conducted Educational Initiative</span>
                 </h4>
                 <form onSubmit={handleAddEvent}>
                   <div className="form-group mb-3">
-                    <label className="input-sublabel">Drive Title *</label>
+                    <label className="input-sublabel">Event / Program Title *</label>
                     <input
                       type="text"
                       required
-                      placeholder="e.g. Miyawaki Urban Afforestation Drive"
+                      placeholder="e.g. மாநில அளவிலான கல்வி மேளா (State-Level Kalvi Mela 2025)"
                       value={eventTitle}
                       onChange={(e) => setEventTitle(e.target.value)}
                       className="form-input"
@@ -1782,7 +1796,23 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
 
                   <div className="form-row-3 mb-3">
                     <div>
-                      <label className="input-sublabel">Drive Date *</label>
+                      <label className="input-sublabel">Program Category</label>
+                      <select
+                        value={eventCategory}
+                        onChange={(e) => setEventCategory(e.target.value)}
+                        className="form-input"
+                      >
+                        <option value="₹5 Paadasaalai">₹5 Paadasaalai (Evening Centers)</option>
+                        <option value="Kalvi Mela">Kalvi Mela & Science Expo</option>
+                        <option value="Teachers Award">Best Good Teacher Award</option>
+                        <option value="Kit Distribution">School Kit & Study Aid Distribution</option>
+                        <option value="Education Awareness">Education Awareness Marathon</option>
+                        <option value="Career Guidance">Higher Education & NEET/JEE Guidance</option>
+                        <option value="General Education">General Education Program</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="input-sublabel">Conducted Date *</label>
                       <input
                         type="date"
                         required
@@ -1792,69 +1822,116 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                       />
                     </div>
                     <div>
-                      <label className="input-sublabel">Time Window</label>
+                      <label className="input-sublabel">Timing / Duration</label>
                       <input
                         type="text"
-                        placeholder="07:30 AM - 12:30 PM"
+                        placeholder="e.g. 05:30 PM - 07:30 PM Daily or 09:30 AM - 04:30 PM"
                         value={eventTime}
                         onChange={(e) => setEventTime(e.target.value)}
                         className="form-input"
                       />
                     </div>
-                    <div>
-                      <label className="input-sublabel">Category</label>
-                      <select
-                        value={eventCategory}
-                        onChange={(e) => setEventCategory(e.target.value)}
-                        className="form-input"
-                      >
-                        <option value="Environment">Environment & Greenery</option>
-                        <option value="Healthcare">Healthcare & Blood Aid</option>
-                        <option value="Education">Education & Coaching</option>
-                        <option value="Relief">Relief & Hunger</option>
-                        <option value="Culture & Youth">Culture & Youth</option>
-                      </select>
-                    </div>
                   </div>
 
                   <div className="form-row-3 mb-3">
                     <div>
-                      <label className="input-sublabel">Venue / Ground Location</label>
+                      <label className="input-sublabel">Location / School / Venue *</label>
                       <input
                         type="text"
-                        placeholder="e.g. Ennore Coastline, Chennai"
+                        required
+                        placeholder="e.g. Sivakasi & Surrounding Villages, Tamil Nadu"
                         value={eventLocation}
                         onChange={(e) => setEventLocation(e.target.value)}
                         className="form-input"
                       />
                     </div>
                     <div>
-                      <label className="input-sublabel">Total Volunteer Slots</label>
+                      <label className="input-sublabel">Students / Beneficiaries Impacted *</label>
                       <input
-                        type="number"
-                        placeholder="120"
-                        value={eventSlots}
-                        onChange={(e) => setEventSlots(e.target.value)}
+                        type="text"
+                        required
+                        placeholder="e.g. 1,200+ Students Learning Daily"
+                        value={eventStudentsImpacted}
+                        onChange={(e) => setEventStudentsImpacted(e.target.value)}
                         className="form-input"
                       />
                     </div>
                     <div>
-                      <label className="input-sublabel">Coordinator Name</label>
+                      <label className="input-sublabel">Status</label>
+                      <select
+                        value={eventStatus}
+                        onChange={(e) => setEventStatus(e.target.value)}
+                        className="form-input"
+                      >
+                        <option value="Conducted">Conducted / Completed</option>
+                        <option value="Ongoing Flagship">Ongoing Flagship Movement</option>
+                        <option value="Annual Program">Annual Flagship Program</option>
+                        <option value="Upcoming">Upcoming Program</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="form-group mb-3">
+                    <label className="input-sublabel">Event Photograph (Image URL)</label>
+                    <div className="flex gap-3 items-center">
+                      <input
+                        type="url"
+                        placeholder="https://images.unsplash.com/... or /event-photo.jpg"
+                        value={eventImage}
+                        onChange={(e) => setEventImage(e.target.value)}
+                        className="form-input flex-1"
+                      />
+                      {eventImage && (
+                        <img
+                          src={eventImage}
+                          alt="Preview"
+                          className="w-12 h-10 object-cover rounded border border-amber-300"
+                          onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                        />
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="form-row-2 mb-3">
+                    <div>
+                      <label className="input-sublabel">Lead Coordinator / Team</label>
                       <input
                         type="text"
-                        placeholder="RCE Student Coordinator"
+                        placeholder="e.g. RCE Paadasaalai Mentors Wing"
                         value={eventLeader}
                         onChange={(e) => setEventLeader(e.target.value)}
                         className="form-input"
                       />
                     </div>
+                    <div>
+                      <label className="input-sublabel">Chief Guest / Special Dignitaries</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. District Educational Officer (DEO) & Village Leaders"
+                        value={eventChiefGuest}
+                        onChange={(e) => setEventChiefGuest(e.target.value)}
+                        className="form-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group mb-3">
+                    <label className="input-sublabel">Key Highlights / Milestones (comma-separated)</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. 15 Schools Reached, Free Notebook Bundles, Spoken English Coaching"
+                      value={eventHighlights}
+                      onChange={(e) => setEventHighlights(e.target.value)}
+                      className="form-input"
+                    />
                   </div>
 
                   <div className="form-group mb-4">
-                    <label className="input-sublabel">Description & Instructions</label>
+                    <label className="input-sublabel">Event Summary & Educational Impact Description *</label>
                     <textarea
-                      rows={2}
-                      placeholder="Brief what volunteers should bring, exact meeting spot, and goals..."
+                      rows={3}
+                      required
+                      placeholder="Describe the initiative, student participation, outcomes, and community response..."
                       value={eventDesc}
                       onChange={(e) => setEventDesc(e.target.value)}
                       className="form-input textarea"
@@ -1871,21 +1948,32 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     </button>
                     <button type="submit" className="btn-primary">
                       <Save size={16} />
-                      <span>Publish Drive</span>
+                      <span>Publish Educational Event</span>
                     </button>
                   </div>
                 </form>
               </div>
             )}
 
-            {/* Drives Cards Grid */}
+            {/* Educational Events Cards Grid */}
             <div className="admin-cards-grid">
               {(adminData?.events || []).map((ev) => (
                 <div key={ev.id} className="admin-event-card">
+                  {ev.image && (
+                    <div className="mb-3 rounded-lg overflow-hidden border border-stone-200 h-36 w-full">
+                      <img
+                        src={ev.image}
+                        alt={ev.title}
+                        className="w-full h-full object-cover"
+                        onError={(e) => { (e.currentTarget as HTMLImageElement).src = 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80'; }}
+                      />
+                    </div>
+                  )}
+
                   <div className="flex items-center justify-between mb-2">
                     <span className="event-cat-chip">{ev.category}</span>
-                    <span className={`status-chip ${ev.status === 'Completed' ? 'green' : 'amber'}`}>
-                      {ev.status || 'Upcoming'}
+                    <span className={`status-chip ${ev.status === 'Completed' || ev.status === 'Conducted' ? 'green' : 'amber'}`}>
+                      {ev.status || 'Conducted'}
                     </span>
                   </div>
 
@@ -1893,21 +1981,32 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
 
                   <div className="admin-event-meta-grid">
                     <span className="meta-pill">📅 {ev.date}</span>
-                    <span className="meta-pill">⏰ {ev.time}</span>
                     <span className="meta-pill">📍 {ev.location}</span>
-                    <span className="meta-pill">👥 {ev.slotsBooked || 0} / {ev.slotsTotal} slots</span>
+                    <span className="meta-pill text-amber-900 font-bold bg-amber-50">
+                      🎓 {ev.studentsImpacted || ev.beneficiaries || 'Students Benefited'}
+                    </span>
                   </div>
 
                   <p className="admin-event-desc line-clamp-2">{ev.description}</p>
 
-                  <div className="flex items-center justify-between mt-4 pt-3 border-t border-stone-200">
-                    <span className="text-xs text-stone-500">Lead: {ev.leader}</span>
+                  {ev.highlights && ev.highlights.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 my-2">
+                      {ev.highlights.slice(0, 2).map((hl, i) => (
+                        <span key={i} className="text-xs bg-stone-100 text-stone-600 px-2 py-0.5 rounded-full line-clamp-1">
+                          ✓ {hl}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-stone-200">
+                    <span className="text-xs text-stone-500">Lead: {ev.leader || 'RCE Team'}</span>
                     <div className="flex gap-1">
                       <button
                         type="button"
                         onClick={() => setEditingEvent(ev)}
                         className="admin-icon-btn blue"
-                        title="Edit Drive"
+                        title="Edit Educational Event"
                       >
                         <Edit3 size={15} />
                       </button>
@@ -1915,7 +2014,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                         type="button"
                         onClick={() => handleDeleteEvent(ev.id)}
                         className="admin-icon-btn red"
-                        title="Delete Drive"
+                        title="Delete Event"
                       >
                         <Trash2 size={15} />
                       </button>
@@ -3506,14 +3605,14 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       )}
 
       {/* ==============================================================
-          MODAL: EDIT EVENT / DRIVE
+          MODAL: EDIT EDUCATIONAL EVENT / INITIATIVE
          ============================================================== */}
       {editingEvent && (
         <div className="modal-overlay" onClick={() => setEditingEvent(null)}>
           <div className="modal-content admin-modal-edit" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <div className="modal-title-group">
-                <span className="admin-edit-badge"><Edit3 size={12} /> EDIT DRIVE</span>
+                <span className="admin-edit-badge"><Edit3 size={12} /> EDIT EDUCATIONAL EVENT</span>
                 <h2 className="modal-title">{editingEvent.title}</h2>
               </div>
               <button
@@ -3539,6 +3638,38 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
 
               <div className="form-row-2 mb-3">
                 <div>
+                  <label className="input-sublabel">Category</label>
+                  <select
+                    value={editingEvent.category}
+                    onChange={(e) => setEditingEvent({ ...editingEvent, category: e.target.value })}
+                    className="form-input"
+                  >
+                    <option value="₹5 Paadasaalai">₹5 Paadasaalai (Evening Centers)</option>
+                    <option value="Kalvi Mela">Kalvi Mela & Science Expo</option>
+                    <option value="Teachers Award">Best Good Teacher Award</option>
+                    <option value="Kit Distribution">School Kit & Study Aid Distribution</option>
+                    <option value="Education Awareness">Education Awareness Marathon</option>
+                    <option value="Career Guidance">Higher Education & NEET/JEE Guidance</option>
+                    <option value="General Education">General Education Program</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="input-sublabel">Status</label>
+                  <select
+                    value={editingEvent.status || 'Conducted'}
+                    onChange={(e) => setEditingEvent({ ...editingEvent, status: e.target.value })}
+                    className="form-input"
+                  >
+                    <option value="Conducted">Conducted / Completed</option>
+                    <option value="Ongoing Flagship">Ongoing Flagship Movement</option>
+                    <option value="Annual Program">Annual Flagship Program</option>
+                    <option value="Upcoming">Upcoming</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-row-2 mb-3">
+                <div>
                   <label className="input-sublabel">Date *</label>
                   <input
                     type="date"
@@ -3549,10 +3680,11 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   />
                 </div>
                 <div>
-                  <label className="input-sublabel">Time Window</label>
+                  <label className="input-sublabel">Timing / Duration</label>
                   <input
                     type="text"
-                    value={editingEvent.time}
+                    value={editingEvent.time || ''}
+                    placeholder="e.g. 05:30 PM - 07:30 PM Daily"
                     onChange={(e) => setEditingEvent({ ...editingEvent, time: e.target.value })}
                     className="form-input"
                   />
@@ -3561,78 +3693,84 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
 
               <div className="form-row-2 mb-3">
                 <div>
-                  <label className="input-sublabel">Category</label>
-                  <select
-                    value={editingEvent.category}
-                    onChange={(e) => setEditingEvent({ ...editingEvent, category: e.target.value })}
+                  <label className="input-sublabel">Students / Beneficiaries Impacted</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 1,200+ Students Daily"
+                    value={editingEvent.studentsImpacted || editingEvent.beneficiaries || ''}
+                    onChange={(e) => setEditingEvent({ ...editingEvent, studentsImpacted: e.target.value })}
                     className="form-input"
-                  >
-                    <option value="Environment">Environment</option>
-                    <option value="Healthcare">Healthcare</option>
-                    <option value="Education">Education</option>
-                    <option value="Relief">Relief</option>
-                    <option value="Culture & Youth">Culture & Youth</option>
-                  </select>
+                  />
                 </div>
                 <div>
-                  <label className="input-sublabel">Status</label>
-                  <select
-                    value={editingEvent.status}
-                    onChange={(e) => setEditingEvent({ ...editingEvent, status: e.target.value })}
+                  <label className="input-sublabel">Location / School / Venue</label>
+                  <input
+                    type="text"
+                    value={editingEvent.location}
+                    onChange={(e) => setEditingEvent({ ...editingEvent, location: e.target.value })}
                     className="form-input"
-                  >
-                    <option value="Upcoming">Upcoming</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Completed">Completed</option>
-                  </select>
+                  />
+                </div>
+              </div>
+
+              <div className="form-group mb-3">
+                <label className="input-sublabel">Event Photo URL</label>
+                <div className="flex gap-3 items-center">
+                  <input
+                    type="url"
+                    placeholder="https://images.unsplash.com/... or /event.jpg"
+                    value={editingEvent.image || ''}
+                    onChange={(e) => setEditingEvent({ ...editingEvent, image: e.target.value })}
+                    className="form-input flex-1"
+                  />
+                  {editingEvent.image && (
+                    <img
+                      src={editingEvent.image}
+                      alt="Preview"
+                      className="w-12 h-10 object-cover rounded border border-amber-300"
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                    />
+                  )}
                 </div>
               </div>
 
               <div className="form-row-2 mb-3">
                 <div>
-                  <label className="input-sublabel">Total Slots</label>
+                  <label className="input-sublabel">Lead Coordinator / Team</label>
                   <input
-                    type="number"
-                    value={editingEvent.slotsTotal}
-                    onChange={(e) => setEditingEvent({ ...editingEvent, slotsTotal: Number(e.target.value) })}
+                    type="text"
+                    value={editingEvent.leader || ''}
+                    onChange={(e) => setEditingEvent({ ...editingEvent, leader: e.target.value })}
                     className="form-input"
                   />
                 </div>
                 <div>
-                  <label className="input-sublabel">Booked Slots</label>
+                  <label className="input-sublabel">Chief Guest / Dignitaries</label>
                   <input
-                    type="number"
-                    value={editingEvent.slotsBooked}
-                    onChange={(e) => setEditingEvent({ ...editingEvent, slotsBooked: Number(e.target.value) })}
+                    type="text"
+                    placeholder="Special dignitaries who attended"
+                    value={editingEvent.chiefGuest || ''}
+                    onChange={(e) => setEditingEvent({ ...editingEvent, chiefGuest: e.target.value })}
                     className="form-input"
                   />
                 </div>
               </div>
 
               <div className="form-group mb-3">
-                <label className="input-sublabel">Location / Venue</label>
+                <label className="input-sublabel">Key Highlights (comma-separated)</label>
                 <input
                   type="text"
-                  value={editingEvent.location}
-                  onChange={(e) => setEditingEvent({ ...editingEvent, location: e.target.value })}
-                  className="form-input"
-                />
-              </div>
-
-              <div className="form-group mb-3">
-                <label className="input-sublabel">Lead Coordinator</label>
-                <input
-                  type="text"
-                  value={editingEvent.leader}
-                  onChange={(e) => setEditingEvent({ ...editingEvent, leader: e.target.value })}
+                  placeholder="e.g. Free STEM kits, 15 Schools Reached, DEO Attended"
+                  value={Array.isArray(editingEvent.highlights) ? editingEvent.highlights.join(', ') : (editingEvent.highlights || '')}
+                  onChange={(e) => setEditingEvent({ ...editingEvent, highlights: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
                   className="form-input"
                 />
               </div>
 
               <div className="form-group mb-4">
-                <label className="input-sublabel">Description & Instructions</label>
+                <label className="input-sublabel">Description & Achievements</label>
                 <textarea
-                  rows={2}
+                  rows={3}
                   value={editingEvent.description}
                   onChange={(e) => setEditingEvent({ ...editingEvent, description: e.target.value })}
                   className="form-input textarea"

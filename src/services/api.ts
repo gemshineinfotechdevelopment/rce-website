@@ -34,14 +34,19 @@ export interface ClubEvent {
   id: string;
   title: string;
   date: string;
-  time: string;
+  time?: string;
   location: string;
   category: string;
   status: string;
-  slotsTotal: number;
-  slotsBooked: number;
+  studentsImpacted?: string;
+  beneficiaries?: string;
+  image?: string;
   description: string;
-  leader: string;
+  highlights?: string[];
+  leader?: string;
+  chiefGuest?: string;
+  slotsTotal?: number;
+  slotsBooked?: number;
 }
 
 export interface StoryItem {
@@ -139,6 +144,129 @@ export const DEFAULT_VIDEOS: VideoItem[] = [
     duration: '04:55',
     location: 'Central Chennai',
     featured: false,
+  },
+];
+
+export const DEFAULT_EVENTS: ClubEvent[] = [
+  {
+    id: 'ev-rce-1',
+    title: '₹5 ரூபாய் பாடசாலை (Rs. 5 School) - Evening Learning Centers',
+    date: '2025-06-15',
+    time: '05:30 PM - 07:30 PM Daily',
+    location: 'Sivakasi & Rural Hubs, Tamil Nadu',
+    category: '₹5 Paadasaalai',
+    status: 'Ongoing Flagship',
+    studentsImpacted: '1,200+ Students Daily',
+    image: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80',
+    description: "Right Club for Education's revolutionary daily evening study hub where rural & underprivileged children receive structured coaching, homework assistance, spoken English, and holistic mentoring for just ₹5 token fee.",
+    highlights: [
+      'Daily evening tutoring for grades 1 to 10',
+      'Spoken English & Vedic Math workshops',
+      '12+ village learning centers operating actively',
+      'Free notebooks & study stationery provided',
+    ],
+    leader: 'RCE Paadasaalai Mentors Team',
+    chiefGuest: 'Elders & Village Education Committee',
+  },
+  {
+    id: 'ev-rce-2',
+    title: 'மாநில அளவிலான கல்வி மேளா (State-Level Kalvi Mela & Science Expo)',
+    date: '2025-10-12',
+    time: '09:30 AM - 05:00 PM',
+    location: 'Town Hall Ground, Virudhunagar District',
+    category: 'Kalvi Mela',
+    status: 'Conducted',
+    studentsImpacted: '2,800+ Students & 45 Schools',
+    image: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=800&q=80',
+    description: 'Grand educational festival featuring working science models by students, an extensive educational book exhibition, robotics demo counters, and career pathways pavilion for government school children.',
+    highlights: [
+      'Over 120 working science models exhibited',
+      'Free career guidance handbooks gifted to 10th & 12th students',
+      'Interactive STEM experiments & astronomy telescope viewing',
+      'Merit awards & certificates for innovative child inventors',
+    ],
+    leader: 'RCE Kalvi Mela Organizing Board',
+    chiefGuest: 'District Educational Officer (DEO) & Eminent Scientists',
+  },
+  {
+    id: 'ev-rce-3',
+    title: 'சிறந்த நல்லாசிரியர் விருது (Best Good Teacher Award Ceremony)',
+    date: '2025-09-05',
+    time: '10:00 AM - 02:00 PM',
+    location: 'Kamarajar Memorial Auditorium, Tamil Nadu',
+    category: 'Teachers Award',
+    status: 'Conducted',
+    studentsImpacted: '85+ Dedicated Teachers Honored',
+    image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80',
+    description: "Annual state-level award presentation honoring selfless teachers and headmasters from government and village schools who transformed rural children's lives through dedication and love for teaching.",
+    highlights: [
+      'Special memento & citation presented to 85 inspiring educators',
+      'Keynote talks on value-based child education',
+      'Documentary screening on unsung rural school teachers',
+      'Attended by 600+ educators, students, and parents',
+    ],
+    leader: 'RCE Executive Council',
+    chiefGuest: 'Retd. Vice Chancellor & Distinguished Educationists',
+  },
+  {
+    id: 'ev-rce-4',
+    title: 'கல்வி விழிப்புணர்வு வெள்ளை மாரத்தான் (White Marathon for Education)',
+    date: '2025-08-15',
+    time: '06:00 AM - 09:30 AM',
+    location: 'Sivakasi Arterial Route, Tamil Nadu',
+    category: 'Education Awareness',
+    status: 'Conducted',
+    studentsImpacted: '1,500+ Runners & Youth Volunteers',
+    image: 'https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=800&q=80',
+    description: 'Massive community marathon with hundreds of youth, students, and citizens sporting white T-shirts to champion child education rights, stop child labor, and promote zero school dropouts in rural belts.',
+    highlights: [
+      '5K & 10K awareness runs for schools & colleges',
+      'Distribution of educational awareness flyers across town',
+      'Medals, t-shirts, and participation certificates for all runners',
+      'Fund mobilization for village school libraries',
+    ],
+    leader: 'RCE Youth Marathon Wing',
+    chiefGuest: 'Superintendent of Police & National Sports Personalities',
+  },
+  {
+    id: 'ev-rce-5',
+    title: 'இலவச கல்வி உபகரணங்கள் வழங்கும் விழா (Free School Kits & Bags Distribution)',
+    date: '2025-06-08',
+    time: '09:00 AM - 01:30 PM',
+    location: 'Panchayat Union Middle School, Rural Enclave',
+    category: 'Kit Distribution',
+    status: 'Conducted',
+    studentsImpacted: '3,200+ School Kits Distributed',
+    image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=800&q=80',
+    description: 'Comprehensive school reopening kit distribution providing durable school backpacks, geometry kits, long-size notebooks, pens, and water bottles to deserving government school students.',
+    highlights: [
+      'High quality waterproof school bags & stationery kits',
+      'Full academic year notebook bundles for 3,200+ students',
+      '18 rural government schools reached across Virudhunagar district',
+      'Zero financial burden on underprivileged daily-wage parents',
+    ],
+    leader: 'RCE Student Welfare Team',
+    chiefGuest: 'Village Panchayat President & School Headmistress',
+  },
+  {
+    id: 'ev-rce-6',
+    title: 'அரசு பள்ளி மாணவர்களுக்கான உயர்கல்வி வழிகாட்டு முகாம் (Higher Education Guidance Conclave)',
+    date: '2025-04-20',
+    time: '10:00 AM - 04:00 PM',
+    location: 'District Community Auditorium',
+    category: 'Career Guidance',
+    status: 'Conducted',
+    studentsImpacted: '950+ 12th Standard Students Guided',
+    image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80',
+    description: 'Expert career guidance camp for rural 11th and 12th standard government school students covering government college admissions, 7.5% reservation guidance, entrance exam coaching, and scholarships.',
+    highlights: [
+      'Guidance on Engineering, Medicine, Arts & Science college admissions',
+      'Detailed session on Tamil Nadu Government 7.5% quota & scholarships',
+      'One-on-one counseling with professors and career advisors',
+      'Free college admission handbook distributed to every student',
+    ],
+    leader: 'RCE Higher Education Cell',
+    chiefGuest: 'University Professors & Career Counselors',
   },
 ];
 
@@ -485,10 +613,13 @@ export const fetchClubEvents = async (): Promise<ClubEvent[]> => {
     const res = await fetch(`${API_BASE}/api/events`);
     if (!res.ok) throw new Error('Failed to fetch events');
     const json = await res.json();
-    return json.data;
+    if (Array.isArray(json.data) && json.data.length > 0) {
+      return json.data;
+    }
+    return DEFAULT_EVENTS;
   } catch (error) {
-    console.warn('Backend unavailable, using mock events:', error);
-    return [];
+    console.warn('Backend unavailable, using default educational events:', error);
+    return DEFAULT_EVENTS;
   }
 };
 

@@ -333,56 +333,136 @@ let projectsList = [
 
 let eventsList = [
   {
-    id: "ev-1",
-    title: "Mega Tree Plantation Drive: Mission Green 5,000",
-    date: "2026-11-08",
-    time: "07:30 AM - 11:30 AM",
-    location: "Lakeview Biodiversity Park, Sector 4",
-    category: "Environment",
-    status: "Upcoming",
-    slotsTotal: 150,
-    slotsBooked: 118,
-    description: "Join hands with 100+ fellow volunteers to plant 1,500 native saplings with tree guards and drip systems.",
-    leader: "Karthik R. (Green Wing Head)"
+    id: "ev-rce-1",
+    title: "₹5 ரூபாய் பாடசாலை (Rs. 5 School) - Evening Learning Centers",
+    date: "2025-06-15",
+    time: "05:30 PM - 07:30 PM Daily",
+    location: "Sivakasi & Rural Hubs, Tamil Nadu",
+    category: "₹5 Paadasaalai",
+    status: "Ongoing Flagship",
+    studentsImpacted: "1,200+ Students Daily",
+    image: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80",
+    description: "Right Club for Education's revolutionary daily evening study hub where rural & underprivileged children receive structured coaching, homework assistance, spoken English, and holistic mentoring for just ₹5 token fee.",
+    highlights: [
+      "Daily evening tutoring for grades 1 to 10",
+      "Spoken English & Vedic Math workshops",
+      "12+ village learning centers operating actively",
+      "Free notebooks & study stationery provided"
+    ],
+    leader: "RCE Paadasaalai Mentors Team",
+    chiefGuest: "Elders & Village Education Committee",
+    slotsTotal: 100,
+    slotsBooked: 0
   },
   {
-    id: "ev-2",
-    title: "Free Community Eye & Diabetes Screening Camp",
-    date: "2026-11-15",
-    time: "09:00 AM - 03:00 PM",
-    location: "Govt. Higher Secondary School Campus",
-    category: "Healthcare",
-    status: "Upcoming",
-    slotsTotal: 60,
-    slotsBooked: 44,
-    description: "Volunteers will assist doctors with registration, token management, vision charts, and free spectacle distribution.",
-    leader: "Dr. Ananya S. & RCE Medical Team"
+    id: "ev-rce-2",
+    title: "மாநில அளவிலான கல்வி மேளா (State-Level Kalvi Mela & Science Expo)",
+    date: "2025-10-12",
+    time: "09:30 AM - 05:00 PM",
+    location: "Town Hall Ground, Virudhunagar District",
+    category: "Kalvi Mela",
+    status: "Conducted",
+    studentsImpacted: "2,800+ Students & 45 Schools",
+    image: "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=800&q=80",
+    description: "Grand educational festival featuring working science models by students, an extensive educational book exhibition, robotics demo counters, and career pathways pavilion for government school children.",
+    highlights: [
+      "Over 120 working science models exhibited",
+      "Free career guidance handbooks gifted to 10th & 12th students",
+      "Interactive STEM experiments & astronomy telescope viewing",
+      "Merit awards & certificates for innovative child inventors"
+    ],
+    leader: "RCE Kalvi Mela Organizing Board",
+    chiefGuest: "District Educational Officer (DEO) & Eminent Scientists",
+    slotsTotal: 100,
+    slotsBooked: 0
   },
   {
-    id: "ev-3",
-    title: "Vidhya Connect: Book & Science Fair for Kids",
-    date: "2026-11-22",
+    id: "ev-rce-3",
+    title: "சிறந்த நல்லாசிரியர் விருது (Best Good Teacher Award Ceremony)",
+    date: "2025-09-05",
+    time: "10:00 AM - 02:00 PM",
+    location: "Kamarajar Memorial Auditorium, Tamil Nadu",
+    category: "Teachers Award",
+    status: "Conducted",
+    studentsImpacted: "85+ Dedicated Teachers Honored",
+    image: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80",
+    description: "Annual state-level award presentation honoring selfless teachers and headmasters from government and village schools who transformed rural children's lives through dedication and love for teaching.",
+    highlights: [
+      "Special memento & citation presented to 85 inspiring educators",
+      "Keynote talks on value-based child education",
+      "Documentary screening on unsung rural school teachers",
+      "Attended by 600+ educators, students, and parents"
+    ],
+    leader: "RCE Executive Council",
+    chiefGuest: "Retd. Vice Chancellor & Distinguished Educationists",
+    slotsTotal: 100,
+    slotsBooked: 0
+  },
+  {
+    id: "ev-rce-4",
+    title: "கல்வி விழிப்புணர்வு வெள்ளை மாரத்தான் (White Marathon for Education)",
+    date: "2025-08-15",
+    time: "06:00 AM - 09:30 AM",
+    location: "Sivakasi Arterial Route, Tamil Nadu",
+    category: "Education Awareness",
+    status: "Conducted",
+    studentsImpacted: "1,500+ Runners & Youth Volunteers",
+    image: "https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=800&q=80",
+    description: "Massive community marathon with hundreds of youth, students, and citizens sporting white T-shirts to champion child education rights, stop child labor, and promote zero school dropouts in rural belts.",
+    highlights: [
+      "5K & 10K awareness runs for schools & colleges",
+      "Distribution of educational awareness flyers across town",
+      "Medals, t-shirts, and participation certificates for all runners",
+      "Fund mobilization for village school libraries"
+    ],
+    leader: "RCE Youth Marathon Wing",
+    chiefGuest: "Superintendent of Police & National Sports Personalities",
+    slotsTotal: 100,
+    slotsBooked: 0
+  },
+  {
+    id: "ev-rce-5",
+    title: "இலவச கல்வி உபகரணங்கள் வழங்கும் விழா (Free School Kits & Bags Distribution)",
+    date: "2025-06-08",
+    time: "09:00 AM - 01:30 PM",
+    location: "Panchayat Union Middle School, Rural Enclave",
+    category: "Kit Distribution",
+    status: "Conducted",
+    studentsImpacted: "3,200+ School Kits Distributed",
+    image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=800&q=80",
+    description: "Comprehensive school reopening kit distribution providing durable school backpacks, geometry kits, long-size notebooks, pens, and water bottles to deserving government school students.",
+    highlights: [
+      "High quality waterproof school bags & stationery kits",
+      "Full academic year notebook bundles for 3,200+ students",
+      "18 rural government schools reached across Virudhunagar district",
+      "Zero financial burden on underprivileged daily-wage parents"
+    ],
+    leader: "RCE Student Welfare Team",
+    chiefGuest: "Village Panchayat President & School Headmistress",
+    slotsTotal: 100,
+    slotsBooked: 0
+  },
+  {
+    id: "ev-rce-6",
+    title: "அரசு பள்ளி மாணவர்களுக்கான உயர்கல்வி வழிகாட்டு முகாம் (Higher Education Guidance Conclave)",
+    date: "2025-04-20",
     time: "10:00 AM - 04:00 PM",
-    location: "Community Center Hall, West Zone",
-    category: "Education",
-    status: "Upcoming",
-    slotsTotal: 80,
-    slotsBooked: 52,
-    description: "A fun interactive science exhibition and stationery distribution drive for 400+ middle school children.",
-    leader: "Preethi M. (Education Coordinator)"
-  },
-  {
-    id: "ev-4",
-    title: "Annual Social Impact Conclave & Volunteer Awards",
-    date: "2026-12-05",
-    time: "05:00 PM - 08:30 PM",
-    location: "City Auditorium, Main Hall",
-    category: "Youth & Culture",
-    status: "Upcoming",
-    slotsTotal: 300,
-    slotsBooked: 215,
-    description: "Celebrating 5 years of relentless community service, recognizing our top youth changemakers and partners.",
-    leader: "RCE Executive Board"
+    location: "District Community Auditorium",
+    category: "Career Guidance",
+    status: "Conducted",
+    studentsImpacted: "950+ 12th Standard Students Guided",
+    image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80",
+    description: "Expert career guidance camp for rural 11th and 12th standard government school students covering government college admissions, 7.5% reservation guidance, entrance exam coaching, and scholarships.",
+    highlights: [
+      "Guidance on Engineering, Medicine, Arts & Science college admissions",
+      "Detailed session on Tamil Nadu Government 7.5% quota & scholarships",
+      "One-on-one counseling with professors and career advisors",
+      "Free college admission handbook distributed to every student"
+    ],
+    leader: "RCE Higher Education Cell",
+    chiefGuest: "University Professors & Career Counselors",
+    slotsTotal: 100,
+    slotsBooked: 0
   }
 ];
 
@@ -1042,7 +1122,23 @@ const getEvents = (req, res) => {
 };
 
 const createEvent = (req, res) => {
-  const { title, date, time, location, category, slotsTotal, description, leader } = req.body;
+  const {
+    title,
+    date,
+    time,
+    location,
+    category,
+    status,
+    studentsImpacted,
+    beneficiaries,
+    image,
+    highlights,
+    leader,
+    chiefGuest,
+    description,
+    slotsTotal,
+  } = req.body;
+
   if (!title || !date) {
     return res.status(400).json({ success: false, message: "Event title and date are required." });
   }
@@ -1051,14 +1147,25 @@ const createEvent = (req, res) => {
     id: "ev-" + Date.now(),
     title: title.trim(),
     date,
-    time: time || "09:00 AM - 01:00 PM",
-    location: location || "Chennai Community Grounds",
-    category: category || "Environment",
-    status: "Upcoming",
+    time: time || "10:00 AM - 01:00 PM",
+    location: location || "Sivakasi & Rural Centres, Tamil Nadu",
+    category: category || "₹5 Paadasaalai",
+    status: status || "Conducted",
+    studentsImpacted: studentsImpacted || beneficiaries || "500+ Students Benefited",
+    image:
+      image ||
+      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80",
+    highlights: Array.isArray(highlights)
+      ? highlights
+      : typeof highlights === "string" && highlights.trim()
+      ? highlights.split(",").map((s) => s.trim()).filter(Boolean)
+      : ["Educational impact initiative", "Volunteer led"],
+    leader: leader || "RCE Organizing Team",
+    chiefGuest: chiefGuest || "",
+    description:
+      description || "Educational program conducted by Right Club for Education (RCE).",
     slotsTotal: Number(slotsTotal) || 100,
     slotsBooked: 0,
-    description: description || "Community volunteer drive organized by RCE Social Service Club.",
-    leader: leader || "RCE Event Coordinator"
   };
 
   eventsList.unshift(newEvent);
@@ -1066,20 +1173,36 @@ const createEvent = (req, res) => {
 
   res.status(201).json({
     success: true,
-    message: "New event created successfully!",
-    data: newEvent
+    message: "Educational event uploaded successfully!",
+    data: newEvent,
   });
 };
 
 const updateEvent = (req, res) => {
   const { id } = req.params;
-  const index = eventsList.findIndex(ev => ev.id === id);
+  const index = eventsList.findIndex((ev) => ev.id === id);
   if (index === -1) {
     return res.status(404).json({ success: false, message: "Event not found" });
   }
 
   const existing = eventsList[index];
-  const { title, date, time, location, category, slotsTotal, slotsBooked, description, leader, status } = req.body;
+  const {
+    title,
+    date,
+    time,
+    location,
+    category,
+    status,
+    studentsImpacted,
+    beneficiaries,
+    image,
+    highlights,
+    leader,
+    chiefGuest,
+    description,
+    slotsTotal,
+    slotsBooked,
+  } = req.body;
 
   eventsList[index] = {
     ...existing,
@@ -1089,18 +1212,34 @@ const updateEvent = (req, res) => {
     location: location !== undefined ? location : existing.location,
     category: category !== undefined ? category : existing.category,
     status: status !== undefined ? status : existing.status,
+    studentsImpacted:
+      studentsImpacted !== undefined
+        ? studentsImpacted
+        : beneficiaries !== undefined
+        ? beneficiaries
+        : existing.studentsImpacted,
+    image: image !== undefined ? image : existing.image,
+    highlights:
+      highlights !== undefined
+        ? Array.isArray(highlights)
+          ? highlights
+          : typeof highlights === "string"
+          ? highlights.split(",").map((s) => s.trim()).filter(Boolean)
+          : existing.highlights
+        : existing.highlights,
+    leader: leader !== undefined ? leader : existing.leader,
+    chiefGuest: chiefGuest !== undefined ? chiefGuest : existing.chiefGuest,
+    description: description !== undefined ? description : existing.description,
     slotsTotal: slotsTotal !== undefined ? Number(slotsTotal) : existing.slotsTotal,
     slotsBooked: slotsBooked !== undefined ? Number(slotsBooked) : existing.slotsBooked,
-    description: description !== undefined ? description : existing.description,
-    leader: leader !== undefined ? leader : existing.leader
   };
 
   saveDataToFile();
 
   res.json({
     success: true,
-    message: "Drive / Event updated successfully!",
-    data: eventsList[index]
+    message: "Educational event updated successfully!",
+    data: eventsList[index],
   });
 };
 
