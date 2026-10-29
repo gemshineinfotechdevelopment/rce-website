@@ -104,6 +104,8 @@ EOF
 echo "📦 Installing dependencies..."
 npm install
 cd "$APP_DIR/server" && npm install && cd "$APP_DIR"
+mkdir -p "$APP_DIR/server/uploads"
+chmod 775 "$APP_DIR/server/uploads" 2>/dev/null || true
 
 echo "⚡ Building frontend production bundle..."
 npm run build

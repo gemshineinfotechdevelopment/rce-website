@@ -6324,4 +6324,122 @@
   }
 }
 
+/* ---------------- Image File Upload Input Styles ---------------- */
+.image-upload-dropzone {
+  border: 2px dashed #d97706;
+  border-radius: var(--radius-lg);
+  background: #fdfaf6;
+  transition: all 0.25s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.image-upload-dropzone:hover {
+  background: #fdf5ea;
+  border-color: #b45309;
+  transform: translateY(-1px);
+}
+
+.image-upload-dropzone.uploading {
+  border-color: #b45309;
+  background: #fef7ee;
+  cursor: wait;
+}
+
+.upload-icon-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, #fef3c7 0%, #fae8d0 100%);
+  border: 1px solid #fcd34d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(180, 83, 9, 0.12);
+  transition: transform 0.25s ease;
+}
+
+.image-upload-dropzone:hover .upload-icon-circle {
+  transform: scale(1.08);
+}
+
+.image-upload-preview-card {
+  border: 1.5px solid #ebd8c5;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 4px 14px rgba(62, 34, 21, 0.06);
+}
+
+.preview-img-box {
+  width: 100%;
+  background: #1f120a;
+  position: relative;
+  overflow: hidden;
+}
+
+.preview-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #fcf8f3;
+  border-top: 1px solid #f2e6d9;
+  gap: 10px;
+}
+
+.preview-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+  max-width: 60%;
+}
+
+.btn-upload-replace {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #ffffff;
+  border: 1.5px solid #edd9c5;
+  color: #78350f;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-upload-replace:hover:not(:disabled) {
+  border-color: #b45309;
+  background: #fef7ee;
+  color: #92400e;
+}
+
+.btn-upload-replace:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-upload-remove {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-upload-remove:hover:not(:disabled) {
+  background: #fecaca;
+  transform: scale(1.05);
+}
+
 

@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const { getHealthStatus } = require("../controllers/statusController");
+const upload = require("../middleware/upload");
+const { uploadFile } = require("../controllers/uploadController");
 const {
   getSiteContent,
   updateSiteContent,
@@ -115,5 +117,20 @@ router.delete("/gallery/:id", deleteGalleryItem);
 
 // Stats Update
 router.post("/stats/update", updateStats);
+
+// Image File Upload Endpoint (Supports both Multipart FormData & Base64 JSON)
+router.post("/upload", (req, res, next) => {
+  upload.single("file")(req, res, (err) => {
+    if (err) {
+      console.warn("Multer notice:", err.message);
+      // Even if multer fails on mime or boundary, allow fallback to json base64 in uploadFile
+      if (req.body && req.body.image) {
+        return uploadFile(req, res);
+      }
+      return res.status(400).json({ success: false, message: err.message });
+    }
+    uploadFile(req, res);
+  });
+});
 
 module.exports = router;

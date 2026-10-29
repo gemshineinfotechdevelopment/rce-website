@@ -23,6 +23,7 @@ import {
   updateClubStats,
 } from '../services/api';
 import type { AdminData } from '../services/api';
+import { ImageUploadInput } from './ImageUploadInput';
 
 interface AdminHubProps {
   isOpen: boolean;
@@ -705,14 +706,13 @@ export const AdminHub: React.FC<AdminHubProps> = ({ isOpen, onClose, onDataUpdat
                         className="form-input"
                       />
                     </div>
-                    <div>
-                      <label className="input-sublabel">Cover Image URL</label>
-                      <input
-                        type="url"
-                        placeholder="https://images.unsplash.com/photo-..."
+                    <div className="col-span-full">
+                      <ImageUploadInput
+                        label="Project Cover Photo"
                         value={projImage}
-                        onChange={(e) => setProjImage(e.target.value)}
-                        className="form-input"
+                        onChange={setProjImage}
+                        helpText="Upload cover image file from your device"
+                        previewHeight="130px"
                       />
                     </div>
                   </div>

@@ -83,6 +83,7 @@ import type {
   PillarItem,
   SiteContent
 } from '../services/api';
+import { ImageUploadInput } from './ImageUploadInput';
 
 interface AdminPortalProps {
   onBackToWebsite: () => void;
@@ -1871,26 +1872,13 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     </div>
                   </div>
 
-                  <div className="form-group mb-3">
-                    <label className="input-sublabel">Event Photograph (Image URL)</label>
-                    <div className="flex gap-3 items-center">
-                      <input
-                        type="url"
-                        placeholder="https://images.unsplash.com/... or /event-photo.jpg"
-                        value={eventImage}
-                        onChange={(e) => setEventImage(e.target.value)}
-                        className="form-input flex-1"
-                      />
-                      {eventImage && (
-                        <img
-                          src={eventImage}
-                          alt="Preview"
-                          className="w-12 h-10 object-cover rounded border border-amber-300"
-                          onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
-                        />
-                      )}
-                    </div>
-                  </div>
+                  <ImageUploadInput
+                    label="Event Photograph"
+                    value={eventImage}
+                    onChange={setEventImage}
+                    helpText="Upload an event photo from your computer or phone (JPG, PNG, WEBP)"
+                    previewHeight="160px"
+                  />
 
                   <div className="form-row-2 mb-3">
                     <div>
@@ -2127,16 +2115,13 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     </div>
                   </div>
 
-                  <div className="form-group mb-3">
-                    <label className="input-sublabel">Banner Image URL</label>
-                    <input
-                      type="url"
-                      placeholder="https://images.unsplash.com/..."
-                      value={projImage}
-                      onChange={(e) => setProjImage(e.target.value)}
-                      className="form-input"
-                    />
-                  </div>
+                  <ImageUploadInput
+                    label="Project Banner Image"
+                    value={projImage}
+                    onChange={setProjImage}
+                    helpText="Choose cover photo for this cause (JPG, PNG, WEBP)"
+                    previewHeight="160px"
+                  />
 
                   <div className="form-group mb-3">
                     <label className="input-sublabel">Highlights (comma separated)</label>
@@ -2464,12 +2449,12 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
 
                     <div className="form-row-2 mb-3">
                       <div>
-                        <label className="input-sublabel">Hero Image URL</label>
-                        <input
-                          type="url"
+                        <ImageUploadInput
+                          label="Hero Banner Image"
                           value={heroImage}
-                          onChange={(e) => setHeroImage(e.target.value)}
-                          className="form-input"
+                          onChange={setHeroImage}
+                          helpText="Upload banner image for website hero section"
+                          previewHeight="120px"
                         />
                       </div>
                       <div>
@@ -2614,12 +2599,12 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                         />
                       </div>
                       <div>
-                        <label className="input-sublabel">About Photo URL</label>
-                        <input
-                          type="url"
+                        <ImageUploadInput
+                          label="About Section Photograph"
                           value={aboutImage}
-                          onChange={(e) => setAboutImage(e.target.value)}
-                          className="form-input"
+                          onChange={setAboutImage}
+                          helpText="Upload photo for the About story section"
+                          previewHeight="120px"
                         />
                       </div>
                     </div>
@@ -3222,17 +3207,14 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     </div>
                   </div>
 
-                  <div className="form-group mb-4">
-                    <label className="input-sublabel">Image URL *</label>
-                    <input
-                      type="url"
-                      required
-                      placeholder="https://images.unsplash.com/..."
-                      value={newGalImage}
-                      onChange={(e) => setNewGalImage(e.target.value)}
-                      className="form-input"
-                    />
-                  </div>
+                  <ImageUploadInput
+                    label="Gallery Photograph"
+                    required
+                    value={newGalImage}
+                    onChange={setNewGalImage}
+                    helpText="Choose image file from your computer (JPG, PNG, WEBP)"
+                    previewHeight="180px"
+                  />
 
                   <div className="flex justify-end gap-2">
                     <button
@@ -3360,15 +3342,13 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     </div>
                   </div>
 
-                  <div className="form-group mb-3">
-                    <label className="input-sublabel">Avatar Image URL</label>
-                    <input
-                      type="url"
-                      value={newStoryAvatar}
-                      onChange={(e) => setNewStoryAvatar(e.target.value)}
-                      className="form-input"
-                    />
-                  </div>
+                  <ImageUploadInput
+                    label="Person / Beneficiary Photo"
+                    value={newStoryAvatar}
+                    onChange={setNewStoryAvatar}
+                    helpText="Upload a photo or avatar from your device"
+                    previewHeight="120px"
+                  />
 
                   <div className="form-group mb-4">
                     <label className="input-sublabel">Quote / Experience Statement *</label>
@@ -3567,15 +3547,13 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 />
               </div>
 
-              <div className="form-group mb-3">
-                <label className="input-sublabel">Banner Image URL</label>
-                <input
-                  type="url"
-                  value={editingProject.image}
-                  onChange={(e) => setEditingProject({ ...editingProject, image: e.target.value })}
-                  className="form-input"
-                />
-              </div>
+              <ImageUploadInput
+                label="Project Banner Image"
+                value={editingProject.image || ''}
+                onChange={(url) => setEditingProject({ ...editingProject, image: url })}
+                helpText="Upload new banner photo to replace current project image"
+                previewHeight="150px"
+              />
 
               <div className="form-group mb-3">
                 <label className="input-sublabel">Description</label>
@@ -3713,26 +3691,13 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 </div>
               </div>
 
-              <div className="form-group mb-3">
-                <label className="input-sublabel">Event Photo URL</label>
-                <div className="flex gap-3 items-center">
-                  <input
-                    type="url"
-                    placeholder="https://images.unsplash.com/... or /event.jpg"
-                    value={editingEvent.image || ''}
-                    onChange={(e) => setEditingEvent({ ...editingEvent, image: e.target.value })}
-                    className="form-input flex-1"
-                  />
-                  {editingEvent.image && (
-                    <img
-                      src={editingEvent.image}
-                      alt="Preview"
-                      className="w-12 h-10 object-cover rounded border border-amber-300"
-                      onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
-                    />
-                  )}
-                </div>
-              </div>
+              <ImageUploadInput
+                label="Event Photograph"
+                value={editingEvent.image || ''}
+                onChange={(url) => setEditingEvent({ ...editingEvent, image: url })}
+                helpText="Upload new photo to replace current event picture"
+                previewHeight="160px"
+              />
 
               <div className="form-row-2 mb-3">
                 <div>
@@ -3863,16 +3828,14 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 />
               </div>
 
-              <div className="form-group mb-4">
-                <label className="input-sublabel">Image URL *</label>
-                <input
-                  type="url"
-                  required
-                  value={editingGallery.image}
-                  onChange={(e) => setEditingGallery({ ...editingGallery, image: e.target.value })}
-                  className="form-input"
-                />
-              </div>
+              <ImageUploadInput
+                label="Gallery Photograph"
+                required
+                value={editingGallery.image || ''}
+                onChange={(url) => setEditingGallery({ ...editingGallery, image: url })}
+                helpText="Upload new photo to replace this gallery picture"
+                previewHeight="160px"
+              />
 
               <div className="modal-actions-bar mt-4">
                 <button
@@ -3954,15 +3917,13 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 />
               </div>
 
-              <div className="form-group mb-3">
-                <label className="input-sublabel">Avatar Image URL</label>
-                <input
-                  type="url"
-                  value={editingStory.avatar}
-                  onChange={(e) => setEditingStory({ ...editingStory, avatar: e.target.value })}
-                  className="form-input"
-                />
-              </div>
+              <ImageUploadInput
+                label="Person / Beneficiary Photo"
+                value={editingStory.avatar || ''}
+                onChange={(url) => setEditingStory({ ...editingStory, avatar: url })}
+                helpText="Upload new photo or avatar for this testimonial"
+                previewHeight="120px"
+              />
 
               <div className="form-group mb-4">
                 <label className="input-sublabel">Testimonial Quote *</label>

@@ -1,9 +1,21 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
+const fs = require("fs");
 const apiRoutes = require("./routes/api");
 const { notFound, errorHandler } = require("./middleware/errorHandler");
 
 const app = express();
+
+// Ensure uploads directory exists
+const uploadsDir = path.join(__dirname, "../uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+// Serve uploaded static assets
+app.use("/api/uploads", express.static(uploadsDir));
+app.use("/uploads", express.static(uploadsDir));
 
 // CORS configuration - Allow frontend port & production domain
 const clientUrl = process.env.CLIENT_URL || "https://rce.gemshine.tech";
@@ -30,9 +42,9 @@ app.use(
   })
 );
 
-// Body parsers
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Body parsers with generous limit for image uploads
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 // Root welcome route
 app.get("/", (req, res) => {

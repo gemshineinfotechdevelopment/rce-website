@@ -18,6 +18,8 @@ fi
 echo "📦 Installing root & server dependencies..."
 npm install
 cd server && npm install && cd ..
+mkdir -p server/uploads
+chmod 775 server/uploads 2>/dev/null || true
 
 # 3. Build Frontend
 echo "⚡ Building frontend with Vite..."

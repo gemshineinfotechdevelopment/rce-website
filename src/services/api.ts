@@ -836,6 +836,57 @@ export const checkBackendHealth = async () => {
 };
 
 // ==========================================
+// FILE / IMAGE UPLOAD API CALL
+// ==========================================
+
+export const uploadImageApi = async (file: File): Promise<string> => {
+  // 1. Try uploading via FormData (multipart/form-data)
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await fetch(`${API_BASE}/api/upload`, {
+      method: 'POST',
+      body: formData,
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const url = data.url || data.data?.url;
+      if (url) return url;
+    }
+  } catch (err) {
+    console.warn('FormData upload failed, trying base64 fallback:', err);
+  }
+
+  // 2. Fallback: Read as Base64 and send JSON, or return Data URL directly
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64 = reader.result as string;
+      try {
+        const res = await fetch(`${API_BASE}/api/upload`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: base64, filename: file.name }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const url = data.url || data.data?.url;
+          if (url) return resolve(url);
+        }
+      } catch (e) {
+        console.warn('Backend upload offline, using client-side data URL:', e);
+      }
+      // Safety fallback: return Base64 data URL
+      resolve(base64);
+    };
+    reader.onerror = () => {
+      resolve('');
+    };
+    reader.readAsDataURL(file);
+  });
+};
+
+// ==========================================
 // ADMIN DASHBOARD API CALLS
 // ==========================================
 
