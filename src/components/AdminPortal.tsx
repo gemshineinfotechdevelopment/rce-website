@@ -735,7 +735,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
         slotsTotal: 100,
         description: eventDesc || 'Educational program conducted by Right Club for Education.',
       });
-      showNotice('Educational event uploaded and published to the live website!');
+      showNotice('Event uploaded and published to the live website!');
       setEventTitle('');
       setEventDesc('');
       setEventChiefGuest('');
@@ -1127,7 +1127,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           >
             <div className="flex items-center gap-3">
               <Calendar size={18} />
-              <span>Educational Events</span>
+              <span>Events</span>
             </div>
             <span className="admin-badge-count">{adminData?.events?.length || 0}</span>
           </button>
@@ -1273,7 +1273,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 {activeTab === 'videos' && 'YouTube Videos & Impact Media Showcase'}
                 {activeTab === 'gallery' && 'Public Photo Gallery'}
                 {activeTab === 'stories' && 'Voices of Change & Stories'}
-                {activeTab === 'events' && 'Educational Events & Impact Showcase'}
+                {activeTab === 'events' && 'Events'}
                 {activeTab === 'projects' && 'Flagship Causes & Projects'}
                 {activeTab === 'counters' && 'Home Page Live Counters'}
                 {activeTab === 'volunteers' && 'Volunteer & Member Registry'}
@@ -1755,14 +1755,14 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
         )}
 
         {/* ==============================================================
-            TAB: EDUCATIONAL EVENTS & INITIATIVES
+            TAB: EVENTS & INITIATIVES
            ============================================================== */}
         {activeTab === 'events' && (
           <div className="admin-content-view">
             {/* Header + Add Toggle Button */}
             <div className="admin-section-header-bar">
               <div>
-                <h3 className="admin-section-title">Educational Events & Initiatives ({adminData?.events?.length || 0})</h3>
+                <h3 className="admin-section-title">Events ({adminData?.events?.length || 0})</h3>
                 <p className="admin-section-subtitle">Upload and showcase completed education programs, ₹5 Paadasaalai centers, Kalvi Melas, and honors</p>
               </div>
               <button
@@ -1771,7 +1771,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 className="btn-primary"
               >
                 {showAddEvent ? <ChevronUp size={16} /> : <PlusCircle size={16} />}
-                <span>{showAddEvent ? 'Close Form' : '+ Upload Educational Event'}</span>
+                <span>{showAddEvent ? 'Close Form' : '+ Upload Event'}</span>
               </button>
             </div>
 
@@ -1780,7 +1780,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               <div className="admin-box mb-6 border-amber-300 bg-amber-50/30">
                 <h4 className="font-bold text-amber-950 mb-4 flex items-center gap-2">
                   <PlusCircle size={18} className="text-amber-700" />
-                  <span>Upload Conducted Educational Initiative</span>
+                  <span>Upload New Event</span>
                 </h4>
                 <form onSubmit={handleAddEvent}>
                   <div className="form-group mb-3">
@@ -1936,14 +1936,14 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     </button>
                     <button type="submit" className="btn-primary">
                       <Save size={16} />
-                      <span>Publish Educational Event</span>
+                      <span>Publish Event</span>
                     </button>
                   </div>
                 </form>
               </div>
             )}
 
-            {/* Educational Events Cards Grid */}
+            {/* Events Cards Grid */}
             <div className="admin-cards-grid">
               {(adminData?.events || []).map((ev) => (
                 <div key={ev.id} className="admin-event-card">
@@ -1994,7 +1994,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                         type="button"
                         onClick={() => setEditingEvent(ev)}
                         className="admin-icon-btn blue"
-                        title="Edit Educational Event"
+                        title="Edit Event"
                       >
                         <Edit3 size={15} />
                       </button>
@@ -3583,14 +3583,14 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       )}
 
       {/* ==============================================================
-          MODAL: EDIT EDUCATIONAL EVENT / INITIATIVE
+          MODAL: EDIT EVENT / INITIATIVE
          ============================================================== */}
       {editingEvent && (
         <div className="modal-overlay" onClick={() => setEditingEvent(null)}>
           <div className="modal-content admin-modal-edit" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <div className="modal-title-group">
-                <span className="admin-edit-badge"><Edit3 size={12} /> EDIT EDUCATIONAL EVENT</span>
+                <span className="admin-edit-badge"><Edit3 size={12} /> EDIT EVENT</span>
                 <h2 className="modal-title">{editingEvent.title}</h2>
               </div>
               <button
