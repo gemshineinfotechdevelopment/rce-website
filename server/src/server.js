@@ -1,4 +1,5 @@
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, "../.env") });
 const http = require("http");
 const app = require("./app");
 const connectDB = require("./config/db");
@@ -10,7 +11,7 @@ async function startServer() {
   try {
     const server = http.createServer(app);
 
-    server.listen(PORT, () => {
+    server.listen(PORT, "0.0.0.0", () => {
       console.log(`===============================================`);
       console.log(`🚀 Backend server is running on PORT: ${PORT}`);
       console.log(`🌐 API URL: http://localhost:${PORT}`);
