@@ -7,20 +7,23 @@ const UPLOAD_DIR = path.join(__dirname, "../../uploads");
 const uploadFile = async (req, res) => {
   try {
     const useCloudinary = isCloudinaryConfigured();
-
-    const uploadOptions = {
-      folder: "rce_website",
-      resource_type: "image",
-    };
-    if (process.env.CLOUDINARY_UPLOAD_PRESET) {
-      uploadOptions.upload_preset = process.env.CLOUDINARY_UPLOAD_PRESET.trim();
-    }
+    const preset = process.env.CLOUDINARY_UPLOAD_PRESET ? process.env.CLOUDINARY_UPLOAD_PRESET.trim() : null;
 
     // 1. If uploaded via Multer (multipart/form-data)
     if (req.file) {
       if (useCloudinary) {
         try {
-          const result = await cloudinary.uploader.upload(req.file.path, uploadOptions);
+          let result;
+          if (preset) {
+            // Unsigned preset upload (bypasses restricted API key issues)
+            result = await cloudinary.uploader.unsigned_upload(req.file.path, preset);
+          } else {
+            // Standard signed upload
+            result = await cloudinary.uploader.upload(req.file.path, {
+              folder: "rce_website",
+              resource_type: "image",
+            });
+          }
 
           // Clean up local temp file after successful upload to Cloudinary
           try {
@@ -72,7 +75,15 @@ const uploadFile = async (req, res) => {
             ? image
             : `data:image/jpeg;base64,${image}`;
 
-          const result = await cloudinary.uploader.upload(dataUri, uploadOptions);
+          let result;
+          if (preset) {
+            result = await cloudinary.uploader.unsigned_upload(dataUri, preset);
+          } else {
+            result = await cloudinary.uploader.upload(dataUri, {
+              folder: "rce_website",
+              resource_type: "image",
+            });
+          }
 
           console.log("☁️ Base64 image uploaded to Cloudinary successfully:", result.secure_url);
 
