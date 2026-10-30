@@ -30,15 +30,15 @@
   --brown-subtle: #855841;      /* Warm Taupe */
 
   /* Neutrals */
-  --bg-page: #fcf9f5;           /* Luxury Warm Ivory */
+  --bg-page: #faf8f5;           /* Soft Luxury Warm Ivory */
   --bg-card: #ffffff;
   --bg-card-muted: #f8f2eb;
   --bg-dark: #1a0c04;           /* Deep Imperial Espresso Noir */
   --bg-dark-card: #271307;
 
-  --text-main: #1c0d05;         /* Deep Rich Espresso */
-  --text-body: #4d3224;         /* Warm Dark Mocha */
-  --text-muted: #846859;        /* Soft Warm Coffee Taupe */
+  --text-main: #1f120a;         /* Deep Rich Espresso */
+  --text-body: #483427;         /* Warm Dark Mocha */
+  --text-muted: #786152;        /* Soft Warm Coffee Taupe */
   --text-inverse: #ffffff;
 
   --border-light: #edd2bc;       /* Warm Golden Sand Border */
@@ -120,14 +120,14 @@ body {
   flex-direction: column;
 }
 
-/* Container Utility - Fluid Layout with mobile-optimized padding */
+/* Container Utility - Refined, elegant max-width container */
 .container {
   width: 100%;
-  max-width: 100%;
-  margin-left: 0;
-  margin-right: 0;
-  padding-left: clamp(14px, 4vw, 64px);
-  padding-right: clamp(14px, 4vw, 64px);
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(16px, 4vw, 36px);
+  padding-right: clamp(16px, 4vw, 36px);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -206,43 +206,44 @@ img {
   margin-right: auto;
 }
 
-/* Luxurious Emblem Orange & Espresso Gradient Text */
+/* Elegant Heritage Amber & Deep Espresso Gradient Text */
 .text-gradient {
-  background: linear-gradient(135deg, #241208 0%, #4a220b 22%, #c2410c 55%, #ea580c 80%, #ff8c00 100%);
+  background: linear-gradient(135deg, #241208 0%, #5c2a0d 30%, #a24610 70%, #c25e17 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .text-gradient-gold, .text-gradient-orange {
-  background: linear-gradient(135deg, #c2410c 0%, #ea580c 45%, #ff8c00 100%);
+  background: linear-gradient(135deg, #a24610 0%, #c25e17 50%, #d97706 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-/* Button UI Components - Radiant Solar Orange & Regal Espresso */
+/* Button UI Components - Refined Luxury Bronze & Warm Espresso */
 .btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: linear-gradient(135deg, #c2410c 0%, #ea580c 50%, #ff8c00 100%);
+  background: linear-gradient(135deg, #b45309 0%, #c25e17 60%, #ea580c 100%);
   color: #ffffff;
-  font-weight: 800;
-  font-size: 0.95rem;
-  padding: 10px 24px;
+  font-weight: 700;
+  font-size: 0.94rem;
+  padding: 10px 22px;
   border-radius: var(--radius-full);
-  box-shadow: 0 4px 16px rgba(234, 88, 12, 0.36);
+  box-shadow: 0 2px 8px rgba(180, 83, 9, 0.2);
   transition: all var(--transition-normal);
   text-decoration: none;
-  border: 1px solid rgba(254, 215, 170, 0.45);
+  border: 1px solid rgba(254, 215, 170, 0.35);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(234, 88, 12, 0.52);
-  background: linear-gradient(135deg, #ea580c 0%, #ff8c00 50%, #c2410c 100%);
+  box-shadow: 0 6px 18px rgba(180, 83, 9, 0.28);
+  background: linear-gradient(135deg, #9a3412 0%, #b45309 60%, #c25e17 100%);
+  color: #ffffff;
 }
 
 .btn-secondary {
@@ -250,22 +251,23 @@ img {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: linear-gradient(135deg, #241208 0%, #150a04 100%);
-  color: #fed7aa;
-  font-weight: 800;
-  font-size: 0.95rem;
-  padding: 10px 24px;
+  background: #241208;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.94rem;
+  padding: 10px 22px;
   border-radius: var(--radius-full);
-  box-shadow: 0 4px 15px rgba(36, 18, 8, 0.38);
+  box-shadow: 0 2px 10px rgba(36, 18, 8, 0.16);
   transition: all var(--transition-normal);
-  border: 1px solid #5c2a0d;
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .btn-secondary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(36, 18, 8, 0.5);
-  background: linear-gradient(135deg, #3d1c08 0%, #241208 100%);
-  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(36, 18, 8, 0.28);
+  background: #150a04;
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.35);
 }
 
 .btn-outline {
@@ -274,20 +276,22 @@ img {
   justify-content: center;
   gap: 8px;
   background: #ffffff;
-  color: var(--text-main);
+  color: #3d2618;
   border: 1.5px solid var(--border-default);
   font-weight: 700;
-  font-size: 0.95rem;
-  padding: 10px 22px;
+  font-size: 0.94rem;
+  padding: 9.5px 20px;
   border-radius: var(--radius-full);
+  box-shadow: 0 1px 4px rgba(36, 18, 8, 0.04);
   transition: all var(--transition-normal);
 }
 
 .btn-outline:hover {
-  border-color: #ea580c;
-  color: #ea580c;
-  background: #fff7ed;
+  border-color: #b45309;
+  color: #b45309;
+  background: #fdfaf7;
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(180, 83, 9, 0.1);
 }
 
 /* Subtle Animated Ambient Glow Blobs */
@@ -297,15 +301,15 @@ img {
   filter: blur(85px);
   pointer-events: none;
   z-index: 0;
-  opacity: 0.55;
+  opacity: 0.35;
 }
 
 .bg-glow-gold, .bg-glow-orange {
-  background: radial-gradient(circle, rgba(234, 88, 12, 0.22) 0%, rgba(254, 215, 170, 0) 70%);
+  background: radial-gradient(circle, rgba(217, 119, 6, 0.14) 0%, rgba(254, 215, 170, 0) 70%);
 }
 
 .bg-glow-brown, .bg-glow-green {
-  background: radial-gradient(circle, rgba(92, 44, 22, 0.18) 0%, rgba(247, 239, 231, 0) 70%);
+  background: radial-gradient(circle, rgba(92, 44, 22, 0.12) 0%, rgba(247, 239, 231, 0) 70%);
 }
 
 /* Card Base */
@@ -313,22 +317,24 @@ img {
   background: var(--bg-card);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
+  box-shadow: 0 2px 8px rgba(36, 18, 8, 0.03);
   transition: all var(--transition-normal);
 }
 
 .card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-xl);
-  border-color: #edd9c5;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(36, 18, 8, 0.07);
+  border-color: #d97706;
 }
 
 /* Modal Dialog Styles */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(27, 16, 9, 0.75);
-  backdrop-filter: blur(10px);
-  z-index: 999;
+  background-color: rgba(18, 9, 4, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -336,16 +342,17 @@ img {
   animation: fadeIn 0.2s ease-out;
 }
 
-.modal-content {
+.modal-content,
+.modal-container {
   background: #ffffff;
   border-radius: var(--radius-xl);
   width: 100%;
-  max-width: 680px;
+  max-width: 720px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 25px 50px -12px rgba(36, 20, 12, 0.35);
-  border: 1.5px solid var(--border-light);
-  animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 20px 48px -10px rgba(36, 20, 12, 0.3);
+  border: 1px solid var(--border-light);
+  animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
 }
 
