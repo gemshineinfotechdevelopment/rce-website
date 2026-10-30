@@ -61,6 +61,26 @@ export interface StoryItem {
   impactTag: string;
 }
 
+export const getSafeImageUrl = (
+  url?: string,
+  fallback = 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80'
+): string => {
+  if (!url || typeof url !== 'string') return fallback;
+  const trimmed = url.trim();
+  if (!trimmed) return fallback;
+  if (
+    trimmed.startsWith('file:') ||
+    trimmed.startsWith('C:') ||
+    trimmed.startsWith('c:') ||
+    trimmed.includes(':\\') ||
+    trimmed.includes('Users\\') ||
+    trimmed.includes('Users/')
+  ) {
+    return fallback;
+  }
+  return trimmed;
+};
+
 export interface GalleryItem {
   id: string;
   title: string;

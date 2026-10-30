@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Camera, X, ZoomIn } from 'lucide-react';
 import type { GalleryItem } from '../services/api';
+import { getSafeImageUrl } from '../services/api';
 
 interface GallerySectionProps {
   items?: GalleryItem[];
@@ -66,7 +67,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ items = [] }) =>
                 aria-label={`View photo ${item.title}`}
               >
                 <img
-                  src={item.image}
+                  src={getSafeImageUrl(item.image, '/hero-banner.jpeg')}
                   alt={item.title}
                   className="gallery-img"
                   loading="lazy"
@@ -102,7 +103,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ items = [] }) =>
                 <X size={24} />
               </button>
               <img
-                src={lightboxImg.image}
+                src={getSafeImageUrl(lightboxImg.image, '/hero-banner.jpeg')}
                 alt={lightboxImg.title}
                 className="lightbox-img"
               />

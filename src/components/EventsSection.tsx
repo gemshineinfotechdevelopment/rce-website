@@ -15,6 +15,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import type { ClubEvent } from '../services/api';
+import { getSafeImageUrl } from '../services/api';
 
 interface EventsSectionProps {
   events: ClubEvent[];
@@ -156,9 +157,7 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
               ev.beneficiaries ||
               (ev.slotsTotal ? `${ev.slotsTotal}+ Students Benefited` : 'Rural Children Empowered');
 
-            const defaultPhoto =
-              ev.image ||
-              'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80';
+            const defaultPhoto = getSafeImageUrl(ev.image, 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80');
 
             return (
               <div key={ev.id} className="event-impact-card card-hover">
@@ -352,10 +351,7 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
             {/* Modal Image Banner */}
             <div className="event-modal-media">
               <img
-                src={
-                  selectedEvent.image ||
-                  'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80'
-                }
+                src={getSafeImageUrl(selectedEvent.image, 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80')}
                 alt={selectedEvent.title}
                 className="event-modal-img"
               />

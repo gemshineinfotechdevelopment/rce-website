@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Heart, Users, CheckCircle2, ArrowRight } from 'lucide-react';
 import type { ProjectItem } from '../services/api';
+import { getSafeImageUrl } from '../services/api';
 
 interface ProjectsSectionProps {
   projects: ProjectItem[];
@@ -67,7 +68,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
               <div key={project.id} className="project-card card-hover">
                 <div className="project-img-box">
                   <img
-                    src={project.image}
+                    src={getSafeImageUrl(project.image, 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80')}
                     alt={project.title}
                     className="project-img"
                     loading="lazy"
