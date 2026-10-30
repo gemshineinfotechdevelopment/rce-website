@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Heart, Users, ArrowRight, ShieldCheck, Sparkles, Award, Maximize2, X } from 'lucide-react';
+import { Heart, Users, ArrowRight, ShieldCheck, Sparkles, Award, X } from 'lucide-react';
 import type { ClubStats, HeroContent } from '../services/api';
 import defaultHeroBanner from '../assets/Screenshot_27-10-2026_13299_www.instagram.com.jpeg';
 
@@ -178,18 +178,6 @@ export const Hero: React.FC<HeroProps> = ({ content, onOpenJoin, onOpenDonate })
                   className="hero-main-img"
                   onError={handleImageError}
                 />
-
-                {/* Top Badge: Verified Movement Chapter */}
-                <div className="hero-banner-status-badge">
-                  <span className="hero-badge-dot"></span>
-                  <span>RCE Official Chapter</span>
-                </div>
-
-                {/* Bottom Badge: Discreet view full photo */}
-                <div className="hero-expand-badge">
-                  <Maximize2 size={13} />
-                  <span>View Full Photo</span>
-                </div>
               </div>
             </div>
           </div>
