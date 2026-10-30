@@ -87,7 +87,15 @@ html {
 
 body {
   font-family: var(--font-body);
-  background-color: var(--bg-page);
+  background-color: #faf7f2;
+  /* Advanced Layered Ambient Mesh & Micro-dot Architectural Texture */
+  background-image: 
+    radial-gradient(at 100% 0%, rgba(245, 158, 11, 0.08) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, rgba(180, 83, 9, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(217, 119, 6, 0.06) 0px, transparent 50%),
+    radial-gradient(rgba(180, 83, 9, 0.055) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 28px 28px;
+  background-attachment: fixed;
   color: var(--text-body);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -119,6 +127,48 @@ body {
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+
+/* Advanced Ambient Atmospheric Background Glows (Visual Only, No Interaction) */
+.rce-app-root::before {
+  content: '';
+  position: fixed;
+  top: -150px;
+  right: -150px;
+  width: 620px;
+  height: 620px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.09) 0%, rgba(245, 158, 11, 0.02) 45%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: ambientFloatSlow 20s ease-in-out infinite alternate;
+}
+
+.rce-app-root::after {
+  content: '';
+  position: fixed;
+  bottom: 8%;
+  left: -150px;
+  width: 580px;
+  height: 580px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(180, 83, 9, 0.07) 0%, rgba(92, 44, 22, 0.02) 50%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: ambientFloatReverse 24s ease-in-out infinite alternate;
+}
+
+@keyframes ambientFloatSlow {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-35px, 55px) scale(1.06); }
+  100% { transform: translate(30px, 85px) scale(0.96); }
+}
+
+@keyframes ambientFloatReverse {
+  0% { transform: translate(0, 0) scale(0.96); }
+  50% { transform: translate(55px, -45px) scale(1.05); }
+  100% { transform: translate(-25px, -65px) scale(1); }
 }
 
 /* Container Utility - Full-Width Fluid (No side gaps) */

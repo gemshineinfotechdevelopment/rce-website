@@ -235,7 +235,7 @@
       "category": "₹5 Paadasaalai",
       "status": "Ongoing Flagship",
       "studentsImpacted": "1,200+ Students Daily",
-      "image": "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80",
+      "image": "/api/uploads/hackathon-1793363701450-705.jpg",
       "description": "Right Club for Education's revolutionary daily evening study hub where rural & underprivileged children receive structured coaching, homework assistance, spoken English, and holistic mentoring for just ₹5 token fee.",
       "highlights": [
         "Daily evening tutoring for grades 1 to 10",
@@ -246,7 +246,8 @@
       "leader": "RCE Paadasaalai Mentors Team",
       "chiefGuest": "Elders & Village Education Committee",
       "slotsTotal": 100,
-      "slotsBooked": 0
+      "slotsBooked": 0,
+      "formUrl": ""
     },
     {
       "id": "ev-rce-2",
