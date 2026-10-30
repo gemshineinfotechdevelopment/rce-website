@@ -141,6 +141,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
   const [volunteerDeptFilter, setVolunteerDeptFilter] = useState('All');
   const [volunteerStatusFilter, setVolunteerStatusFilter] = useState('All');
   const [donationSearch, setDonationSearch] = useState('');
+  const [eventSearch, setEventSearch] = useState('');
+  const [eventCategoryFilter, setEventCategoryFilter] = useState('All');
 
   // Selected Detail Modals
   const [selectedVolunteer, setSelectedVolunteer] = useState<VolunteerApplicationRecord | null>(null);
@@ -965,6 +967,26 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       d.pan.toLowerCase().includes(donationSearch.toLowerCase()) ||
       d.cause.toLowerCase().includes(donationSearch.toLowerCase())
     );
+  });
+
+  // Filtered Events List
+  const filteredEvents = (adminData?.events || []).filter((ev) => {
+    const q = eventSearch.toLowerCase().trim();
+    const matchSearch =
+      !q ||
+      ev.title.toLowerCase().includes(q) ||
+      (ev.location && ev.location.toLowerCase().includes(q)) ||
+      (ev.category && ev.category.toLowerCase().includes(q)) ||
+      (ev.leader && ev.leader.toLowerCase().includes(q)) ||
+      (ev.chiefGuest && ev.chiefGuest.toLowerCase().includes(q)) ||
+      (ev.date && ev.date.includes(q)) ||
+      (ev.description && ev.description.toLowerCase().includes(q));
+
+    const matchCategory =
+      eventCategoryFilter === 'All' ||
+      (ev.category && ev.category.toLowerCase() === eventCategoryFilter.toLowerCase());
+
+    return matchSearch && matchCategory;
   });
 
   // Counters configuration for clean grid
@@ -1988,9 +2010,71 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               </div>
             )}
 
+            {/* Search & Category Filter Toolbar */}
+            <div className="admin-toolbar mb-4">
+              <div className="admin-search-wrapper">
+                <Search size={18} className="text-stone-400" />
+                <input
+                  type="text"
+                  placeholder="Search events by Title, Year/Date, Category, Venue, Guests..."
+                  value={eventSearch}
+                  onChange={(e) => setEventSearch(e.target.value)}
+                  className="admin-search-input"
+                />
+                {eventSearch && (
+                  <button
+                    type="button"
+                    onClick={() => setEventSearch('')}
+                    className="text-stone-400 hover:text-stone-600 mr-2 p-1"
+                    title="Clear search"
+                  >
+                    <X size={15} />
+                  </button>
+                )}
+              </div>
+
+              <div className="admin-filter-group">
+                <select
+                  value={eventCategoryFilter}
+                  onChange={(e) => setEventCategoryFilter(e.target.value)}
+                  className="admin-select"
+                >
+                  <option value="All">All Categories</option>
+                  {Array.from(new Set((adminData?.events || []).map((e) => e.category?.trim()).filter(Boolean))).map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+
+                <div className="admin-stat-pill">
+                  Showing: <strong>{filteredEvents.length}</strong> / {adminData?.events?.length || 0}
+                </div>
+              </div>
+            </div>
+
+            {/* Empty Search Results Notice */}
+            {filteredEvents.length === 0 && (
+              <div className="text-center py-12 text-stone-500 bg-amber-50/40 rounded-xl border border-amber-200/70 p-6 my-4">
+                <Search size={36} className="mx-auto text-amber-700/60 mb-2" />
+                <h4 className="font-bold text-amber-950 text-base">No events found matching "{eventSearch}"</h4>
+                <p className="text-sm text-stone-600 mt-1">Try another keyword, year, or clear your filters.</p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEventSearch('');
+                    setEventCategoryFilter('All');
+                  }}
+                  className="btn-outline text-xs mt-3 px-3.5 py-1.5"
+                >
+                  Reset Search & Filters
+                </button>
+              </div>
+            )}
+
             {/* Events Cards Grid */}
             <div className="admin-cards-grid">
-              {(adminData?.events || []).map((ev) => (
+              {filteredEvents.map((ev) => (
                 <div key={ev.id} className="admin-event-card">
                   {ev.image && (
                     <div className="mb-3 rounded-lg overflow-hidden border border-stone-200 h-36 w-full">
