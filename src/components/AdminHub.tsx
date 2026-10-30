@@ -540,17 +540,13 @@ export const AdminHub: React.FC<AdminHubProps> = ({ isOpen, onClose, onDataUpdat
                   <div className="form-row-2 mt-3">
                     <div>
                       <label className="input-sublabel">Category</label>
-                      <select
+                      <input
+                        type="text"
+                        placeholder="Type category (e.g. Education, Environment...)"
                         value={eventCategory}
                         onChange={(e) => setEventCategory(e.target.value)}
                         className="form-input"
-                      >
-                        <option value="Environment">Environment</option>
-                        <option value="Healthcare">Healthcare</option>
-                        <option value="Education">Education</option>
-                        <option value="Relief">Relief</option>
-                        <option value="Youth & Culture">Youth & Culture</option>
-                      </select>
+                      />
                     </div>
                     <div>
                       <label className="input-sublabel">Total Volunteer Slots</label>

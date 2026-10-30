@@ -22,16 +22,22 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [selectedEvent, setSelectedEvent] = useState<ClubEvent | null>(null);
 
-  // Derive unique categories for filtering
-  const categories = [
-    'All',
-    '₹5 Paadasaalai',
-    'Kalvi Mela',
-    'Teachers Award',
-    'Kit Distribution',
-    'Education Awareness',
-    'Career Guidance',
-  ];
+  // Derive unique categories dynamically for filtering
+  const categories = React.useMemo(() => {
+    const defaultCats = [
+      '₹5 Paadasaalai',
+      'Kalvi Mela',
+      'Teachers Award',
+      'Kit Distribution',
+      'Education Awareness',
+      'Career Guidance',
+    ];
+    const dynamicCats = events
+      .map((ev) => ev.category?.trim())
+      .filter((c): c is string => Boolean(c));
+    const unique = Array.from(new Set([...defaultCats, ...dynamicCats]));
+    return ['All', ...unique];
+  }, [events]);
 
   const filteredEvents =
     activeCategory === 'All'
@@ -95,13 +101,21 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
                 onClick={() => setActiveCategory(cat)}
                 className={`event-filter-pill ${activeCategory === cat ? 'active' : ''}`}
               >
-                {cat === 'All' && 'All Programs'}
-                {cat === '₹5 Paadasaalai' && '₹5 Paadasaalai Centers'}
-                {cat === 'Kalvi Mela' && 'Kalvi Mela & Science Expo'}
-                {cat === 'Teachers Award' && 'Good Teacher Awards'}
-                {cat === 'Kit Distribution' && 'School Kits & Aid'}
-                {cat === 'Education Awareness' && 'Marathons & Rallies'}
-                {cat === 'Career Guidance' && 'Higher Education Guidance'}
+                {cat === 'All'
+                  ? 'All Programs'
+                  : cat === '₹5 Paadasaalai'
+                  ? '₹5 Paadasaalai Centers'
+                  : cat === 'Kalvi Mela'
+                  ? 'Kalvi Mela & Science Expo'
+                  : cat === 'Teachers Award'
+                  ? 'Good Teacher Awards'
+                  : cat === 'Kit Distribution'
+                  ? 'School Kits & Aid'
+                  : cat === 'Education Awareness'
+                  ? 'Marathons & Rallies'
+                  : cat === 'Career Guidance'
+                  ? 'Higher Education Guidance'
+                  : cat}
               </button>
             ))}
           </div>

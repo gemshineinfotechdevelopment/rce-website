@@ -166,7 +166,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
   const [eventDate, setEventDate] = useState('');
   const [eventTime, setEventTime] = useState('10:00 AM - 01:00 PM');
   const [eventLocation, setEventLocation] = useState('');
-  const [eventCategory, setEventCategory] = useState('₹5 Paadasaalai');
+  const [eventCategory, setEventCategory] = useState('');
   const [eventStudentsImpacted, setEventStudentsImpacted] = useState('1,200+ Students Benefited');
   const [eventImage, setEventImage] = useState('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80');
   const [eventStatus, setEventStatus] = useState('Conducted');
@@ -719,7 +719,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
         date: eventDate || new Date().toISOString().slice(0, 10),
         time: eventTime,
         location: eventLocation || 'Sivakasi & Rural Hubs, Tamil Nadu',
-        category: eventCategory,
+        category: eventCategory.trim() || 'Educational Initiative',
         status: eventStatus || 'Conducted',
         studentsImpacted: eventStudentsImpacted || '1,000+ Students Benefited',
         image:
@@ -735,6 +735,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       });
       showNotice('Event uploaded and published to the live website!');
       setEventTitle('');
+      setEventCategory('');
       setEventDesc('');
       setEventChiefGuest('');
       setShowAddEvent(false);
@@ -1793,19 +1794,24 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   <div className="form-row-3 mb-3">
                     <div>
                       <label className="input-sublabel">Program Category</label>
-                      <select
+                      <input
+                        type="text"
+                        required
+                        placeholder="Type category (e.g. ₹5 Paadasaalai, Kalvi Mela...)"
                         value={eventCategory}
                         onChange={(e) => setEventCategory(e.target.value)}
                         className="form-input"
-                      >
-                        <option value="₹5 Paadasaalai">₹5 Paadasaalai (Evening Centers)</option>
-                        <option value="Kalvi Mela">Kalvi Mela & Science Expo</option>
-                        <option value="Teachers Award">Best Good Teacher Award</option>
-                        <option value="Kit Distribution">School Kit & Study Aid Distribution</option>
-                        <option value="Education Awareness">Education Awareness Marathon</option>
-                        <option value="Career Guidance">Higher Education & NEET/JEE Guidance</option>
-                        <option value="General Education">General Education Program</option>
-                      </select>
+                        list="event-category-suggestions"
+                      />
+                      <datalist id="event-category-suggestions">
+                        <option value="₹5 Paadasaalai" />
+                        <option value="Kalvi Mela" />
+                        <option value="Teachers Award" />
+                        <option value="Kit Distribution" />
+                        <option value="Education Awareness" />
+                        <option value="Career Guidance" />
+                        <option value="General Education" />
+                      </datalist>
                     </div>
                     <div>
                       <label className="input-sublabel">Conducted Date *</label>
@@ -3612,19 +3618,15 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               <div className="form-row-2 mb-3">
                 <div>
                   <label className="input-sublabel">Category</label>
-                  <select
-                    value={editingEvent.category}
+                  <input
+                    type="text"
+                    required
+                    placeholder="Type category (e.g. ₹5 Paadasaalai, Kalvi Mela...)"
+                    value={editingEvent.category || ''}
                     onChange={(e) => setEditingEvent({ ...editingEvent, category: e.target.value })}
                     className="form-input"
-                  >
-                    <option value="₹5 Paadasaalai">₹5 Paadasaalai (Evening Centers)</option>
-                    <option value="Kalvi Mela">Kalvi Mela & Science Expo</option>
-                    <option value="Teachers Award">Best Good Teacher Award</option>
-                    <option value="Kit Distribution">School Kit & Study Aid Distribution</option>
-                    <option value="Education Awareness">Education Awareness Marathon</option>
-                    <option value="Career Guidance">Higher Education & NEET/JEE Guidance</option>
-                    <option value="General Education">General Education Program</option>
-                  </select>
+                    list="event-category-suggestions"
+                  />
                 </div>
                 <div>
                   <label className="input-sublabel">Status</label>
