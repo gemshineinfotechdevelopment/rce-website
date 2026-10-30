@@ -1,12 +1,47 @@
 const path = require("path");
 const fs = require("fs");
+const { cloudinary, isCloudinaryConfigured } = require("../config/cloudinary");
 
 const UPLOAD_DIR = path.join(__dirname, "../../uploads");
 
-const uploadFile = (req, res) => {
+const uploadFile = async (req, res) => {
   try {
+    const useCloudinary = isCloudinaryConfigured();
+
     // 1. If uploaded via Multer (multipart/form-data)
     if (req.file) {
+      if (useCloudinary) {
+        try {
+          const result = await cloudinary.uploader.upload(req.file.path, {
+            folder: "rce_website",
+            resource_type: "image",
+          });
+
+          // Clean up local temp file after successful upload to Cloudinary
+          try {
+            if (fs.existsSync(req.file.path)) {
+              fs.unlinkSync(req.file.path);
+            }
+          } catch (e) {}
+
+          return res.status(201).json({
+            success: true,
+            message: "Image uploaded to Cloudinary successfully!",
+            data: {
+              url: result.secure_url,
+              public_id: result.public_id,
+              format: result.format,
+              size: result.bytes,
+            },
+            url: result.secure_url,
+          });
+        } catch (cloudErr) {
+          console.warn("⚠️ Cloudinary upload failed, falling back to local storage:", cloudErr.message);
+          // If Cloudinary fails, fallback to keeping the local file below
+        }
+      }
+
+      // Local storage fallback (or default when Cloudinary not configured)
       const publicUrl = `/api/uploads/${req.file.filename}`;
       return res.status(201).json({
         success: true,
@@ -24,6 +59,34 @@ const uploadFile = (req, res) => {
     // 2. If uploaded via Base64 JSON
     const { image, name, filename } = req.body;
     if (image && typeof image === "string") {
+      if (useCloudinary) {
+        try {
+          const dataUri = image.startsWith("data:")
+            ? image
+            : `data:image/jpeg;base64,${image}`;
+
+          const result = await cloudinary.uploader.upload(dataUri, {
+            folder: "rce_website",
+            resource_type: "image",
+          });
+
+          return res.status(201).json({
+            success: true,
+            message: "Image uploaded to Cloudinary successfully!",
+            data: {
+              url: result.secure_url,
+              public_id: result.public_id,
+              format: result.format,
+              size: result.bytes,
+            },
+            url: result.secure_url,
+          });
+        } catch (cloudErr) {
+          console.warn("⚠️ Cloudinary base64 upload failed, falling back to local file:", cloudErr.message);
+        }
+      }
+
+      // Local storage for base64 fallback
       if (!fs.existsSync(UPLOAD_DIR)) {
         fs.mkdirSync(UPLOAD_DIR, { recursive: true });
       }
@@ -81,4 +144,3 @@ const uploadFile = (req, res) => {
 };
 
 module.exports = { uploadFile };
-
