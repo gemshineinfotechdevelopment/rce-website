@@ -205,6 +205,24 @@
   ],
   "eventsList": [
     {
+      "id": "ev-1793342059111",
+      "title": "பழவம் குறுங்காடு !!!",
+      "date": "2024-06-11",
+      "time": "10:00 AM - 01:00 PM",
+      "location": "PSR ENGINEERING COLLEGE",
+      "category": "Green Forest",
+      "status": "Conducted",
+      "studentsImpacted": "1,200+ Students Benefited",
+      "image": "/api/uploads/Screenshot2026-10-30115355-1793341788513-4474.png",
+      "highlights": [],
+      "leader": "RCE Educational Team",
+      "chiefGuest": "",
+      "description": "பழவம் குறுங்காடு ",
+      "slotsTotal": 100,
+      "slotsBooked": 0,
+      "formUrl": ""
+    },
+    {
       "id": "ev-rce-1",
       "title": "₹5 ரூபாய் பாடசாலை (Rs. 5 School) - Evening Learning Centers",
       "date": "2025-06-15",
@@ -273,25 +291,27 @@
     },
     {
       "id": "ev-rce-4",
-      "title": "கல்வி விழிப்புணர்வு வெள்ளை மாரத்தான் (White Marathon for Education)",
-      "date": "2025-08-15",
-      "time": "06:00 AM - 09:30 AM",
-      "location": "Sivakasi Arterial Route, Tamil Nadu",
+      "title": "5-ஆம் ஆண்டு வெள்ளை மாரத்தான் – 2025 (5th Annual RCE White Marathon & Clean Sivakasi)",
+      "date": "2025-08-24",
+      "time": "06:00 AM - 10:00 AM",
+      "location": "சிவகாசி மாநகர் & முக்கிய வீதிகள் (Sivakasi City)",
       "category": "Education Awareness",
       "status": "Conducted",
-      "studentsImpacted": "1,500+ Runners & Youth Volunteers",
+      "studentsImpacted": "2,500+ பள்ளி & கல்லூரி மாணவ மாணவியர், பொதுமக்கள்",
       "image": "https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=800&q=80",
-      "description": "Massive community marathon with hundreds of youth, students, and citizens sporting white T-shirts to champion child education rights, stop child labor, and promote zero school dropouts in rural belts.",
+      "description": "24-08-2025 ஞாயிற்றுக்கிழமை நமது சிவகாசி மாநகரில் நமது 'ஐந்து ரூபாய் பாடசாலை' (Right Club for Education) மூலமாக ஐந்தாம் ஆண்டு மாரத்தான் (5th Annual White Marathon 2025) மிக எழுச்சியாக நடைபெற்றது.\n\nஇந்நிகழ்வில் 2,500-க்கும் மேற்பட்ட பள்ளி மற்றும் கல்லூரி மாணவ மாணவியர்கள், குழந்தைகள் மற்றும் பெரியவர்கள் என ஏழு பிரிவுகளில் ஆண்கள் மற்றும் பெண்கள் என தனித்தனியாக உற்சாகத்துடன் பங்கேற்றனர்.\n\n🏁 கொடியசைத்து துவக்கி வைத்தவர்கள்:\nஇந்த மாபெரும் நிகழ்வை உயர்திரு. மாவட்ட காவல் கண்காணிப்பாளர் (SP) அவர்களும், சிவகாசி லவ்லி உரிமையாளர் திரு. செந்தில் அவர்களும் கொடியசைத்து துவக்கி வைத்தனர்.\n\nஇந்நிகழ்வில் உயர்திரு. காவல் துணை கண்காணிப்பாளர் (DSP), காவல் ஆய்வாளர், துணை ஆய்வாளர், மருத்துவர்கள் திரு. சண்முகராஜன், திரு. மதன் மற்றும் திருமதி. திலகபாமா மற்றும் போக்குவரத்து சீரமைப்பு தன்னார்வலர்கள் அனைவரும் கலந்து கொண்டு சிறப்பித்தனர்.\n\n🌱 'தூய்மையான சிவகாசி' பசுமைத் தூய்மை இயக்கம்:\nஓட்டப்பந்தயத்தில் பொதுமக்களுக்கு அளித்த 5,000 தண்ணீர் பாட்டில்களில், சாலை மற்றும் சாக்கடைகளில் வீசிச் சென்ற 3,000-க்கும் மேற்பட்ட காலி பாட்டில்களை நமது RCE குழு மற்றும் போக்குவரத்து சீரமைப்பு தன்னார்வலர்கள் உடனுக்குடன் ஒருங்கிணைந்து முழுமையாகச் சேகரித்து அகற்றினர். இதன் மூலம் எங்களின் தலையாய குறிக்கோளான '#தூய்மையான_சிவகாசி' கொள்கை முன்னெடுக்கப்பட்டது.\n\nபங்களித்த மாணவச் செல்வங்கள், பொதுமக்கள் மற்றும் உறுதுணையாக நின்ற அனைவருக்கும் நெஞ்சார்ந்த நன்றிகள்!",
       "highlights": [
-        "5K & 10K awareness runs for schools & colleges",
-        "Distribution of educational awareness flyers across town",
-        "Medals, t-shirts, and participation certificates for all runners",
-        "Fund mobilization for village school libraries"
+        "2,500+ பள்ளி, கல்லூரி மாணவ மாணவியர் மற்றும் பொதுமக்கள் 7 பிரிவுகளில் பங்கேற்பு",
+        "மாவட்ட காவல் கண்காணிப்பாளர் (SP) & சிவகாசி லவ்லி உரிமையாளர் திரு. செந்தில் கொடியசைத்து துவக்கினர்",
+        "காவல் அதிகாரிகள், மருத்துவர்கள் திரு. சண்முகராஜன், திரு. மதன் & திருமதி. திலகபாமா பங்கேற்பு",
+        "தூய்மையான சிவகாசி: சாலையில் வீசப்பட்ட 3,000+ பிளாஸ்டிக் தண்ணீர் பாட்டில்களை சேகரித்து அகற்றிய RCE",
+        "ஏழு பிரிவுகளில் ஆண்கள் மற்றும் பெண்களுக்கு தனித்தனியாக போட்டிகள் & பரிசளிப்பு"
       ],
-      "leader": "RCE Youth Marathon Wing",
-      "chiefGuest": "Superintendent of Police & National Sports Personalities",
-      "slotsTotal": 100,
-      "slotsBooked": 0
+      "leader": "RCE ஐந்து ரூபாய் பாடசாலை & போக்குவரத்து சீரமைப்பு தன்னார்வலர்கள்",
+      "chiefGuest": "மாவட்ட காவல் கண்காணிப்பாளர் (SP) & திரு. செந்தில் (சிவகாசி லவ்லி)",
+      "slotsTotal": 2500,
+      "slotsBooked": 0,
+      "formUrl": ""
     },
     {
       "id": "ev-rce-5",
@@ -346,7 +366,7 @@
       "category": "MoU & CSR Collaboration",
       "status": "Conducted",
       "studentsImpacted": "College Students & Community Outreach",
-      "image": "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80",
+      "image": "/api/uploads/Screenshot2026-10-30121327-1793342628230-2346.png",
       "description": "Right Club for Education (RCE) and PSR Engineering College Join Hands for Corporate Social Activities.\n\nOn 1st August, 2024, Right Club for Education (RCE) and PSR Engineering College celebrated the inauguration and signing of a Memorandum of Understanding (MoU) to collaborate on various corporate social activities.\n\nThe ceremony was held at PSREC, where esteemed members from both RCE and PSR Engineering College gathered to formalize this strategic partnership. The event began with a warm welcome address by Mr. M Venkatesh, followed by insightful speeches from key dignitaries.\n\nDuring the ceremony, Mr. T Chandrarajan, Advisor of RCE, emphasized the importance of collaborative efforts in driving social change and expressed gratitude to PSR Engineering College for their partnership.\n\nDr. P Kannan, Head, Department of Management Studies of PSR Engineering College, highlighted the institution's dedication to social responsibility and encouraged students and faculty members to actively participate in the initiatives and contribute to the cause.\n\nTogether, let's create a brighter future!",
       "highlights": [
         "MoU Signing: Collaboration on Corporate Social Activities & Welfare",
@@ -465,7 +485,7 @@
       "category": "Education Awareness",
       "status": "Conducted",
       "studentsImpacted": "2,500+ School & College Students Benefited",
-      "image": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80",
+      "image": "/api/uploads/Screenshot2026-10-30121105-1793342482386-9330.png",
       "description": "In an inspiring effort to promote a Drug-Free Sivakasi, Right Club for Education (₹5 School) conducted a series of special events from August 17th to 19th, 2024. These programs aimed at raising awareness among students and the general public about the dangers of drug abuse and the importance of living a healthy, drug-free life.\n\nKey Highlights of the Event Series:\n\n• Session with Government School Students (17th August 2024):\nThe event series began with an awareness program for government school students in Sivakasi. This interactive session focused on educating young minds about the dangers of drug addiction and the steps they can take to stay away from harmful substances.\n\n• Morning Session at Ayya Nadar Janaki Ammal College (19th August 2024):\nLed by Mr. Venkatesh Babu IRS, who spoke to college students about the risks associated with drug use and the importance of making informed, healthy choices in life. His discussion emphasized vigilance and prevention as key factors in living a drug-free life.\n\n• Afternoon Session at The Standard Fireworks Rajaratnam College for Women (SFRC):\nIn the afternoon, Mr. Venkatesh Babu IRS addressed the students of SFR College for Women, focusing on the role that individuals and communities can play in building a drug-free society. He elaborated on various methods to prevent drug abuse and encouraged students to take an active role in the movement.\n\nThese programs are a vital step toward a larger mission—building a healthier, drug-free community in Sivakasi. Heartfelt thanks to all participants, college administrations, and special guests for their steadfast support!\n\n– Right Club for Education (₹5 School)",
       "highlights": [
         "3-day anti-drug awareness conclave across Sivakasi educational institutions",
@@ -489,7 +509,7 @@
       "category": "Kalvi Mela",
       "status": "Conducted",
       "studentsImpacted": "650+ மாணவர்கள் & சிவகாசி பள்ளிகள்",
-      "image": "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=800&q=80",
+      "image": "/api/uploads/Screenshot2026-10-30115215-1793341376498-9113.png",
       "description": "Right Club for Education (₹5 ரூபாய் பாடசாலை) கல்விமேளா – 2024 என்ற பிரம்மாண்ட கலை மற்றும் இலக்கியத் திருவிழாவை 09.11.2024 மற்றும் 10.11.2024 ஆகிய இரண்டு நாட்கள் சிவகாசி சுப சங்கமம் திருமண மண்டபத்தில் மிகச் சிறப்பாக நடத்தியது.\n\nஇந்நிகழ்வில் சிவகாசியைச் சேர்ந்த பல்வேறு அரசு மற்றும் தனியார் பள்ளிகள் உற்சாகமாகக் கலந்துகொண்டன. மாணவர்களின் பன்முகத் திறமையை வெளிப்படுத்தும் வகையில் கட்டுரை, ஓவியம், பேச்சு, நடனம், நாடகம், முக ஓவியம், மௌன நாடகம் உள்ளிட்ட 16 வகையான போட்டிகள் நடத்தப்பட்டன.\n\nஒவ்வொரு போட்டிக்கும் மூன்று பரிசுகள் வீதம் 16 போட்டிகளுக்கும் பரிசுகள் மற்றும் சான்றிதழ்கள் வழங்கப்பட்டன.\n\n🏆 ஒட்டுமொத்த சாம்பியன்ஷிப் புள்ளிகளின் அடிப்படையில் வெற்றியாளர்கள்:\n• முதல் பரிசு (Champion): சிவகாசி இந்து நாடார் பெண்கள் மேல்நிலைப் பள்ளி\n• இரண்டாம் பரிசு (Runner-up): செண்பக விநாயகர் மெட்ரிகுலேஷன் பள்ளி\n\nசிவகாசியின் 650 மாணவச் செல்வங்கள் கலந்து கொண்டு திறமைகளை வெளிப்படுத்திய இந்நிகழ்வை RCE உறுப்பினர்கள் மிகச் சிறப்பாக ஏற்பாடு செய்திருந்தனர்.",
       "highlights": [
         "இரு நாட்கள் நடைபெற்ற மாபெரும் கல்விமேளா – 2024 திருவிழா",

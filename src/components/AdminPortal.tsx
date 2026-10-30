@@ -362,7 +362,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
 
   const showNotice = (text: string, isError = false) => {
     setActionNotice({ text, isError });
-    setTimeout(() => setActionNotice(null), 4000);
+    setTimeout(() => setActionNotice(null), 2800);
   };
 
   // Login handler
@@ -1082,11 +1082,22 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
   // ==============================================================
   return (
     <div className="admin-standalone-wrapper">
-      {/* Toast Notification */}
+      {/* Floating Toast Notification (Fixed overlay - will never disturb layout) */}
       {actionNotice && (
-        <div className={`admin-toast-banner ${actionNotice.isError ? 'error' : 'success'}`}>
+        <div
+          className={`admin-floating-notice ${actionNotice.isError ? 'error' : 'success'}`}
+          style={{ position: 'fixed', top: 24, right: 24, zIndex: 99999 }}
+        >
           {actionNotice.isError ? <AlertCircle size={18} /> : <CheckCircle2 size={18} />}
-          <span>{actionNotice.text}</span>
+          <span className="flex-1 text-sm">{actionNotice.text}</span>
+          <button
+            type="button"
+            onClick={() => setActionNotice(null)}
+            className="text-white/80 hover:text-white p-0.5 ml-2 cursor-pointer bg-transparent border-none flex items-center"
+            title="Dismiss notice"
+          >
+            <X size={15} />
+          </button>
         </div>
       )}
 
