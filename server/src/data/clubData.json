@@ -213,11 +213,15 @@
       "category": "Green Forest",
       "status": "Conducted",
       "studentsImpacted": "1,200+ Students Benefited",
-      "image": "/api/uploads/Screenshot2026-10-30115355-1793341788513-4474.png",
-      "highlights": [],
-      "leader": "RCE Educational Team",
+      "image": "/api/uploads/pazhavam-kurungadu-award.jpg",
+      "highlights": [
+        "தமிழ்நாடு அரசு & விருதுநகர் மாவட்ட நிர்வாகத்தின் சிறப்புப் பாராட்டு விருது",
+        "பழவம் பகுதியில் பல்லுயிர் பெருக்கும் குறுங்காடு (Miyawaki Forest) உருவாக்கம்",
+        "RCE ஐந்து ரூபாய் பாடசாலை தன்னார்வலர்களின் தீவிர பசுமைப் பணிக்கு அங்கீகாரம்"
+      ],
+      "leader": "RCE பசுமைப் படை (Green Wing)",
       "chiefGuest": "",
-      "description": "பழவம் குறுங்காடு ",
+      "description": "சிவகாசி மற்றும் சுற்றுவட்டாரப் பகுதிகளில் பசுமையை மீட்டெடுக்கும் உன்னத நோக்கில் Right Club for Education (₹5 ரூபாய் பாடசாலை) முன்னெடுத்த 'பழவம் குறுங்காடு' அடர்வனத் திட்டத்தை பாராட்டி தமிழ்நாடு அரசு மற்றும் மாவட்ட நிர்வாகத்தின் சார்பில் சிறப்பு விருது வழங்கி கௌரவிக்கப்பட்டது.",
       "slotsTotal": 100,
       "slotsBooked": 0,
       "formUrl": ""
