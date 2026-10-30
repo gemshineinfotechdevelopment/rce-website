@@ -218,3 +218,6 @@ export const Hero: React.FC<HeroProps> = ({ content, onOpenJoin, onOpenDonate })
     </section>
   );
 };
+
+export default Hero;
+
