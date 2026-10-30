@@ -1137,6 +1137,8 @@ const createEvent = (req, res) => {
     chiefGuest,
     description,
     slotsTotal,
+    formUrl,
+    registrationUrl,
   } = req.body;
 
   if (!title || !date) {
@@ -1166,6 +1168,7 @@ const createEvent = (req, res) => {
       description || "Educational program conducted by Right Club for Education (RCE).",
     slotsTotal: Number(slotsTotal) || 100,
     slotsBooked: 0,
+    formUrl: (formUrl || registrationUrl || "").trim(),
   };
 
   eventsList.unshift(newEvent);
@@ -1202,6 +1205,8 @@ const updateEvent = (req, res) => {
     description,
     slotsTotal,
     slotsBooked,
+    formUrl,
+    registrationUrl,
   } = req.body;
 
   eventsList[index] = {
@@ -1232,6 +1237,12 @@ const updateEvent = (req, res) => {
     description: description !== undefined ? description : existing.description,
     slotsTotal: slotsTotal !== undefined ? Number(slotsTotal) : existing.slotsTotal,
     slotsBooked: slotsBooked !== undefined ? Number(slotsBooked) : existing.slotsBooked,
+    formUrl:
+      formUrl !== undefined
+        ? String(formUrl).trim()
+        : registrationUrl !== undefined
+        ? String(registrationUrl).trim()
+        : existing.formUrl || existing.registrationUrl || "",
   };
 
   saveDataToFile();

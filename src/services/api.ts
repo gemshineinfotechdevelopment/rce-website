@@ -47,6 +47,8 @@ export interface ClubEvent {
   chiefGuest?: string;
   slotsTotal?: number;
   slotsBooked?: number;
+  formUrl?: string;
+  registrationUrl?: string;
 }
 
 export interface StoryItem {

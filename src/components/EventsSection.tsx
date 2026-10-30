@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import {
   Calendar,
+  FileText,
+  Lock,
+  AlertCircle,
   MapPin,
   GraduationCap,
   Award,
@@ -48,6 +51,28 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
             (activeCategory === 'Teachers Award' && ev.category?.toLowerCase().includes('teacher')) ||
             (activeCategory === '₹5 Paadasaalai' && (ev.category?.includes('5') || ev.title?.includes('5')))
         );
+
+  const isScheduleOver = (ev: ClubEvent) => {
+    if (!ev) return false;
+    const status = (ev.status || '').toLowerCase().trim();
+    if (status === 'conducted' || status === 'completed') return true;
+    if (status === 'ongoing flagship') return false;
+    if (!ev.date) return false;
+    try {
+      const parts = ev.date.split('-');
+      if (parts.length === 3) {
+        const year = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1;
+        const day = parseInt(parts[2], 10);
+        const eventEnd = new Date(year, month, day, 23, 59, 59, 999).getTime();
+        return eventEnd < Date.now();
+      }
+      const d = new Date(ev.date).getTime();
+      return !isNaN(d) && d < Date.now();
+    } catch {
+      return false;
+    }
+  };
 
   const getCategoryBadgeClass = (category = '') => {
     const c = category.toLowerCase();
@@ -153,10 +178,24 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
                     <span className={`event-card-cat-badge ${getCategoryBadgeClass(ev.category)}`}>
                       {ev.category}
                     </span>
-                    <span className="event-card-status-badge">
-                      <CheckCircle2 size={13} className="inline mr-1 text-emerald-400" />
-                      {statusLabel}
-                    </span>
+                    {ev.formUrl && ev.formUrl.trim() ? (
+                      isScheduleOver(ev) ? (
+                        <span className="event-card-form-closed-badge" title="Event schedule is completed">
+                          <Lock size={11} className="inline mr-1" />
+                          Form Closed
+                        </span>
+                      ) : (
+                        <span className="event-card-form-badge">
+                          <FileText size={12} className="inline mr-1" />
+                          Form Open
+                        </span>
+                      )
+                    ) : (
+                      <span className="event-card-status-badge">
+                        <CheckCircle2 size={13} className="inline mr-1 text-emerald-400" />
+                        {statusLabel}
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -205,14 +244,42 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
                       <strong className="text-stone-700 text-xs">{ev.leader || 'RCE Initiative Team'}</strong>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => setSelectedEvent(ev)}
-                      className="btn-event-view"
-                    >
-                      <span>View Highlights</span>
-                      <ArrowRight size={14} />
-                    </button>
+                    <div className="event-card-actions">
+                      {ev.formUrl && ev.formUrl.trim() && (
+                        isScheduleOver(ev) ? (
+                          <button
+                            type="button"
+                            onClick={() => setSelectedEvent(ev)}
+                            className="btn-event-form-closed"
+                            title="Schedule already completed - Registration closed (Click to view details)"
+                          >
+                            <Lock size={12} />
+                            <span>Form Closed</span>
+                          </button>
+                        ) : (
+                          <a
+                            href={ev.formUrl.startsWith('http') ? ev.formUrl : `https://${ev.formUrl}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn-event-form"
+                            title="Open Online Form / Registration"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <FileText size={13} />
+                            <span>Fill Form</span>
+                            <ExternalLink size={12} />
+                          </a>
+                        )
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => setSelectedEvent(ev)}
+                        className="btn-event-view"
+                      >
+                        <span>View Highlights</span>
+                        <ArrowRight size={14} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -353,12 +420,65 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
                 </div>
               </div>
 
+              {/* If event has a form fill link */}
+              {selectedEvent.formUrl && selectedEvent.formUrl.trim() && (
+                isScheduleOver(selectedEvent) ? (
+                  <div className="p-4 mb-4 rounded-xl bg-amber-50 border border-amber-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+                    <div className="flex items-start gap-2.5">
+                      <AlertCircle size={20} className="text-amber-700 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <div className="flex items-center gap-2 font-bold text-amber-950 text-sm">
+                          <span>Registration / Form Closed (பதிவு நிறைவடைந்தது)</span>
+                          <span className="text-[11px] bg-amber-200 text-amber-900 px-2 py-0.5 rounded-full font-bold">Schedule Completed</span>
+                        </div>
+                        <p className="text-xs text-amber-900 mt-1">
+                          இந்த நிகழ்வின் தேதி மற்றும் Schedule முடிவடைந்துவிட்டதால், ஆன்லைன் பதிவுப் படிவம் (Online Form) முடக்கப்பட்டுள்ளது.
+                        </p>
+                        <p className="text-xs text-stone-500 mt-0.5">
+                          Event schedule has concluded on {formatEventDate(selectedEvent.date)}. The registration form is no longer accepting responses.
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      disabled
+                      className="btn-form-disabled-action"
+                      title="Form is closed as the event schedule has ended"
+                    >
+                      <Lock size={13} />
+                      <span>Form Disabled</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="p-4 mb-4 rounded-xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border border-emerald-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+                    <div>
+                      <div className="flex items-center gap-1.5 font-bold text-emerald-950 text-sm">
+                        <FileText size={17} className="text-emerald-600" />
+                        <span>Online Registration / Participation Form Available</span>
+                      </div>
+                      <p className="text-xs text-emerald-800 mt-0.5">
+                        Fill out this official online form to register, apply, or submit details.
+                      </p>
+                    </div>
+                    <a
+                      href={selectedEvent.formUrl.startsWith('http') ? selectedEvent.formUrl : `https://${selectedEvent.formUrl}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-primary text-sm py-2 px-5 whitespace-nowrap bg-emerald-700 hover:bg-emerald-800 text-white flex items-center gap-2 rounded-lg"
+                    >
+                      <span>Fill Form / பதிவு செய்க</span>
+                      <ExternalLink size={14} />
+                    </a>
+                  </div>
+                )
+              )}
+
               {/* Full Description */}
               <div className="event-modal-desc-box">
                 <h4 className="text-sm font-bold text-stone-800 uppercase tracking-wider mb-2">
                   Program Overview & Achievements
                 </h4>
-                <p className="text-stone-700 leading-relaxed text-sm md:text-base">
+                <p className="text-stone-700 leading-relaxed text-sm md:text-base whitespace-pre-line">
                   {selectedEvent.description}
                 </p>
               </div>

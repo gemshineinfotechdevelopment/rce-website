@@ -174,6 +174,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
   const [eventChiefGuest, setEventChiefGuest] = useState('');
   const [eventHighlights, setEventHighlights] = useState('Daily evening tutoring, Spoken English, Free stationery');
   const [eventDesc, setEventDesc] = useState('');
+  const [eventFormUrl, setEventFormUrl] = useState('');
 
   // New Project Form State
   const [projTitle, setProjTitle] = useState('');
@@ -706,6 +707,28 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
     }
   };
 
+  const isEventScheduleOver = (dateStr: string, status?: string) => {
+    if (!dateStr && !status) return false;
+    const st = (status || '').toLowerCase().trim();
+    if (st === 'conducted' || st === 'completed') return true;
+    if (st === 'ongoing flagship') return false;
+    if (!dateStr) return false;
+    try {
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        const year = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1;
+        const day = parseInt(parts[2], 10);
+        const eventEnd = new Date(year, month, day, 23, 59, 59, 999).getTime();
+        return eventEnd < Date.now();
+      }
+      const d = new Date(dateStr).getTime();
+      return !isNaN(d) && d < Date.now();
+    } catch {
+      return false;
+    }
+  };
+
   // Events Handlers
   const handleAddEvent = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -732,11 +755,13 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
         chiefGuest: eventChiefGuest,
         slotsTotal: 100,
         description: eventDesc || 'Educational program conducted by Right Club for Education.',
+        formUrl: eventFormUrl.trim(),
       });
       showNotice('Event uploaded and published to the live website!');
       setEventTitle('');
       setEventCategory('');
       setEventDesc('');
+      setEventFormUrl('');
       setEventChiefGuest('');
       setShowAddEvent(false);
       await loadData();
@@ -1904,15 +1929,34 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     </div>
                   </div>
 
-                  <div className="form-group mb-3">
-                    <label className="input-sublabel">Key Highlights / Milestones (comma-separated)</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. 15 Schools Reached, Free Notebook Bundles, Spoken English Coaching"
-                      value={eventHighlights}
-                      onChange={(e) => setEventHighlights(e.target.value)}
-                      className="form-input"
-                    />
+                  <div className="form-row-2 mb-3">
+                    <div>
+                      <label className="input-sublabel">Key Highlights / Milestones (comma-separated)</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. 15 Schools Reached, Free Notebook Bundles, Spoken English Coaching"
+                        value={eventHighlights}
+                        onChange={(e) => setEventHighlights(e.target.value)}
+                        className="form-input"
+                      />
+                    </div>
+                    <div>
+                      <label className="input-sublabel">Registration / Form Link (Optional)</label>
+                      <input
+                        type="url"
+                        placeholder="Paste form link (e.g. https://forms.gle/...)"
+                        value={eventFormUrl}
+                        onChange={(e) => setEventFormUrl(e.target.value)}
+                        className="form-input"
+                      />
+                      {eventFormUrl && eventFormUrl.trim() && (
+                        <span className={`text-[11px] mt-1 block font-semibold ${isEventScheduleOver(eventDate, eventStatus) ? "text-amber-800" : "text-emerald-700"}`}>
+                          {isEventScheduleOver(eventDate, eventStatus)
+                            ? "⚠️ Schedule முடிந்துவிட்டதால் முகப்புப் பக்கத்தில் 'Form Closed / Disabled' என்று தோன்றும்."
+                            : "✅ Schedule முடிவடையாததால் முகப்புப் பக்கத்தில் படிவம் Active-ஆக தோன்றும்."}
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   <div className="form-group mb-4">
@@ -3718,15 +3762,34 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 </div>
               </div>
 
-              <div className="form-group mb-3">
-                <label className="input-sublabel">Key Highlights (comma-separated)</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Free STEM kits, 15 Schools Reached, DEO Attended"
-                  value={Array.isArray(editingEvent.highlights) ? editingEvent.highlights.join(', ') : (editingEvent.highlights || '')}
-                  onChange={(e) => setEditingEvent({ ...editingEvent, highlights: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
-                  className="form-input"
-                />
+              <div className="form-row-2 mb-3">
+                <div>
+                  <label className="input-sublabel">Key Highlights (comma-separated)</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Free STEM kits, 15 Schools Reached, DEO Attended"
+                    value={Array.isArray(editingEvent.highlights) ? editingEvent.highlights.join(', ') : (editingEvent.highlights || '')}
+                    onChange={(e) => setEditingEvent({ ...editingEvent, highlights: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
+                    className="form-input"
+                  />
+                </div>
+                <div>
+                  <label className="input-sublabel">Registration / Form Link (Optional)</label>
+                  <input
+                    type="url"
+                    placeholder="Paste form link (e.g. https://forms.gle/...)"
+                    value={editingEvent.formUrl || ''}
+                    onChange={(e) => setEditingEvent({ ...editingEvent, formUrl: e.target.value })}
+                    className="form-input"
+                  />
+                  {editingEvent.formUrl && editingEvent.formUrl.trim() && (
+                    <span className={`text-[11px] mt-1 block font-semibold ${isEventScheduleOver(editingEvent.date, editingEvent.status) ? "text-amber-800" : "text-emerald-700"}`}>
+                      {isEventScheduleOver(editingEvent.date, editingEvent.status)
+                        ? "⚠️ Schedule முடிந்துவிட்டதால் முகப்புப் பக்கத்தில் 'Form Closed / Disabled' என்று தோன்றும்."
+                        : "✅ Schedule முடிவடையாததால் முகப்புப் பக்கத்தில் படிவம் Active-ஆக தோன்றும்."}
+                    </span>
+                  )}
+                </div>
               </div>
 
               <div className="form-group mb-4">

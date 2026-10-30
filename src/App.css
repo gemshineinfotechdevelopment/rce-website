@@ -1520,6 +1520,53 @@
   box-shadow: 0 4px 10px rgba(120, 53, 15, 0.25);
 }
 
+/* Event Card Actions & Form Link Button */
+.event-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-event-form {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #ffffff !important;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 7px 14px;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.25);
+}
+
+.btn-event-form:hover {
+  background: linear-gradient(135deg, #047857 0%, #059669 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4);
+  color: #ffffff !important;
+}
+
+.event-card-form-badge {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(5, 150, 105, 0.95);
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 /* Collaborate Banner at Bottom */
 .events-collaborate-banner {
   background: linear-gradient(135deg, #3e2215 0%, #2a140b 100%);
@@ -6443,3 +6490,57 @@
 }
 
 
+
+
+/* Event Form Disabled / Closed Styles */
+.btn-event-form-closed {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f8fafc;
+  color: #64748b !important;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 7px 13px;
+  border-radius: var(--radius-md);
+  border: 1px solid #cbd5e1;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-event-form-closed:hover {
+  background: #f1f5f9;
+  color: #475569 !important;
+  border-color: #94a3b8;
+}
+
+.btn-form-disabled-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid #cbd5e1;
+  cursor: not-allowed;
+  white-space: nowrap;
+}
+
+.event-card-form-closed-badge {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(100, 116, 139, 0.92);
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
