@@ -1602,14 +1602,15 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                         <td className="whitespace-nowrap">
                           <span className="admin-code-badge">{vol.id}</span>
                         </td>
-                        <td>
-                          <div className="font-bold text-stone-900 whitespace-nowrap">{vol.fullName}</div>
-                          <div className="text-xs text-stone-500 whitespace-nowrap">{vol.email}</div>
-                          <span className="text-xs text-amber-800 font-semibold whitespace-nowrap">{vol.roleType}</span>
+                        <td className="whitespace-nowrap">
+                          <div className="font-bold text-stone-900 text-xs whitespace-nowrap">{vol.fullName}</div>
+                          <div className="text-[11px] text-stone-500 whitespace-nowrap">{vol.email}</div>
                         </td>
-                        <td>
-                          <div className="text-xs font-bold text-stone-800 whitespace-nowrap">{vol.occupation || 'Student'}</div>
-                          <div className="text-xs text-stone-500 whitespace-nowrap">{vol.department || vol.city || 'General Citizen'}</div>
+                        <td className="whitespace-nowrap">
+                          <div className="text-xs font-semibold text-stone-800 whitespace-nowrap">
+                            {vol.occupation || 'Student'} <span className="text-stone-400 font-normal">•</span> <span className="text-[11px] text-stone-500">{vol.department || vol.city || 'General'}</span>
+                          </div>
+                          <span className="text-[10px] text-amber-800 font-medium whitespace-nowrap">{vol.roleType}</span>
                         </td>
                         <td className="text-center whitespace-nowrap">
                           <span className="blood-group-chip">{vol.bloodGroup || 'O+'}</span>
@@ -1620,18 +1621,15 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                             href={`https://wa.me/${vol.phone.replace(/[^0-9]/g, '')}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs text-emerald-600 hover:underline inline-flex items-center gap-1 mt-1 font-semibold whitespace-nowrap"
+                            className="text-[11px] text-emerald-600 hover:underline inline-flex items-center gap-1 font-semibold whitespace-nowrap"
                           >
-                            <Phone size={11} /> WhatsApp
+                            <Phone size={10} /> WhatsApp
                           </a>
                         </td>
-                        <td>
-                          <div className="text-xs font-bold text-amber-900 whitespace-nowrap">{vol.preferredDomain || 'Field Drives'}</div>
-                          {vol.skills && (
-                            <div className="text-xs text-stone-500 truncate max-w-[220px]" title={vol.skills}>
-                              {vol.skills}
-                            </div>
-                          )}
+                        <td className="whitespace-nowrap">
+                          <span className="text-xs font-bold text-amber-900 whitespace-nowrap" title={vol.skills || vol.preferredDomain}>
+                            {vol.preferredDomain || 'Field Drives'}
+                          </span>
                         </td>
                         <td className="text-center whitespace-nowrap">
                           <span
@@ -1755,27 +1753,26 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                       <tr key={d.receiptNo}>
                         <td className="whitespace-nowrap">
                           <span className="admin-code-badge">{d.receiptNo}</span>
-                          <div className="text-xs text-emerald-700 font-semibold mt-1 whitespace-nowrap">80G Eligible</div>
-                        </td>
-                        <td>
-                          <div className="font-bold text-stone-900 whitespace-nowrap">{d.donorName}</div>
-                          <div className="text-xs text-stone-500 whitespace-nowrap">{d.email}</div>
-                          <div className="text-xs text-stone-500 whitespace-nowrap">{d.city || 'Chennai'} • {d.phone}</div>
+                          <span className="text-[10px] text-emerald-700 font-semibold block whitespace-nowrap">80G Eligible</span>
                         </td>
                         <td className="whitespace-nowrap">
-                          <div className="text-base font-extrabold text-amber-900 whitespace-nowrap">
+                          <div className="font-bold text-stone-900 text-xs whitespace-nowrap">{d.donorName}</div>
+                          <div className="text-[11px] text-stone-500 whitespace-nowrap">{d.email} • {d.phone}</div>
+                        </td>
+                        <td className="whitespace-nowrap">
+                          <div className="text-sm font-extrabold text-amber-900 whitespace-nowrap">
                             ₹{d.amount.toLocaleString('en-IN')}
                           </div>
                         </td>
                         <td className="whitespace-nowrap">
                           <span className="admin-pan-chip">{d.pan || 'N/A'}</span>
                         </td>
-                        <td>
+                        <td className="whitespace-nowrap">
                           <span className="text-xs font-semibold text-stone-800 whitespace-nowrap">{d.cause}</span>
                         </td>
                         <td className="whitespace-nowrap">
                           <div className="text-xs font-semibold text-stone-700 whitespace-nowrap">{d.paymentMethod}</div>
-                          <div className="text-xs font-mono text-stone-400 truncate max-w-xs">{d.transactionId || 'UPI Verified'}</div>
+                          <div className="text-[10px] font-mono text-stone-400 whitespace-nowrap">{d.transactionId || 'UPI Verified'}</div>
                         </td>
                         <td className="whitespace-nowrap">
                           <span className="text-xs text-stone-500 whitespace-nowrap">
@@ -2392,17 +2389,16 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                         <td className="whitespace-nowrap">
                           <span className="admin-code-badge">{msg.id}</span>
                         </td>
-                        <td>
-                          <div className="font-bold text-stone-900 whitespace-nowrap">{msg.name}</div>
-                          <div className="text-xs text-stone-500 whitespace-nowrap">{msg.email}</div>
-                          <div className="text-xs text-stone-500 whitespace-nowrap">{msg.phone || 'Phone not given'}</div>
+                        <td className="whitespace-nowrap">
+                          <div className="font-bold text-stone-900 text-xs whitespace-nowrap">{msg.name}</div>
+                          <div className="text-[11px] text-stone-500 whitespace-nowrap">{msg.email} • {msg.phone || 'No phone'}</div>
                         </td>
-                        <td>
-                          <div className="font-semibold text-stone-800 text-sm whitespace-nowrap">{msg.subject}</div>
-                          <span className="text-xs text-amber-800 whitespace-nowrap">{msg.category || 'General'}</span>
+                        <td className="whitespace-nowrap">
+                          <div className="font-semibold text-stone-800 text-xs whitespace-nowrap">{msg.subject}</div>
+                          <span className="text-[10px] text-amber-800 whitespace-nowrap">{msg.category || 'General'}</span>
                         </td>
-                        <td>
-                          <p className="text-xs text-stone-600 line-clamp-2 max-w-sm">{msg.message}</p>
+                        <td className="whitespace-nowrap">
+                          <p className="text-xs text-stone-600 truncate max-w-[220px] whitespace-nowrap" title={msg.message}>{msg.message}</p>
                         </td>
                         <td className="whitespace-nowrap">
                           <span className={`priority-chip ${msg.priority?.toLowerCase() === 'high' ? 'high' : 'normal'}`}>

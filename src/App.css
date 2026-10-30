@@ -3335,29 +3335,29 @@
 
 .admin-data-table {
   width: 100%;
-  min-width: 1120px;
   border-collapse: collapse;
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   text-align: left;
 }
 
 .admin-data-table th {
-  padding: 14px 18px;
+  padding: 9px 12px;
   background: #f7efe7;
   border-bottom: 1.5px solid #edd9c5;
   font-weight: 800;
   color: #24140c;
   white-space: nowrap;
-  font-size: 0.82rem;
+  font-size: 0.74rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .admin-data-table td {
-  padding: 14px 18px;
+  padding: 8px 12px;
   border-bottom: 1px solid #f4ece2;
   vertical-align: middle;
   color: #382115;
+  white-space: nowrap;
 }
 
 .admin-data-table tr:hover {
@@ -3367,12 +3367,12 @@
 .admin-code-badge {
   background: #fdf5eb;
   border: 1px solid #edd9c5;
-  padding: 4px 10px;
-  border-radius: 6px;
+  padding: 2.5px 7px;
+  border-radius: 4px;
   font-weight: 800;
   color: #78350f;
   font-family: monospace;
-  font-size: 0.82rem;
+  font-size: 0.76rem;
   white-space: nowrap;
   display: inline-block;
   letter-spacing: 0.02em;
@@ -4914,6 +4914,8 @@
   justify-content: space-between;
   gap: 14px;
   margin-bottom: 20px;
+  max-width: 1080px;
+  width: 100%;
 }
 
 .admin-search-wrapper {
@@ -4970,23 +4972,27 @@
 /* Data Tables */
 .admin-card-table-wrap {
   background: #ffffff;
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   border: 1.5px solid #dfcebc;
   overflow-x: auto;
+  overflow-y: auto;
+  max-height: 480px;
+  max-width: 1080px;
+  width: 100%;
   box-shadow: 0 4px 16px rgba(36, 20, 12, 0.04);
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .admin-action-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   white-space: nowrap;
 }
 
 .admin-icon-btn {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 6px;
   display: grid;
   place-items: center;
@@ -5010,9 +5016,9 @@
 /* Status & Category Chips */
 .status-chip {
   display: inline-block;
-  padding: 4px 11px;
+  padding: 2.5px 8px;
   border-radius: 9999px;
-  font-size: 0.74rem;
+  font-size: 0.7rem;
   font-weight: 800;
   text-transform: capitalize;
   white-space: nowrap;
@@ -5044,12 +5050,12 @@
 
 .blood-group-chip {
   background: #fee2e2;
-  border: 1.5px solid #ef4444;
+  border: 1px solid #ef4444;
   color: #991b1b;
-  padding: 3px 11px;
+  padding: 2px 8px;
   border-radius: 9999px;
   font-weight: 800;
-  font-size: 0.74rem;
+  font-size: 0.7rem;
   display: inline-block;
   white-space: nowrap;
   letter-spacing: 0.02em;
@@ -5058,20 +5064,20 @@
 .admin-pan-chip {
   background: #f7efe7;
   border: 1px solid #dfcebc;
-  padding: 3px 9px;
+  padding: 2px 7px;
   border-radius: 4px;
   font-family: monospace;
   font-weight: 800;
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   color: #543d31;
   white-space: nowrap;
   display: inline-block;
 }
 
 .priority-chip {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 800;
-  padding: 3px 9px;
+  padding: 2px 7px;
   border-radius: 9999px;
   text-transform: uppercase;
   white-space: nowrap;
