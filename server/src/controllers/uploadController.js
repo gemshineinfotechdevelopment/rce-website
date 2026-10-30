@@ -8,14 +8,19 @@ const uploadFile = async (req, res) => {
   try {
     const useCloudinary = isCloudinaryConfigured();
 
+    const uploadOptions = {
+      folder: "rce_website",
+      resource_type: "image",
+    };
+    if (process.env.CLOUDINARY_UPLOAD_PRESET) {
+      uploadOptions.upload_preset = process.env.CLOUDINARY_UPLOAD_PRESET.trim();
+    }
+
     // 1. If uploaded via Multer (multipart/form-data)
     if (req.file) {
       if (useCloudinary) {
         try {
-          const result = await cloudinary.uploader.upload(req.file.path, {
-            folder: "rce_website",
-            resource_type: "image",
-          });
+          const result = await cloudinary.uploader.upload(req.file.path, uploadOptions);
 
           // Clean up local temp file after successful upload to Cloudinary
           try {
@@ -23,6 +28,8 @@ const uploadFile = async (req, res) => {
               fs.unlinkSync(req.file.path);
             }
           } catch (e) {}
+
+          console.log("☁️ Image uploaded to Cloudinary successfully:", result.secure_url);
 
           return res.status(201).json({
             success: true,
@@ -36,7 +43,7 @@ const uploadFile = async (req, res) => {
             url: result.secure_url,
           });
         } catch (cloudErr) {
-          console.warn("⚠️ Cloudinary upload failed, falling back to local storage:", cloudErr.message);
+          console.warn("⚠️ Cloudinary upload failed:", cloudErr.message);
           // If Cloudinary fails, fallback to keeping the local file below
         }
       }
@@ -65,10 +72,9 @@ const uploadFile = async (req, res) => {
             ? image
             : `data:image/jpeg;base64,${image}`;
 
-          const result = await cloudinary.uploader.upload(dataUri, {
-            folder: "rce_website",
-            resource_type: "image",
-          });
+          const result = await cloudinary.uploader.upload(dataUri, uploadOptions);
+
+          console.log("☁️ Base64 image uploaded to Cloudinary successfully:", result.secure_url);
 
           return res.status(201).json({
             success: true,
@@ -82,7 +88,7 @@ const uploadFile = async (req, res) => {
             url: result.secure_url,
           });
         } catch (cloudErr) {
-          console.warn("⚠️ Cloudinary base64 upload failed, falling back to local file:", cloudErr.message);
+          console.warn("⚠️ Cloudinary base64 upload failed:", cloudErr.message);
         }
       }
 
