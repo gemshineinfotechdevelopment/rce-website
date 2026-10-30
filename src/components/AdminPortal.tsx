@@ -1114,12 +1114,14 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       <aside className={`admin-sidebar ${mobileSidebarOpen ? 'mobile-open' : ''}`}>
         {/* Brand */}
         <div className="admin-sidebar-brand">
+          <div className="admin-sidebar-brand-group">
           <div className="admin-sidebar-logo-wrap">
             <img src="/Rce.logo.png" alt="RCE Logo" className="admin-sidebar-logo-img" />
           </div>
           <div className="admin-sidebar-text">
             <h3>{brandName || 'RCE'}</h3>
             <span>ADMIN PORTAL</span>
+          </div>
           </div>
           <button
             type="button"
@@ -2127,26 +2129,26 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-stone-200">
-                    <span className="text-xs text-stone-500">Lead: {ev.leader || 'RCE Team'}</span>
-                    <div className="flex gap-1">
-                      <button
-                        type="button"
-                        onClick={() => setEditingEvent(ev)}
-                        className="admin-icon-btn blue"
-                        title="Edit Event"
-                      >
-                        <Edit3 size={15} />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteEvent(ev.id)}
-                        className="admin-icon-btn red"
-                        title="Delete Event"
-                      >
-                        <Trash2 size={15} />
-                      </button>
-                    </div>
+                                    <div className="admin-card-footer-corners">
+                    <button
+                      type="button"
+                      onClick={() => setEditingEvent(ev)}
+                      className="admin-corner-btn edit"
+                      title="Edit Event"
+                    >
+                      <Edit3 size={14} />
+                      <span>Edit</span>
+                    </button>
+                    <span className="text-xs text-stone-500 truncate max-w-[150px]">{ev.leader ? `Lead: ${ev.leader}` : 'RCE Team'}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteEvent(ev.id)}
+                      className="admin-corner-btn delete"
+                      title="Delete Event"
+                    >
+                      <Trash2 size={14} />
+                      <span>Delete</span>
+                    </button>
                   </div>
                 </div>
               ))}
@@ -2312,24 +2314,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     <div className="admin-project-body">
                       <div className="flex items-center justify-between mb-1">
                         <span className="event-cat-chip">{proj.category}</span>
-                        <div className="flex gap-1">
-                          <button
-                            type="button"
-                            onClick={() => setEditingProject(proj)}
-                            className="admin-icon-btn blue"
-                            title="Edit Project"
-                          >
-                            <Edit3 size={15} />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteProject(proj.id)}
-                            className="admin-icon-btn red"
-                            title="Delete Project"
-                          >
-                            <Trash2 size={15} />
-                          </button>
-                        </div>
                       </div>
 
                       <h4 className="admin-project-title">{proj.title}</h4>
@@ -2342,6 +2326,27 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                       <div className="admin-project-stats-row">
                         <span>₹{(proj.raised || 0).toLocaleString('en-IN')} ({percent}%)</span>
                         <span>Goal: ₹{(proj.goal || 0).toLocaleString('en-IN')}</span>
+                      </div>
+
+                      <div className="admin-card-footer-corners">
+                        <button
+                          type="button"
+                          onClick={() => setEditingProject(proj)}
+                          className="admin-corner-btn edit"
+                          title="Edit Project"
+                        >
+                          <Edit3 size={14} />
+                          <span>Edit</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteProject(proj.id)}
+                          className="admin-corner-btn delete"
+                          title="Delete Project"
+                        >
+                          <Trash2 size={14} />
+                          <span>Delete</span>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -3233,35 +3238,34 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                         {v.description}
                       </p>
 
-                      <div className="mt-auto pt-3 border-t border-stone-200 flex items-center justify-between">
+                      <div className="admin-card-footer-corners mt-auto">
+                        <button
+                          type="button"
+                          onClick={() => setEditingVideo(v)}
+                          className="admin-corner-btn edit"
+                          title="Edit Video"
+                        >
+                          <Edit3 size={14} />
+                          <span>Edit</span>
+                        </button>
                         <a
                           href={`https://www.youtube.com/watch?v=${v.youtubeId}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs text-red-600 hover:text-red-700 font-semibold inline-flex items-center gap-1"
+                          className="text-xs text-red-600 hover:text-red-700 font-bold inline-flex items-center gap-1"
                         >
                           <ExternalLink size={13} />
-                          <span>YouTube</span>
+                          <span>Watch</span>
                         </a>
-
-                        <div className="flex items-center gap-1">
-                          <button
-                            type="button"
-                            onClick={() => setEditingVideo(v)}
-                            className="admin-icon-btn blue"
-                            title="Edit Video"
-                          >
-                            <Edit3 size={15} />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteVideo(v.id)}
-                            className="admin-icon-btn red"
-                            title="Delete Video"
-                          >
-                            <Trash2 size={15} />
-                          </button>
-                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteVideo(v.id)}
+                          className="admin-corner-btn delete"
+                          title="Delete Video"
+                        >
+                          <Trash2 size={14} />
+                          <span>Delete</span>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -3385,22 +3389,24 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     <h4 className="font-bold text-stone-900 text-sm">{item.title}</h4>
                     <span className="text-xs text-stone-500 mb-3">{item.location}</span>
 
-                    <div className="mt-auto pt-2 border-t border-stone-200 flex justify-end gap-1">
+                    <div className="admin-card-footer-corners mt-auto">
                       <button
                         type="button"
                         onClick={() => setEditingGallery(item)}
-                        className="admin-icon-btn blue"
+                        className="admin-corner-btn edit"
                         title="Edit Photo"
                       >
-                        <Edit3 size={15} />
+                        <Edit3 size={14} />
+                        <span>Edit</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => handleDeleteGalleryItem(item.id)}
-                        className="admin-icon-btn red"
+                        className="admin-corner-btn delete"
                         title="Delete Photo"
                       >
-                        <Trash2 size={15} />
+                        <Trash2 size={14} />
+                        <span>Delete</span>
                       </button>
                     </div>
                   </div>
@@ -3539,22 +3545,24 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     <p className="text-xs text-stone-700 italic mt-2">"{story.quote}"</p>
                   </div>
 
-                  <div className="mt-4 pt-2 border-t border-stone-200 flex justify-end gap-1">
+                  <div className="admin-card-footer-corners mt-auto">
                     <button
                       type="button"
                       onClick={() => setEditingStory(story)}
-                      className="admin-icon-btn blue"
+                      className="admin-corner-btn edit"
                       title="Edit Story"
                     >
-                      <Edit3 size={15} />
+                      <Edit3 size={14} />
+                      <span>Edit</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDeleteStory(story.id)}
-                      className="admin-icon-btn red"
+                      className="admin-corner-btn delete"
                       title="Delete Story"
                     >
-                      <Trash2 size={15} />
+                      <Trash2 size={14} />
+                      <span>Delete</span>
                     </button>
                   </div>
                 </div>
