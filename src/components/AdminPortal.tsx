@@ -1115,13 +1115,14 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
         {/* Brand */}
         <div className="admin-sidebar-brand">
           <div className="admin-sidebar-brand-group">
-          <div className="admin-sidebar-logo-wrap">
-            <img src="/Rce.logo.png" alt="RCE Logo" className="admin-sidebar-logo-img" />
-          </div>
-          <div className="admin-sidebar-text">
-            <h3>{brandName || 'RCE'}</h3>
-            <span>ADMIN PORTAL</span>
-          </div>
+            <div className="admin-sidebar-logo-wrap">
+              <img src="/Rce.logo.png" alt="RCE Logo" className="admin-sidebar-logo-img" />
+            </div>
+            <div className="admin-sidebar-text">
+              <span className="admin-brand-pretitle">TRUST & NGO</span>
+              <h3>{brandName || 'RCE'}</h3>
+              <span className="admin-brand-portal-pill">ADMIN PORTAL</span>
+            </div>
           </div>
           <button
             type="button"
@@ -1421,7 +1422,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             </div>
 
             {/* Quick Actions & Recent Activity Feed */}
-            <div className="admin-overview-grid mt-4">
+            <div className="admin-overview-grid">
               {/* Quick Actions */}
               <div className="admin-box">
                 <h3 className="admin-box-title">⚡ Quick Management Actions</h3>
@@ -1598,37 +1599,41 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   ) : (
                     filteredVolunteers.map((vol) => (
                       <tr key={vol.id}>
-                        <td>
+                        <td className="whitespace-nowrap">
                           <span className="admin-code-badge">{vol.id}</span>
                         </td>
                         <td>
-                          <div className="font-bold text-stone-900">{vol.fullName}</div>
-                          <div className="text-xs text-stone-500">{vol.email}</div>
-                          <span className="text-xs text-amber-800 font-semibold">{vol.roleType}</span>
+                          <div className="font-bold text-stone-900 whitespace-nowrap">{vol.fullName}</div>
+                          <div className="text-xs text-stone-500 whitespace-nowrap">{vol.email}</div>
+                          <span className="text-xs text-amber-800 font-semibold whitespace-nowrap">{vol.roleType}</span>
                         </td>
                         <td>
-                          <div className="text-xs font-bold text-stone-800">{vol.occupation || 'Student'}</div>
-                          <div className="text-xs text-stone-500">{vol.department || vol.city || 'General Citizen'}</div>
+                          <div className="text-xs font-bold text-stone-800 whitespace-nowrap">{vol.occupation || 'Student'}</div>
+                          <div className="text-xs text-stone-500 whitespace-nowrap">{vol.department || vol.city || 'General Citizen'}</div>
                         </td>
-                        <td>
+                        <td className="text-center whitespace-nowrap">
                           <span className="blood-group-chip">{vol.bloodGroup || 'O+'}</span>
                         </td>
-                        <td>
-                          <div className="text-xs font-mono">{vol.phone}</div>
+                        <td className="whitespace-nowrap">
+                          <div className="text-xs font-mono font-bold text-stone-800 whitespace-nowrap">{vol.phone}</div>
                           <a
                             href={`https://wa.me/${vol.phone.replace(/[^0-9]/g, '')}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs text-emerald-600 hover:underline flex items-center gap-1 mt-1 font-semibold"
+                            className="text-xs text-emerald-600 hover:underline inline-flex items-center gap-1 mt-1 font-semibold whitespace-nowrap"
                           >
                             <Phone size={11} /> WhatsApp
                           </a>
                         </td>
                         <td>
-                          <div className="text-xs font-semibold text-amber-800">{vol.preferredDomain || 'Field Drives'}</div>
-                          <div className="text-xs text-stone-500 truncate max-w-xs">{vol.skills}</div>
+                          <div className="text-xs font-bold text-amber-900 whitespace-nowrap">{vol.preferredDomain || 'Field Drives'}</div>
+                          {vol.skills && (
+                            <div className="text-xs text-stone-500 truncate max-w-[220px]" title={vol.skills}>
+                              {vol.skills}
+                            </div>
+                          )}
                         </td>
-                        <td>
+                        <td className="text-center whitespace-nowrap">
                           <span
                             className={`status-chip ${
                               vol.status.toLowerCase().includes('approved')
@@ -1641,7 +1646,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                             {vol.status}
                           </span>
                         </td>
-                        <td>
+                        <td className="whitespace-nowrap">
                           <div className="admin-action-row justify-center">
                             <button
                               type="button"
@@ -1748,32 +1753,32 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   ) : (
                     filteredDonations.map((d) => (
                       <tr key={d.receiptNo}>
-                        <td>
+                        <td className="whitespace-nowrap">
                           <span className="admin-code-badge">{d.receiptNo}</span>
-                          <div className="text-xs text-emerald-700 font-semibold mt-1">80G Eligible</div>
+                          <div className="text-xs text-emerald-700 font-semibold mt-1 whitespace-nowrap">80G Eligible</div>
                         </td>
                         <td>
-                          <div className="font-bold text-stone-900">{d.donorName}</div>
-                          <div className="text-xs text-stone-500">{d.email}</div>
-                          <div className="text-xs text-stone-500">{d.city || 'Chennai'} • {d.phone}</div>
+                          <div className="font-bold text-stone-900 whitespace-nowrap">{d.donorName}</div>
+                          <div className="text-xs text-stone-500 whitespace-nowrap">{d.email}</div>
+                          <div className="text-xs text-stone-500 whitespace-nowrap">{d.city || 'Chennai'} • {d.phone}</div>
                         </td>
-                        <td>
-                          <div className="text-base font-extrabold text-amber-900">
+                        <td className="whitespace-nowrap">
+                          <div className="text-base font-extrabold text-amber-900 whitespace-nowrap">
                             ₹{d.amount.toLocaleString('en-IN')}
                           </div>
                         </td>
-                        <td>
+                        <td className="whitespace-nowrap">
                           <span className="admin-pan-chip">{d.pan || 'N/A'}</span>
                         </td>
                         <td>
-                          <span className="text-xs font-semibold text-stone-800">{d.cause}</span>
+                          <span className="text-xs font-semibold text-stone-800 whitespace-nowrap">{d.cause}</span>
                         </td>
-                        <td>
-                          <div className="text-xs font-semibold text-stone-700">{d.paymentMethod}</div>
+                        <td className="whitespace-nowrap">
+                          <div className="text-xs font-semibold text-stone-700 whitespace-nowrap">{d.paymentMethod}</div>
                           <div className="text-xs font-mono text-stone-400 truncate max-w-xs">{d.transactionId || 'UPI Verified'}</div>
                         </td>
-                        <td>
-                          <span className="text-xs text-stone-500">
+                        <td className="whitespace-nowrap">
+                          <span className="text-xs text-stone-500 whitespace-nowrap">
                             {new Date(d.timestamp).toLocaleDateString('en-IN', {
                               day: '2-digit',
                               month: 'short',
@@ -1781,7 +1786,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                             })}
                           </span>
                         </td>
-                        <td>
+                        <td className="whitespace-nowrap">
                           <div className="admin-action-row justify-center">
                             <button
                               type="button"
@@ -2384,32 +2389,32 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   ) : (
                     (adminData?.contactMessages || []).map((msg) => (
                       <tr key={msg.id}>
-                        <td>
+                        <td className="whitespace-nowrap">
                           <span className="admin-code-badge">{msg.id}</span>
                         </td>
                         <td>
-                          <div className="font-bold text-stone-900">{msg.name}</div>
-                          <div className="text-xs text-stone-500">{msg.email}</div>
-                          <div className="text-xs text-stone-500">{msg.phone || 'Phone not given'}</div>
+                          <div className="font-bold text-stone-900 whitespace-nowrap">{msg.name}</div>
+                          <div className="text-xs text-stone-500 whitespace-nowrap">{msg.email}</div>
+                          <div className="text-xs text-stone-500 whitespace-nowrap">{msg.phone || 'Phone not given'}</div>
                         </td>
                         <td>
-                          <div className="font-semibold text-stone-800 text-sm">{msg.subject}</div>
-                          <span className="text-xs text-amber-800">{msg.category || 'General'}</span>
+                          <div className="font-semibold text-stone-800 text-sm whitespace-nowrap">{msg.subject}</div>
+                          <span className="text-xs text-amber-800 whitespace-nowrap">{msg.category || 'General'}</span>
                         </td>
                         <td>
                           <p className="text-xs text-stone-600 line-clamp-2 max-w-sm">{msg.message}</p>
                         </td>
-                        <td>
+                        <td className="whitespace-nowrap">
                           <span className={`priority-chip ${msg.priority?.toLowerCase() === 'high' ? 'high' : 'normal'}`}>
                             {msg.priority || 'Normal'}
                           </span>
                         </td>
-                        <td>
+                        <td className="whitespace-nowrap">
                           <span className={`status-chip ${msg.status?.toLowerCase() === 'resolved' ? 'green' : msg.status?.toLowerCase() === 'in progress' ? 'blue' : 'amber'}`}>
                             {msg.status || 'New'}
                           </span>
                         </td>
-                        <td>
+                        <td className="whitespace-nowrap">
                           <div className="admin-action-row justify-center">
                             <a
                               href={`mailto:${msg.email}?subject=Re: ${encodeURIComponent(msg.subject)}`}

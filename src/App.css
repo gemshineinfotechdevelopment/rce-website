@@ -3215,22 +3215,26 @@
 
 .admin-data-table {
   width: 100%;
+  min-width: 1120px;
   border-collapse: collapse;
   font-size: 0.88rem;
   text-align: left;
 }
 
 .admin-data-table th {
-  padding: 12px 16px;
+  padding: 14px 18px;
   background: #f7efe7;
   border-bottom: 1.5px solid #edd9c5;
   font-weight: 800;
   color: #24140c;
   white-space: nowrap;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .admin-data-table td {
-  padding: 13px 16px;
+  padding: 14px 18px;
   border-bottom: 1px solid #f4ece2;
   vertical-align: middle;
   color: #382115;
@@ -3243,12 +3247,15 @@
 .admin-code-badge {
   background: #fdf5eb;
   border: 1px solid #edd9c5;
-  padding: 3px 8px;
-  border-radius: 4px;
+  padding: 4px 10px;
+  border-radius: 6px;
   font-weight: 800;
   color: #78350f;
   font-family: monospace;
   font-size: 0.82rem;
+  white-space: nowrap;
+  display: inline-block;
+  letter-spacing: 0.02em;
 }
 
 .admin-role-badge {
@@ -4297,73 +4304,100 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  padding: 24px 20px;
-  border-bottom: 1px solid #2c1a0f;
-  background: linear-gradient(180deg, rgba(36, 18, 8, 0.7) 0%, transparent 100%);
+  gap: 16px;
+  padding: 22px 18px;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.18);
+  background: linear-gradient(180deg, rgba(38, 18, 8, 0.95) 0%, rgba(22, 10, 4, 0.8) 100%);
 }
 
 .admin-sidebar-brand-group {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 14px;
 }
 
 .admin-sidebar-logo-wrap {
-  position: relative;
+  width: 50px;
+  height: 50px;
+  background: #ffffff;
+  border: 2px solid #d97706;
+  border-radius: 12px;
+  padding: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45), 0 0 0 2px rgba(217, 119, 6, 0.25);
+  transition: transform var(--transition-fast);
+}
+
+.admin-sidebar-logo-wrap:hover {
+  transform: scale(1.05);
 }
 
 .admin-sidebar-logo-img {
-  width: 44px;
-  height: 44px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  flex-shrink: 0;
-  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.6));
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.2));
 }
 
 .admin-sidebar-text {
   display: flex;
   flex-direction: column;
+  gap: 2px;
+}
+
+.admin-brand-pretitle {
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #fbbf24;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   line-height: 1;
 }
 
 .admin-sidebar-text h3 {
   font-family: var(--font-brand, 'Cinzel', serif);
-  font-size: 1.45rem;
-  font-weight: 800;
+  font-size: 1.5rem;
+  font-weight: 900;
   letter-spacing: 0.08em;
-  background: linear-gradient(135deg, #fef08a 0%, #fbbf24 60%, #ea580c 100%);
+  background: linear-gradient(135deg, #fffbeb 0%, #fde68a 40%, #f59e0b 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   margin: 0;
   line-height: 1.1;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
 }
 
-.admin-sidebar-text span {
-  font-family: var(--font-heading, 'Outfit', sans-serif);
-  font-size: 0.62rem;
-  font-weight: 800;
-  color: #fb923c;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  margin-top: 3px;
-  display: flex;
+.admin-brand-portal-pill {
+  display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
+  background: rgba(234, 88, 12, 0.25);
+  border: 1px solid rgba(251, 146, 60, 0.5);
+  color: #fdba74;
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  font-size: 0.63rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 2.5px 8px;
+  border-radius: 4px;
+  width: fit-content;
+  margin-top: 3px;
 }
 
-.admin-sidebar-text span::before {
+.admin-brand-portal-pill::before {
   content: '';
-  display: inline-block;
-  width: 10px;
-  height: 1.5px;
-  background: #ea580c;
-  border-radius: 1px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 6px #22c55e;
+  flex-shrink: 0;
 }
 
 .admin-server-badge {
@@ -4542,23 +4576,25 @@
 .admin-kpi-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 22px;
+  gap: 24px;
+  margin-bottom: 32px;
 }
 
 .admin-kpi-card {
   background: #ffffff;
   border-radius: var(--radius-xl);
-  padding: 20px;
+  padding: 22px;
   border: 1.5px solid #dfcebc;
   box-shadow: 0 4px 16px rgba(36, 20, 12, 0.04);
   display: flex;
   align-items: flex-start;
   gap: 16px;
-  transition: transform var(--transition-fast);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .admin-kpi-card:hover {
   transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(36, 20, 12, 0.08);
 }
 
 .admin-kpi-card.gold-border { border-top: 4px solid #b45309; }
@@ -4567,8 +4603,8 @@
 .admin-kpi-card.purple-border { border-top: 4px solid #9333ea; }
 
 .kpi-icon-wrap {
-  width: 46px;
-  height: 46px;
+  width: 48px;
+  height: 48px;
   border-radius: 12px;
   display: grid;
   place-items: center;
@@ -4590,14 +4626,15 @@
   font-weight: 800;
   color: #886f62;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
 .kpi-value {
-  font-size: 1.65rem;
+  font-size: 1.75rem;
   font-weight: 900;
   color: #24140c;
   margin: 4px 0 2px;
+  line-height: 1.1;
 }
 
 .kpi-subtext {
@@ -4610,7 +4647,8 @@
 .admin-overview-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 28px;
+  gap: 32px;
+  margin-bottom: 32px;
 }
 
 @media (min-width: 1024px) {
@@ -4623,15 +4661,16 @@
   background: #ffffff;
   border-radius: var(--radius-xl);
   border: 1.5px solid #dfcebc;
-  padding: 24px;
+  padding: 26px;
   box-shadow: 0 4px 16px rgba(36, 20, 12, 0.03);
+  margin-bottom: 28px;
 }
 
 .admin-box-title {
-  font-size: 1.18rem;
+  font-size: 1.2rem;
   font-weight: 800;
   color: #24140c;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .admin-quick-actions-list {
@@ -4798,17 +4837,19 @@
   border: 1.5px solid #dfcebc;
   overflow-x: auto;
   box-shadow: 0 4px 16px rgba(36, 20, 12, 0.04);
+  margin-bottom: 32px;
 }
 
 .admin-action-row {
   display: flex;
   align-items: center;
   gap: 6px;
+  white-space: nowrap;
 }
 
 .admin-icon-btn {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 6px;
   display: grid;
   place-items: center;
@@ -4832,11 +4873,12 @@
 /* Status & Category Chips */
 .status-chip {
   display: inline-block;
-  padding: 3px 10px;
+  padding: 4px 11px;
   border-radius: 9999px;
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   font-weight: 800;
   text-transform: capitalize;
+  white-space: nowrap;
 }
 
 .status-chip.green {
@@ -4865,32 +4907,38 @@
 
 .blood-group-chip {
   background: #fee2e2;
-  border: 1px solid #ef4444;
+  border: 1.5px solid #ef4444;
   color: #991b1b;
-  padding: 2px 8px;
+  padding: 3px 11px;
   border-radius: 9999px;
   font-weight: 800;
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   display: inline-block;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
 }
 
 .admin-pan-chip {
   background: #f7efe7;
   border: 1px solid #dfcebc;
-  padding: 2px 8px;
+  padding: 3px 9px;
   border-radius: 4px;
   font-family: monospace;
   font-weight: 800;
   font-size: 0.78rem;
   color: #543d31;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .priority-chip {
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 800;
-  padding: 2px 8px;
+  padding: 3px 9px;
   border-radius: 9999px;
   text-transform: uppercase;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .priority-chip.high {
@@ -6433,7 +6481,7 @@
   }
 
   .admin-data-table {
-    min-width: 720px;
+    min-width: 1080px;
   }
 
   /* Admin Project Cards */
