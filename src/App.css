@@ -368,22 +368,32 @@
 .hero-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 40px;
+  gap: 36px;
   align-items: center;
   width: 100%;
 }
 
 @media (min-width: 1024px) {
   .hero-grid {
-    grid-template-columns: 1.15fr 0.85fr;
-    gap: 60px;
+    grid-template-columns: minmax(0, 1.25fr) minmax(360px, 460px);
+    gap: 48px;
+    align-items: center;
+  }
+}
+
+@media (min-width: 1280px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 1.2fr) minmax(380px, 490px);
+    gap: 56px;
+    align-items: center;
   }
 }
 
 @media (min-width: 1400px) {
   .hero-grid {
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: 80px;
+    grid-template-columns: minmax(0, 1.25fr) minmax(400px, 510px);
+    gap: 64px;
+    align-items: center;
   }
 }
 
@@ -462,57 +472,138 @@
 .hero-visual {
   position: relative;
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-visual-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 110%;
+  height: 110%;
+  background: radial-gradient(circle, rgba(217, 119, 6, 0.2) 0%, rgba(245, 158, 11, 0.06) 45%, transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-showcase-frame {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 6px;
+  background: linear-gradient(145deg, #ffffff 0%, #fef3c7 45%, #edd9c5 100%);
+  border: 1.5px solid rgba(217, 119, 6, 0.35);
+  border-radius: 26px;
+  box-shadow: 
+    0 25px 60px -15px rgba(50, 25, 10, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+  transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+}
+
+.hero-clickable-card {
+  cursor: pointer;
+}
+
+.hero-showcase-frame:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 32px 75px -12px rgba(62, 34, 21, 0.35),
+    0 0 0 1.5px rgba(217, 119, 6, 0.5) inset;
 }
 
 .hero-card-main {
   position: relative;
   width: 100%;
-  border-radius: var(--radius-xl);
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 25px 60px -15px rgba(62, 34, 21, 0.28);
-  border: 4px solid #ffffff;
   background: #180e07;
-  display: flex;
+  display: block;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+}
+
+.hero-main-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.hero-showcase-frame:hover .hero-main-img {
+  transform: scale(1.02);
+}
+
+.hero-banner-status-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 7px;
+  background: rgba(20, 11, 6, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #ffffff;
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  border-radius: 9999px;
+  padding: 5px 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  z-index: 5;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.hero-clickable-card {
-  cursor: pointer;
-  transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+.hero-badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f59e0b;
+  box-shadow: 0 0 8px #f59e0b;
+  animation: pulseDot 2s infinite;
 }
 
-.hero-clickable-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 32px 75px -12px rgba(62, 34, 21, 0.38);
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
 }
 
 .hero-expand-badge {
   position: absolute;
-  bottom: 16px;
-  right: 16px;
+  bottom: 14px;
+  right: 14px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(22, 13, 7, 0.75);
-  backdrop-filter: blur(8px);
+  background: rgba(20, 11, 6, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 9999px;
-  padding: 6px 14px;
-  font-size: 0.75rem;
+  padding: 6px 13px;
+  font-size: 0.74rem;
   font-weight: 700;
-  letter-spacing: 0.03em;
-  opacity: 0.85;
+  letter-spacing: 0.02em;
+  opacity: 0.92;
   transition: all var(--transition-fast);
   z-index: 5;
   pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.hero-clickable-card:hover .hero-expand-badge {
+.hero-showcase-frame:hover .hero-expand-badge {
   opacity: 1;
-  background: rgba(180, 83, 9, 0.92);
-  transform: scale(1.05);
+  background: rgba(180, 83, 9, 0.94);
+  border-color: rgba(251, 191, 36, 0.6);
+  transform: scale(1.04);
 }
 
 /* Hero Banner Lightbox Modal */
@@ -593,24 +684,7 @@
   transform: rotate(90deg) scale(1.1);
 }
 
-.hero-main-img {
-  width: 100%;
-  height: auto;
-  max-height: 560px;
-  object-fit: contain;
-  display: block;
-  transition: transform 0.4s ease;
-}
-
-@media (min-width: 1280px) {
-  .hero-main-img {
-    max-height: 620px;
-  }
-}
-
-.hero-card-main:hover .hero-main-img {
-  transform: scale(1.015);
-}
+/* Main banner styling handled in hero showcase block above */
 
 .hero-img-overlay {
   position: absolute;
@@ -5766,16 +5840,14 @@
     margin-bottom: 26px;
   }
 
-  .hero-card-main {
-    box-shadow: 0 15px 35px -8px rgba(62, 34, 21, 0.22);
-    max-width: 520px;
+  .hero-showcase-frame {
+    max-width: 440px;
     margin: 0 auto;
   }
 
   .hero-main-img {
     height: auto;
-    max-height: 480px;
-    object-fit: contain;
+    object-fit: cover;
   }
 
   /* Floating badges scaled on mobile */
@@ -6303,10 +6375,33 @@
     display: none;
   }
 
+  .hero-showcase-frame {
+    max-width: 100%;
+    padding: 5px;
+    border-radius: 20px;
+  }
+
+  .hero-card-main {
+    border-radius: 15px;
+  }
+
   .hero-main-img {
     height: auto;
-    max-height: 380px;
-    object-fit: contain;
+    object-fit: cover;
+  }
+
+  .hero-banner-status-badge {
+    top: 10px;
+    left: 10px;
+    padding: 4px 10px;
+    font-size: 0.68rem;
+  }
+
+  .hero-expand-badge {
+    bottom: 10px;
+    right: 10px;
+    padding: 4px 10px;
+    font-size: 0.68rem;
   }
 
   .floating-stat-badge {

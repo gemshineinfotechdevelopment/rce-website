@@ -153,10 +153,12 @@ export const Hero: React.FC<HeroProps> = ({ content, onOpenJoin, onOpenDonate })
             </div>
           </div>
 
-          {/* Right Visual Composition - Clean Banner Image */}
+          {/* Right Visual Composition - Premium Framed Banner Showcase */}
           <div className="hero-visual">
+            <div className="hero-visual-glow" aria-hidden="true"></div>
+
             <div 
-              className="hero-card-main hero-clickable-card"
+              className="hero-showcase-frame hero-clickable-card"
               onClick={() => setIsFullViewOpen(true)}
               role="button"
               tabIndex={0}
@@ -166,20 +168,28 @@ export const Hero: React.FC<HeroProps> = ({ content, onOpenJoin, onOpenDonate })
                   setIsFullViewOpen(true);
                 }
               }}
-              title="Click to view full photo"
+              title="Click to view full photo in high resolution"
               aria-label="View full banner photo"
             >
-              <img 
-                src={bannerSrc} 
-                alt="RCE Social Service Club Banner"
-                className="hero-main-img"
-                onError={handleImageError}
-              />
+              <div className="hero-card-main">
+                <img 
+                  src={bannerSrc} 
+                  alt="RCE Social Service Club Banner"
+                  className="hero-main-img"
+                  onError={handleImageError}
+                />
 
-              {/* Discreet view full photo badge */}
-              <div className="hero-expand-badge">
-                <Maximize2 size={13} />
-                <span>View Full Photo</span>
+                {/* Top Badge: Verified Movement Chapter */}
+                <div className="hero-banner-status-badge">
+                  <span className="hero-badge-dot"></span>
+                  <span>RCE Official Chapter</span>
+                </div>
+
+                {/* Bottom Badge: Discreet view full photo */}
+                <div className="hero-expand-badge">
+                  <Maximize2 size={13} />
+                  <span>View Full Photo</span>
+                </div>
               </div>
             </div>
           </div>
