@@ -1,0 +1,654 @@
+import React, { useState, useMemo } from 'react';
+import {
+  Calendar,
+  FileText,
+  Lock,
+  MapPin,
+  GraduationCap,
+  Award,
+  BookOpen,
+  CheckCircle2,
+  ExternalLink,
+  X,
+  Sparkles,
+  ArrowRight,
+  ArrowLeft,
+  Search,
+  ChevronRight,
+  School,
+  Flame,
+} from 'lucide-react';
+import type { ClubEvent } from '../services/api';
+import { getSafeImageUrl } from '../services/api';
+
+interface EventsPageProps {
+  events: ClubEvent[];
+  onOpenJoin: (role?: string) => void;
+  onBackToHome: () => void;
+}
+
+export const EventsPage: React.FC<EventsPageProps> = ({
+  events,
+  onOpenJoin,
+  onBackToHome,
+}) => {
+  const [activeCategory, setActiveCategory] = useState<string>('All');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedEvent, setSelectedEvent] = useState<ClubEvent | null>(null);
+
+  // Derive unique categories dynamically for filtering
+  const categories = useMemo(() => {
+    const defaultCats = [
+      '₹5 Paadasaalai',
+      'Kalvi Mela',
+      'Teachers Award',
+      'Kit Distribution',
+      'Education Awareness',
+      'Green Forest',
+      'Youth & Culture',
+      'Career Guidance',
+    ];
+    const dynamicCats = events
+      .map((ev) => ev.category?.trim())
+      .filter((c): c is string => Boolean(c));
+    const unique = Array.from(new Set([...defaultCats, ...dynamicCats]));
+    return ['All', ...unique];
+  }, [events]);
+
+  // Search & category filter logic
+  const filteredEvents = useMemo(() => {
+    return events.filter((ev) => {
+      const matchesCategory =
+        activeCategory === 'All'
+          ? true
+          : ev.category?.toLowerCase() === activeCategory.toLowerCase() ||
+            (activeCategory === 'Teachers Award' &&
+              ev.category?.toLowerCase().includes('teacher')) ||
+            (activeCategory === '₹5 Paadasaalai' &&
+              (ev.category?.includes('5') || ev.title?.includes('5')));
+
+      const q = searchQuery.toLowerCase().trim();
+      const matchesSearch =
+        !q ||
+        ev.title.toLowerCase().includes(q) ||
+        (ev.description && ev.description.toLowerCase().includes(q)) ||
+        (ev.location && ev.location.toLowerCase().includes(q)) ||
+        (ev.chiefGuest && ev.chiefGuest.toLowerCase().includes(q)) ||
+        (ev.leader && ev.leader.toLowerCase().includes(q)) ||
+        (ev.category && ev.category.toLowerCase().includes(q)) ||
+        (ev.highlights && ev.highlights.some((h) => h.toLowerCase().includes(q)));
+
+      return matchesCategory && matchesSearch;
+    });
+  }, [events, activeCategory, searchQuery]);
+
+  const isScheduleOver = (ev: ClubEvent) => {
+    if (!ev) return false;
+    const status = (ev.status || '').toLowerCase().trim();
+    if (status === 'conducted' || status === 'completed') return true;
+    if (status === 'ongoing flagship') return false;
+    if (!ev.date) return false;
+    try {
+      const eventDate = new Date(ev.date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return eventDate < today;
+    } catch {
+      return false;
+    }
+  };
+
+  const formatEventDate = (dateStr: string) => {
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+      return d.toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      });
+    } catch {
+      return dateStr;
+    }
+  };
+
+  const getCategoryBadgeClass = (cat?: string) => {
+    const c = (cat || '').toLowerCase();
+    if (c.includes('5') || c.includes('paada')) return 'badge-cat-paada';
+    if (c.includes('mela') || c.includes('science')) return 'badge-cat-mela';
+    if (c.includes('teacher') || c.includes('award')) return 'badge-cat-award';
+    if (c.includes('kit') || c.includes('bag')) return 'badge-cat-kit';
+    if (c.includes('guidance') || c.includes('career')) return 'badge-cat-career';
+    if (c.includes('forest') || c.includes('green')) return 'badge-cat-forest';
+    return 'badge-cat-default';
+  };
+
+  return (
+    <div className="dedicated-page-view">
+      {/* Page Hero Header Banner */}
+      <section className="dedicated-page-hero">
+        <div className="container">
+          {/* Breadcrumbs & Back Navigation */}
+          <div className="page-breadcrumb-nav">
+            <button
+              type="button"
+              onClick={onBackToHome}
+              className="page-back-btn"
+              title="Return to Home Page"
+            >
+              <ArrowLeft size={16} />
+              <span>Back to Home</span>
+            </button>
+            <div className="page-breadcrumbs">
+              <span className="breadcrumb-link" onClick={onBackToHome}>
+                Home
+              </span>
+              <ChevronRight size={14} className="breadcrumb-separator" />
+              <span className="breadcrumb-current">Events & Conclaves</span>
+            </div>
+          </div>
+
+          <div className="dedicated-hero-content text-center max-w-3xl mx-auto">
+            <span className="section-tag gold inline-flex items-center gap-1.5 mb-3">
+              <Sparkles size={14} />
+              <span>EDUCATIONAL INITIATIVES & GRASSROOTS DRIVES</span>
+            </span>
+            <h1 className="dedicated-page-title">
+              Educational Events <span className="text-gradient">& Conclaves</span>
+            </h1>
+            <p className="dedicated-page-subtitle">
+              Browse all {events.length}+ educational conclaves, student competitions, awareness campaigns,
+              and community milestone events organized by Right Club for Education (₹5 Paadasaalai).
+            </p>
+
+            {/* Quick Metrics Ribbon */}
+            <div className="page-metrics-ribbon">
+              <div className="page-metric-pill">
+                <Flame size={16} className="text-amber-700" />
+                <span>
+                  <strong>{events.length}</strong> Flagship Conclaves
+                </span>
+              </div>
+              <div className="page-metric-pill">
+                <GraduationCap size={16} className="text-emerald-700" />
+                <span>
+                  <strong>12,000+</strong> Students Empowered
+                </span>
+              </div>
+              <div className="page-metric-pill">
+                <School size={16} className="text-blue-700" />
+                <span>
+                  <strong>16+</strong> Schools & Colleges Partnered
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Main Content Area */}
+      <section className="dedicated-content-section">
+        <div className="container">
+          {/* Filter & Search Toolbar */}
+          <div className="dedicated-toolbar-wrap">
+            {/* Category Filter Pills */}
+            <div className="category-filter-bar flex-1">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setActiveCategory(cat)}
+                  className={`category-pill ${activeCategory === cat ? 'active' : ''}`}
+                >
+                  {cat === 'All' ? 'All Conclaves' : cat}
+                </button>
+              ))}
+            </div>
+
+            {/* Search Input Box */}
+            <div className="dedicated-search-box">
+              <Search size={16} className="text-stone-400 flex-shrink-0" />
+              <input
+                type="text"
+                placeholder="Search events by title, location, guest, topic..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="dedicated-search-input"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="search-clear-btn"
+                  title="Clear search"
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Results Summary Bar */}
+          <div className="dedicated-results-meta">
+            <span className="results-count-text">
+              Showing <strong>{filteredEvents.length}</strong> of {events.length} conclaves & drives
+              {activeCategory !== 'All' && ` in "${activeCategory}"`}
+              {searchQuery && ` matching "${searchQuery}"`}
+            </span>
+            {(activeCategory !== 'All' || searchQuery) && (
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveCategory('All');
+                  setSearchQuery('');
+                }}
+                className="clear-all-filters-btn"
+              >
+                Reset Filters
+              </button>
+            )}
+          </div>
+
+          {/* Events Cards Grid */}
+          {filteredEvents.length > 0 ? (
+            <div className="events-impact-grid">
+              {filteredEvents.map((ev) => {
+                const displayDate = formatEventDate(ev.date);
+                const statusLabel = ev.status || 'Conducted';
+                const impactMetric =
+                  ev.studentsImpacted ||
+                  ev.beneficiaries ||
+                  (ev.slotsTotal ? `${ev.slotsTotal}+ Students Benefited` : 'Rural Children Empowered');
+
+                const defaultPhoto = getSafeImageUrl(
+                  ev.image,
+                  'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80'
+                );
+
+                return (
+                  <article key={ev.id} className="event-impact-card card-hover">
+                    {/* Event Photo with Overlays */}
+                    <div className="event-card-media">
+                      <img
+                        src={defaultPhoto}
+                        alt={ev.title}
+                        className="event-card-img"
+                        loading="lazy"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).src =
+                            'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80';
+                        }}
+                      />
+                      <div className="event-card-overlay">
+                        <span className={`event-card-cat-badge ${getCategoryBadgeClass(ev.category)}`}>
+                          {ev.category}
+                        </span>
+                        {ev.formUrl && ev.formUrl.trim() ? (
+                          isScheduleOver(ev) ? (
+                            <span
+                              className="event-card-form-closed-badge"
+                              title="Event schedule is completed"
+                            >
+                              <Lock size={11} className="inline mr-1" />
+                              Form Closed
+                            </span>
+                          ) : (
+                            <span className="event-card-form-badge">
+                              <FileText size={12} className="inline mr-1" />
+                              Form Open
+                            </span>
+                          )
+                        ) : (
+                          <span className="event-card-status-badge">
+                            <CheckCircle2 size={13} className="inline mr-1 text-emerald-400" />
+                            {statusLabel}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Event Card Content */}
+                    <div className="event-card-content">
+                      {/* Meta Bar: Date & Location */}
+                      <div className="event-card-meta">
+                        <span className="meta-item">
+                          <Calendar size={14} className="text-amber-700" />
+                          {displayDate}
+                        </span>
+                        {ev.location && (
+                          <span className="meta-item" title={ev.location}>
+                            <MapPin size={14} className="text-amber-700" />
+                            <span className="truncate max-w-[170px]">{ev.location}</span>
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Title */}
+                      <h3 className="event-card-title">{ev.title}</h3>
+
+                      {/* Impact Metric Banner */}
+                      <div className="event-impact-metric-box">
+                        <GraduationCap size={16} className="text-amber-800 flex-shrink-0" />
+                        <span className="impact-metric-text">{impactMetric}</span>
+                      </div>
+
+                      {/* Short Description */}
+                      <p className="event-card-desc">{ev.description}</p>
+
+                      {/* Highlights Bullet Tags */}
+                      {ev.highlights && ev.highlights.length > 0 && (
+                        <div className="event-card-highlights">
+                          {ev.highlights.slice(0, 3).map((hl, idx) => (
+                            <div key={idx} className="event-hl-item">
+                              <span className="hl-bullet">✓</span>
+                              <span className="hl-text line-clamp-1">{hl}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Card Footer: Action Buttons */}
+                      <div className="event-card-footer">
+                        {ev.chiefGuest ? (
+                          <span className="event-card-lead truncate max-w-[160px]" title={ev.chiefGuest}>
+                            <Award size={13} className="inline mr-1 text-amber-700" />
+                            {ev.chiefGuest}
+                          </span>
+                        ) : (
+                          <span className="event-card-lead">
+                            {ev.leader ? `Lead: ${ev.leader}` : 'RCE Youth Movement'}
+                          </span>
+                        )}
+
+                        <div className="event-card-actions">
+                          {ev.formUrl && ev.formUrl.trim() && (
+                            isScheduleOver(ev) ? (
+                              <button
+                                type="button"
+                                disabled
+                                className="btn-event-form-closed"
+                                title="Registration closed: The event date has completed"
+                              >
+                                <Lock size={12} />
+                                <span>Closed</span>
+                              </button>
+                            ) : (
+                              <a
+                                href={ev.formUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn-event-form"
+                                title="Open Online Form / Registration"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <FileText size={13} />
+                                <span>Online Form</span>
+                              </a>
+                            )
+                          )}
+
+                          <button
+                            type="button"
+                            onClick={() => setSelectedEvent(ev)}
+                            className="btn-event-view"
+                          >
+                            <span>Highlights</span>
+                            <ArrowRight size={14} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="empty-state-card text-center py-16">
+              <BookOpen size={44} className="mx-auto text-amber-700 mb-3 opacity-60" />
+              <h3 className="text-lg font-bold text-stone-900 mb-1">No Events Found</h3>
+              <p className="text-sm text-stone-600 max-w-md mx-auto mb-4">
+                We couldn't find any initiatives matching your selected filters. Try searching with different keywords.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveCategory('All');
+                  setSearchQuery('');
+                }}
+                className="btn-primary text-sm px-5 py-2.5"
+              >
+                View All Events
+              </button>
+            </div>
+          )}
+
+          {/* Bottom Collaboration CTA Banner */}
+          <div className="event-school-collab-banner mt-12">
+            <div className="collab-banner-content">
+              <div className="collab-icon-box">
+                <School size={28} />
+              </div>
+              <div className="collab-text">
+                <h3>Request an Educational Conclave for Your School or College</h3>
+                <p>
+                  Right Club for Education (₹5 Paadasaalai) conducts free student motivation sessions, career
+                  guidance summits, and science exhibitions for government and rural matriculation institutions.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => onOpenJoin('Educational Program Collaboration / School Request')}
+                className="btn-primary btn-collaborate"
+              >
+                <span>Request Program</span>
+                <ArrowRight size={16} />
+              </button>
+            </div>
+          </div>
+
+          {/* Bottom Back Button */}
+          <div className="dedicated-bottom-nav">
+            <button
+              type="button"
+              onClick={onBackToHome}
+              className="btn-outline inline-flex items-center gap-2"
+            >
+              <ArrowLeft size={16} />
+              <span>Back to Home Page</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ==============================================================
+          FULL EVENT DETAILS MODAL / LIGHTBOX
+         ============================================================== */}
+      {selectedEvent && (
+        <div
+          className="modal-overlay event-details-modal-overlay"
+          onClick={() => setSelectedEvent(null)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="modal-container event-details-modal" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className="modal-close-btn"
+              onClick={() => setSelectedEvent(null)}
+              aria-label="Close dialog"
+            >
+              <X size={20} />
+            </button>
+
+            {/* Modal Image Banner */}
+            <div className="event-modal-media">
+              <img
+                src={getSafeImageUrl(
+                  selectedEvent.image,
+                  'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80'
+                )}
+                alt={selectedEvent.title}
+                className="event-modal-img"
+              />
+              <div className="event-modal-img-overlay">
+                <span className={`event-card-cat-badge ${getCategoryBadgeClass(selectedEvent.category)}`}>
+                  {selectedEvent.category}
+                </span>
+                <span className="event-card-status-badge">
+                  <CheckCircle2 size={14} className="inline mr-1 text-emerald-400" />
+                  {selectedEvent.status || 'Conducted'}
+                </span>
+              </div>
+            </div>
+
+            {/* Modal Body */}
+            <div className="event-modal-body">
+              {/* Meta Grid */}
+              <div className="event-modal-meta-grid">
+                <div className="modal-meta-cell">
+                  <span className="meta-cell-label">Date</span>
+                  <span className="meta-cell-value">
+                    <Calendar size={14} className="text-amber-700 inline mr-1.5" />
+                    {formatEventDate(selectedEvent.date)}
+                  </span>
+                </div>
+                {selectedEvent.time && (
+                  <div className="modal-meta-cell">
+                    <span className="meta-cell-label">Timing</span>
+                    <span className="meta-cell-value">{selectedEvent.time}</span>
+                  </div>
+                )}
+                <div className="modal-meta-cell">
+                  <span className="meta-cell-label">Venue / Location</span>
+                  <span className="meta-cell-value">
+                    <MapPin size={14} className="text-amber-700 inline mr-1.5" />
+                    {selectedEvent.location || 'Tamil Nadu'}
+                  </span>
+                </div>
+                <div className="modal-meta-cell">
+                  <span className="meta-cell-label">Community Reach</span>
+                  <span className="meta-cell-value text-emerald-700 font-bold">
+                    <GraduationCap size={15} className="inline mr-1.5" />
+                    {selectedEvent.studentsImpacted || selectedEvent.beneficiaries || 'Empowering Youth'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Title */}
+              <h2 className="event-modal-title">{selectedEvent.title}</h2>
+
+              {/* Dignitaries / Leadership */}
+              <div className="event-modal-dignitaries">
+                {selectedEvent.chiefGuest && (
+                  <div className="dignitary-badge">
+                    <Award size={16} className="text-amber-800" />
+                    <div>
+                      <span className="dignitary-label">Chief Guest / Honored Dignitary</span>
+                      <strong className="dignitary-name">{selectedEvent.chiefGuest}</strong>
+                    </div>
+                  </div>
+                )}
+                {selectedEvent.leader && (
+                  <div className="dignitary-badge">
+                    <CheckCircle2 size={16} className="text-emerald-700" />
+                    <div>
+                      <span className="dignitary-label">Conclave Leadership</span>
+                      <strong className="dignitary-name">{selectedEvent.leader}</strong>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Online Form Banner if Schedule is Over */}
+              {selectedEvent.formUrl && isScheduleOver(selectedEvent) && (
+                <div className="event-form-completed-alert">
+                  <div className="flex items-center gap-2 font-bold text-stone-800 text-sm">
+                    <Lock size={16} className="text-stone-500" />
+                    <span>Registration Form is Closed</span>
+                  </div>
+                  <p className="text-xs text-stone-600 mt-1">
+                    This conclave / drive was successfully conducted on {formatEventDate(selectedEvent.date)}.
+                    Online applications and registrations for this drive are now concluded.
+                  </p>
+                </div>
+              )}
+
+              {/* Online Form Banner if Form is Open */}
+              {selectedEvent.formUrl && !isScheduleOver(selectedEvent) && (
+                <div className="event-form-open-card">
+                  <div className="flex items-center gap-3">
+                    <div className="form-icon-circle">
+                      <FileText size={20} className="text-emerald-800" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-stone-900 text-sm">Online Participant Registration Open</h4>
+                      <p className="text-xs text-stone-600">
+                        Submit student names, school category, or competition entries directly via the official portal.
+                      </p>
+                    </div>
+                  </div>
+                  <a
+                    href={selectedEvent.formUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-primary text-sm py-2 px-5 whitespace-nowrap bg-emerald-700 hover:bg-emerald-800 text-white flex items-center gap-2 rounded-lg"
+                  >
+                    <span>Fill Form / படிவம் நிரப்ப</span>
+                    <ExternalLink size={14} />
+                  </a>
+                </div>
+              )}
+
+              {/* Conclave Description */}
+              <div className="event-modal-desc-box">
+                <h4 className="modal-desc-heading">About This Conclave & Impact</h4>
+                <p className="modal-desc-paragraph">{selectedEvent.description}</p>
+              </div>
+
+              {/* Highlights & Achievements */}
+              {selectedEvent.highlights && selectedEvent.highlights.length > 0 && (
+                <div className="event-modal-highlights-box">
+                  <h4 className="modal-desc-heading flex items-center gap-2">
+                    <Sparkles size={16} className="text-amber-700" />
+                    <span>Conclave Highlights & Milestone Outcomes</span>
+                  </h4>
+                  <ul className="modal-highlights-list">
+                    {selectedEvent.highlights.map((hl, i) => (
+                      <li key={i} className="modal-hl-item">
+                        <CheckCircle2 size={15} className="text-emerald-600 flex-shrink-0 mt-0.5" />
+                        <span>{hl}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Footer Actions */}
+              <div className="modal-footer flex items-center justify-between pt-4 border-t border-stone-200 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setSelectedEvent(null)}
+                  className="btn-outline text-sm py-2.5 px-5"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const title = selectedEvent.title;
+                    setSelectedEvent(null);
+                    onOpenJoin(`Regarding Conclave: ${title}`);
+                  }}
+                  className="btn-primary text-sm py-2.5 px-6"
+                >
+                  <span>Connect Regarding This Initiative</span>
+                  <ExternalLink size={15} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};

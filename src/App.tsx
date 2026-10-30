@@ -3,8 +3,9 @@ import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { StatsRibbon } from './components/StatsRibbon';
 import { AboutSection } from './components/AboutSection';
-import { ProjectsSection } from './components/ProjectsSection';
-import { EventsSection } from './components/EventsSection';
+import { InitiativesSpotlight } from './components/InitiativesSpotlight';
+import { ProjectsPage } from './components/ProjectsPage';
+import { EventsPage } from './components/EventsPage';
 import { StoriesSection } from './components/StoriesSection';
 import { VideoShowcase } from './components/VideoShowcase';
 import { GallerySection } from './components/GallerySection';
@@ -34,6 +35,8 @@ import type {
 } from './services/api';
 import './App.css';
 
+type AppView = 'home' | 'projects' | 'events' | 'admin';
+
 function App() {
   const [stats, setStats] = useState<ClubStats>({
     livesImpacted: 28450,
@@ -54,9 +57,14 @@ function App() {
   const [siteContent, setSiteContent] = useState<SiteContent>(DEFAULT_SITE_CONTENT);
   const [isSyncingStats, setIsSyncingStats] = useState(false);
 
-  // Standalone Admin Route State
-  const [isAdminPortalView, setIsAdminPortalView] = useState(() => {
-    return window.location.pathname.startsWith('/admin') || window.location.hash === '#admin';
+  // Multi-page routing state (home, projects, events, admin)
+  const [currentView, setCurrentView] = useState<AppView>(() => {
+    const path = window.location.pathname;
+    const hash = window.location.hash;
+    if (path.startsWith('/admin') || hash === '#admin') return 'admin';
+    if (path.startsWith('/projects') || hash === '#projects') return 'projects';
+    if (path.startsWith('/events') || hash === '#events') return 'events';
+    return 'home';
   });
 
   // Modal States for Public Website
@@ -68,9 +76,17 @@ function App() {
   // Listen to browser URL changes
   useEffect(() => {
     const handleRouteCheck = () => {
-      setIsAdminPortalView(
-        window.location.pathname.startsWith('/admin') || window.location.hash === '#admin'
-      );
+      const path = window.location.pathname;
+      const hash = window.location.hash;
+      if (path.startsWith('/admin') || hash === '#admin') {
+        setCurrentView('admin');
+      } else if (path.startsWith('/projects') || hash === '#projects') {
+        setCurrentView('projects');
+      } else if (path.startsWith('/events') || hash === '#events') {
+        setCurrentView('events');
+      } else {
+        setCurrentView('home');
+      }
     };
 
     window.addEventListener('popstate', handleRouteCheck);
@@ -137,20 +153,46 @@ function App() {
     setIsDonateOpen(true);
   };
 
+  const handleNavigate = (view: 'home' | 'projects' | 'events', sectionId?: string) => {
+    if (view === 'projects') {
+      window.location.hash = '#projects';
+      setCurrentView('projects');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (view === 'events') {
+      window.location.hash = '#events';
+      setCurrentView('events');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      setCurrentView('home');
+      if (sectionId) {
+        window.location.hash = sectionId;
+        setTimeout(() => {
+          const el = document.querySelector(sectionId);
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 80);
+      } else {
+        window.location.hash = '';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  };
+
   const handleNavigateToAdmin = () => {
-    window.history.pushState({}, '', '/admin');
-    setIsAdminPortalView(true);
+    window.location.hash = '#admin';
+    setCurrentView('admin');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleBackToWebsite = () => {
-    window.history.pushState({}, '', '/');
-    setIsAdminPortalView(false);
+    window.location.hash = '';
+    setCurrentView('home');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // ==============================================================
-  // 1. DEDICATED STANDALONE ADMIN PANEL VIEW (NOT EMBEDDED IN WEBSITE)
+  // 1. STANDALONE ADMIN PORTAL VIEW
   // ==============================================================
-  if (isAdminPortalView) {
+  if (currentView === 'admin') {
     return (
       <AdminPortal
         onBackToWebsite={handleBackToWebsite}
@@ -160,18 +202,103 @@ function App() {
   }
 
   // ==============================================================
-  // 2. PUBLIC SOCIAL SERVICE CLUB WEBSITE
+  // 2. DEDICATED PROJECTS PAGE VIEW (SEPARATE PAGE)
+  // ==============================================================
+  if (currentView === 'projects') {
+    return (
+      <div className="rce-app-root">
+        <Navbar
+          brand={siteContent.brand}
+          currentView={currentView}
+          onNavigate={handleNavigate}
+          onOpenJoin={handleOpenJoin}
+          onOpenDonate={handleOpenDonate}
+        />
+        <main>
+          <ProjectsPage
+            projects={projects}
+            onOpenDonate={handleOpenDonate}
+            onOpenJoin={handleOpenJoin}
+            onBackToHome={() => handleNavigate('home')}
+          />
+        </main>
+        <Footer
+          brand={siteContent.brand}
+          onOpenAdmin={handleNavigateToAdmin}
+        />
+        <JoinModal
+          isOpen={isJoinOpen}
+          onClose={() => setIsJoinOpen(false)}
+          defaultRole={defaultJoinRole}
+          projects={projects}
+          onSuccessRegistered={handleRefreshStats}
+        />
+        <DonateModal
+          isOpen={isDonateOpen}
+          onClose={() => setIsDonateOpen(false)}
+          defaultCause={defaultDonateCause}
+          projects={projects}
+          onSuccessDonated={handleRefreshStats}
+        />
+      </div>
+    );
+  }
+
+  // ==============================================================
+  // 3. DEDICATED EVENTS PAGE VIEW (SEPARATE PAGE WITH ALL 14+ DRIVES)
+  // ==============================================================
+  if (currentView === 'events') {
+    return (
+      <div className="rce-app-root">
+        <Navbar
+          brand={siteContent.brand}
+          currentView={currentView}
+          onNavigate={handleNavigate}
+          onOpenJoin={handleOpenJoin}
+          onOpenDonate={handleOpenDonate}
+        />
+        <main>
+          <EventsPage
+            events={events}
+            onOpenJoin={(role?: string) => handleOpenJoin(role)}
+            onBackToHome={() => handleNavigate('home')}
+          />
+        </main>
+        <Footer
+          brand={siteContent.brand}
+          onOpenAdmin={handleNavigateToAdmin}
+        />
+        <JoinModal
+          isOpen={isJoinOpen}
+          onClose={() => setIsJoinOpen(false)}
+          defaultRole={defaultJoinRole}
+          projects={projects}
+          onSuccessRegistered={handleRefreshStats}
+        />
+        <DonateModal
+          isOpen={isDonateOpen}
+          onClose={() => setIsDonateOpen(false)}
+          defaultCause={defaultDonateCause}
+          projects={projects}
+          onSuccessDonated={handleRefreshStats}
+        />
+      </div>
+    );
+  }
+
+  // ==============================================================
+  // 4. MAIN HOMEPAGE (CLEAN & UNCLUTTERED)
   // ==============================================================
   return (
     <div className="rce-app-root">
-      {/* Top Public Navbar (No Admin button here) */}
       <Navbar
         brand={siteContent.brand}
+        currentView={currentView}
+        onNavigate={handleNavigate}
         onOpenJoin={handleOpenJoin}
         onOpenDonate={handleOpenDonate}
       />
 
-      {/* Main Landing Page Content */}
       <main>
         <Hero
           stats={stats}
@@ -193,15 +320,12 @@ function App() {
           onOpenJoin={() => handleOpenJoin('Member')}
         />
 
-        <ProjectsSection
+        {/* Clean, high-impact Initiatives Spotlight linking directly to dedicated pages */}
+        <InitiativesSpotlight
           projects={projects}
-          onOpenDonate={handleOpenDonate}
-          onOpenJoin={handleOpenJoin}
-        />
-
-        <EventsSection
           events={events}
-          onOpenJoin={(role) => handleOpenJoin(role)}
+          onNavigateToProjects={() => handleNavigate('projects')}
+          onNavigateToEvents={() => handleNavigate('events')}
         />
 
         <StoriesSection stories={stories} />
@@ -211,7 +335,6 @@ function App() {
         <ContactSection content={siteContent.contact} />
       </main>
 
-      {/* Site Footer with discreet staff admin link */}
       <Footer
         brand={siteContent.brand}
         onOpenAdmin={handleNavigateToAdmin}

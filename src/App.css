@@ -6676,3 +6676,416 @@
   transform: translateY(-1px);
   box-shadow: 0 4px 10px rgba(220, 38, 38, 0.25);
 }
+
+
+/* ==============================================================
+   DEDICATED PAGES (PROJECTS & EVENTS SEPARATE PAGES) & SPOTLIGHT
+   ============================================================== */
+
+/* Active Navbar Pill */
+.nav-link.active-pill {
+  background: #fdf5eb;
+  color: #b45309;
+  font-weight: 800;
+  box-shadow: 0 2px 8px rgba(180, 83, 9, 0.12);
+  border: 1px solid #fed7aa;
+}
+
+/* Dedicated Page Shell */
+.dedicated-page-view {
+  min-height: 100vh;
+  width: 100%;
+  background: #fcf9f5;
+  padding-bottom: 70px;
+}
+
+/* Dedicated Page Hero Header */
+.dedicated-page-hero {
+  padding: 40px 0 46px;
+  background: linear-gradient(180deg, #f7efe6 0%, #fcf9f5 100%);
+  border-bottom: 1px solid #ebdcd0;
+  position: relative;
+}
+
+.page-breadcrumb-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.page-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  background: #ffffff;
+  border: 1.5px solid #dfcebc;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #543d31;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.page-back-btn:hover {
+  background: #fdf5eb;
+  border-color: #b45309;
+  color: #b45309;
+  transform: translateX(-3px);
+}
+
+.page-breadcrumbs {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: #785e4f;
+  font-weight: 600;
+}
+
+.breadcrumb-link {
+  color: #886f62;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.breadcrumb-link:hover {
+  color: #b45309;
+  text-decoration: underline;
+}
+
+.breadcrumb-separator {
+  color: #c4b5a5;
+}
+
+.breadcrumb-current {
+  color: #24140c;
+  font-weight: 800;
+}
+
+.dedicated-page-title {
+  font-size: 2.35rem;
+  font-weight: 900;
+  color: #24140c;
+  margin: 0 0 14px;
+  letter-spacing: -0.02em;
+  line-height: 1.18;
+}
+
+@media (min-width: 768px) {
+  .dedicated-page-title {
+    font-size: 2.85rem;
+  }
+}
+
+.dedicated-page-subtitle {
+  font-size: 1.05rem;
+  color: #6c5448;
+  line-height: 1.6;
+  margin: 0 auto 24px;
+}
+
+.page-metrics-ribbon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.page-metric-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #ffffff;
+  border: 1.5px solid #edd9c5;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  color: #4a2f20;
+  box-shadow: 0 2px 8px rgba(36, 20, 12, 0.03);
+}
+
+/* Dedicated Content Section */
+.dedicated-content-section {
+  padding-top: 36px;
+}
+
+.dedicated-toolbar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 1024px) {
+  .dedicated-toolbar-wrap {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.dedicated-search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  border: 1.5px solid #dfcebc;
+  border-radius: var(--radius-md);
+  padding: 10px 16px;
+  min-width: 280px;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: 0 2px 8px rgba(36, 20, 12, 0.02);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dedicated-search-box:focus-within {
+  border-color: #b45309;
+  box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.12);
+}
+
+.dedicated-search-input {
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+  color: #24140c;
+  width: 100%;
+  background: transparent;
+}
+
+.search-clear-btn {
+  background: #f4ece2;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  color: #6c5448;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.search-clear-btn:hover {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.dedicated-results-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 26px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #ebdcd0;
+  font-size: 0.88rem;
+  color: #785e4f;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.clear-all-filters-btn {
+  background: none;
+  border: none;
+  color: #b45309;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.dedicated-bottom-nav {
+  display: flex;
+  justify-content: center;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid #ebdcd0;
+}
+
+/* ==============================================================
+   HOMEPAGE SPOTLIGHT SECTION (CLEAN DUAL SHOWCASE)
+   ============================================================== */
+.initiatives-spotlight-section {
+  padding: 80px 0;
+  background: #ffffff;
+  border-top: 1px solid #ebdcd0;
+  border-bottom: 1px solid #ebdcd0;
+}
+
+.spotlight-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
+
+@media (min-width: 900px) {
+  .spotlight-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.spotlight-card {
+  background: #fdfaf7;
+  border: 1.5px solid #ebdcd0;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  position: relative;
+}
+
+.spotlight-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(45, 26, 14, 0.08);
+  border-color: #d97706;
+}
+
+.spotlight-card-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid #edd9c5;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #854d0e;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.spotlight-card-badge.emerald {
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+
+.spotlight-card-media {
+  position: relative;
+  height: 220px;
+  width: 100%;
+  overflow: hidden;
+  background: #24140c;
+}
+
+.spotlight-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.spotlight-card:hover .spotlight-img {
+  transform: scale(1.06);
+}
+
+.spotlight-img-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #451a03 0%, #9a3412 100%);
+}
+
+.spotlight-overlay-stat {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  background: rgba(18, 9, 4, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(217, 119, 6, 0.35);
+  color: #ffffff;
+  padding: 6px 14px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.spotlight-overlay-stat strong {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #fbbf24;
+  line-height: 1;
+}
+
+.spotlight-overlay-stat span {
+  font-size: 0.68rem;
+  color: #e2d2c1;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+.spotlight-overlay-stat.emerald strong {
+  color: #86efac;
+}
+
+.spotlight-card-content {
+  padding: 26px 28px 30px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.spotlight-title {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #24140c;
+  margin: 0 0 10px;
+  line-height: 1.25;
+}
+
+.spotlight-desc {
+  font-size: 0.88rem;
+  color: #6c5448;
+  line-height: 1.55;
+  margin: 0 0 18px;
+}
+
+.spotlight-highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: 24px;
+  margin-top: auto;
+}
+
+.spotlight-hl-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #4a2f20;
+}
+
+.btn-spotlight {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 24px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 14px rgba(180, 83, 9, 0.22);
+}
+
+.btn-spotlight.emerald {
+  background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.22);
+}
+
+.btn-spotlight.emerald:hover {
+  background: linear-gradient(135deg, #166534 0%, #15803d 100%);
+}
