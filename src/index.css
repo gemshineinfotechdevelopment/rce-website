@@ -115,6 +115,7 @@ body {
   max-width: 100%;
   margin: 0;
   padding: 0;
+  padding-top: 74px; /* Space for frozen fixed navbar */
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
@@ -206,19 +207,29 @@ img {
   margin-right: auto;
 }
 
-/* Elegant Heritage Amber & Deep Espresso Gradient Text */
+/* Animated Heritage Amber & Deep Espresso Gradient Text */
+@keyframes textShimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 .text-gradient {
-  background: linear-gradient(135deg, #241208 0%, #5c2a0d 30%, #a24610 70%, #c25e17 100%);
+  background: linear-gradient(135deg, #241208 0%, #5c2a0d 25%, #b45309 50%, #c25e17 75%, #241208 100%);
+  background-size: 250% auto;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  animation: textShimmer 8s ease infinite;
 }
 
 .text-gradient-gold, .text-gradient-orange {
-  background: linear-gradient(135deg, #a24610 0%, #c25e17 50%, #d97706 100%);
+  background: linear-gradient(135deg, #a24610 0%, #c25e17 35%, #d97706 70%, #a24610 100%);
+  background-size: 250% auto;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  animation: textShimmer 8s ease infinite;
 }
 
 /* Button UI Components - Refined Luxury Bronze & Warm Espresso */
@@ -237,6 +248,31 @@ img {
   transition: all var(--transition-normal);
   text-decoration: none;
   border: 1px solid rgba(254, 215, 170, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::after, .btn-secondary::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -70%;
+  width: 45%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.28) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(25deg);
+  pointer-events: none;
+  transition: none;
+}
+
+.btn-primary:hover::after, .btn-secondary:hover::after {
+  left: 130%;
+  transition: left 0.75s ease-in-out;
 }
 
 .btn-primary:hover {
@@ -260,6 +296,8 @@ img {
   box-shadow: 0 2px 10px rgba(36, 18, 8, 0.16);
   transition: all var(--transition-normal);
   border: 1px solid rgba(255, 255, 255, 0.12);
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-secondary:hover {

@@ -2,23 +2,26 @@
    RCE Website App.css - Royal Brown & Golden Shade Theme (Full-Page Fluid)
    ========================================================================== */
 
-/* ---------------- Navbar & Header ---------------- */
+/* ---------------- Navbar & Header (Fixed / Frozen Header) ---------------- */
 .navbar-header {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 100;
+  left: 0;
+  right: 0;
   width: 100%;
-  background: rgba(252, 249, 245, 0.94);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(223, 206, 188, 0.7);
-  transition: all var(--transition-normal);
+  z-index: 1000;
+  background: rgba(253, 250, 246, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(220, 205, 190, 0.6);
+  box-shadow: 0 4px 20px -2px rgba(36, 18, 8, 0.05);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .navbar-header.scrolled {
-  background: rgba(252, 249, 245, 0.98);
-  box-shadow: 0 4px 20px -2px rgba(62, 34, 21, 0.08);
-  border-bottom-color: rgba(217, 119, 6, 0.3);
+  background: rgba(253, 250, 246, 0.98);
+  box-shadow: 0 8px 24px -4px rgba(36, 18, 8, 0.1);
+  border-bottom-color: rgba(217, 119, 6, 0.28);
 }
 
 .nav-container {
@@ -26,15 +29,22 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: 78px;
+  height: 74px;
+  gap: 16px;
 }
 
 .brand-logo {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 12px;
   text-decoration: none;
   cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.brand-logo:hover {
+  transform: translateY(-1px);
 }
 
 .brand-logo-frame {
@@ -43,30 +53,36 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-}
-
-.brand-logo-frame::before {
-  content: '';
-  position: absolute;
-  inset: -6px;
-  background: radial-gradient(circle, rgba(234, 88, 12, 0.28) 0%, rgba(245, 158, 11, 0.08) 55%, transparent 75%);
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  pointer-events: none;
-  opacity: 0.85;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  background: #ffffff;
+  border: 1px solid #ebdcd0;
+  box-shadow: 0 2px 8px rgba(36, 18, 8, 0.06);
 }
 
-.brand-logo:hover .brand-logo-frame::before {
-  opacity: 1;
-  transform: scale(1.18);
+.brand-online-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #16a34a;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 6px rgba(22, 163, 74, 0.6);
+  animation: pulseLive 2s infinite;
+}
+
+@keyframes pulseLive {
+  0%, 100% { transform: scale(0.95); opacity: 0.9; }
+  50% { transform: scale(1.15); opacity: 1; }
 }
 
 .brand-logo-img {
-  height: 52px;
-  width: auto;
-  max-width: 52px;
+  height: 38px;
+  width: 38px;
   object-fit: contain;
-  filter: drop-shadow(0 3px 8px rgba(36, 18, 8, 0.25));
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
   z-index: 1;
@@ -120,23 +136,17 @@
 
 .brand-title {
   font-family: var(--font-brand, 'Cinzel', serif);
-  font-size: 1.55rem;
+  font-size: 1.45rem;
   font-weight: 800;
   letter-spacing: 0.05em;
-  line-height: 1.05;
-  background: linear-gradient(135deg, #1f1108 0%, #4a220b 45%, #9a3412 80%, #b45309 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  line-height: 1;
+  color: #241208;
   display: inline-block;
-  transition: all 0.25s ease;
+  transition: color 0.25s ease;
 }
 
 .brand-logo:hover .brand-title {
-  background: linear-gradient(135deg, #180c05 0%, #78350f 40%, #b45309 75%, #c25e17 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #9a3412;
 }
 
 .brand-subtitle {
@@ -148,31 +158,18 @@
   color: #b45309;
   line-height: 1;
   margin-top: 4px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.brand-subtitle::before {
-  content: '';
-  display: inline-block;
-  width: 14px;
-  height: 2px;
-  background: linear-gradient(90deg, #b45309, #d97706);
-  border-radius: 2px;
-  flex-shrink: 0;
 }
 
 /* Floating pill navbar in warm ivory & gold border */
 .desktop-nav-pill {
   display: none;
   align-items: center;
-  gap: 4px;
-  padding: 5px 8px;
+  gap: 2px;
+  padding: 4px 6px;
   background: rgba(255, 255, 255, 0.88);
   border: 1px solid #ebdcd0;
   border-radius: var(--radius-full);
-  box-shadow: 0 2px 8px rgba(36, 18, 8, 0.04);
+  box-shadow: 0 2px 10px rgba(36, 18, 8, 0.04);
 }
 
 @media (min-width: 1024px) {
@@ -182,13 +179,15 @@
 }
 
 .nav-link {
-  padding: 7px 16px;
-  font-size: 0.9rem;
+  padding: 6px clamp(9px, 0.95vw, 15px);
+  font-size: clamp(0.8rem, 0.9vw, 0.88rem);
   font-weight: 600;
-  color: #4a3528;
+  color: #543d31;
   border-radius: var(--radius-full);
-  transition: all var(--transition-fast);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   white-space: nowrap;
+  position: relative;
+  cursor: pointer;
 }
 
 .nav-link:hover {
@@ -200,13 +199,39 @@
   background: #241208;
   color: #fbbf24;
   font-weight: 700;
-  box-shadow: 0 2px 6px rgba(36, 18, 8, 0.15);
+  box-shadow: 0 2px 8px rgba(36, 18, 8, 0.2);
+  transform: scale(1.02);
 }
 
 .nav-actions {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
+}
+
+.btn-nav-donate {
+  height: 38px;
+  padding: 0 18px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.btn-nav-join {
+  height: 38px;
+  padding: 0 18px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
 }
 
 .server-status-pill {
@@ -271,14 +296,27 @@
 }
 
 .btn-nav-donate {
-  padding: 9px 20px;
-  font-size: 0.9rem;
+  height: 38px;
+  padding: 0 18px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
 }
 
 .btn-nav-join {
   display: none;
-  padding: 9px 20px;
-  font-size: 0.9rem;
+  height: 38px;
+  padding: 0 18px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
 }
 
 @media (min-width: 640px) {
@@ -5957,9 +5995,12 @@
 @media (max-width: 768px) {
   /* Public Navbar */
   .navbar-header {
-    position: sticky;
+    position: fixed;
     top: 0;
-    z-index: 100;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1000;
   }
 
   .nav-container {
