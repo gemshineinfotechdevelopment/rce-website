@@ -4705,8 +4705,11 @@
 }
 
 .admin-content-view {
-  padding: 28px 32px 50px;
+  padding: 24px 28px 50px;
   flex: 1;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* KPI Cards */
@@ -4912,10 +4915,10 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
-  margin-bottom: 20px;
-  max-width: 1080px;
+  gap: 16px;
+  margin-bottom: 22px;
   width: 100%;
+  max-width: 100%;
 }
 
 .admin-search-wrapper {
@@ -4975,12 +4978,10 @@
   border-radius: var(--radius-lg);
   border: 1.5px solid #dfcebc;
   overflow-x: auto;
-  overflow-y: auto;
-  max-height: 480px;
-  max-width: 1080px;
   width: 100%;
+  max-width: 100%;
   box-shadow: 0 4px 16px rgba(36, 20, 12, 0.04);
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .admin-action-row {
