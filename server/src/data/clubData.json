@@ -21,7 +21,7 @@
       "trustBadge1": "80G Tax Exemption",
       "trustBadge2": "Govt. Registered NGO",
       "trustBadge3": "100% Volunteer Driven",
-      "imageUrl": "C:\\Users\\heama\\React-project\\Rce-website\\src\\assets\\Screenshot_27-10-2026_13299_www.instagram.com.jpeg",
+      "imageUrl": "/hero-banner.jpeg",
       "badgeTagline": "✨ Service Above Self • RCE Chapter",
       "statTreesLabel": "Saplings Planted",
       "statLivesLabel": "Lives Impacted"
@@ -583,7 +583,7 @@
       "id": "g-4",
       "title": "Annapoorna Food Aid Distribution",
       "category": "Relief",
-      "image": "C:\\Users\\heama\\React-project\\Rce-website\\src\\assets\\Screenshot_27-10-2026_13299_www.instagram.com.jpeg",
+      "image": "/hero-banner.jpeg",
       "location": "GH Attendant Shelters",
       "year": "2026"
     },

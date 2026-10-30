@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Heart, Users, ArrowRight, ShieldCheck, Sparkles, Award, Maximize2, X } from 'lucide-react';
 import type { ClubStats, HeroContent } from '../services/api';
 import defaultHeroBanner from '../assets/Screenshot_27-10-2026_13299_www.instagram.com.jpeg';
@@ -25,19 +26,55 @@ export const Hero: React.FC<HeroProps> = ({ content, onOpenJoin, onOpenDonate })
   const trustBadge1 = content?.trustBadge1 || '80G Tax Exemption';
   const trustBadge2 = content?.trustBadge2 || 'Govt. Registered NGO';
   const trustBadge3 = content?.trustBadge3 || '100% Volunteer Driven';
-  const imageUrl = (content?.imageUrl && !content.imageUrl.includes('unsplash.com/photo-1488521787991'))
-    ? content.imageUrl
-    : defaultHeroBanner;
 
-  // Handle ESC key to close full-screen modal
+  // Safely resolve banner image URL with robust fallback
+  const resolveBannerUrl = (url?: string): string => {
+    if (!url || typeof url !== 'string') return defaultHeroBanner;
+    const trimmed = url.trim();
+    if (!trimmed) return defaultHeroBanner;
+    if (trimmed.includes('unsplash.com/photo-1488521787991')) return defaultHeroBanner;
+    if (
+      trimmed.startsWith('C:') ||
+      trimmed.startsWith('c:') ||
+      trimmed.startsWith('file:') ||
+      trimmed.includes(':\\') ||
+      trimmed.includes('Users\\') ||
+      trimmed.includes('Users/')
+    ) {
+      return '/hero-banner.jpeg';
+    }
+    return trimmed;
+  };
+
+  const [bannerSrc, setBannerSrc] = useState<string>(() => resolveBannerUrl(content?.imageUrl));
+
+  useEffect(() => {
+    setBannerSrc(resolveBannerUrl(content?.imageUrl));
+  }, [content?.imageUrl]);
+
+  const handleImageError = () => {
+    if (bannerSrc !== defaultHeroBanner) {
+      setBannerSrc(defaultHeroBanner);
+    }
+  };
+
+  // Prevent background scrolling when lightbox is open & listen for ESC key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isFullViewOpen) {
         setIsFullViewOpen(false);
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    if (isFullViewOpen) {
+      document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', handleKeyDown);
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, [isFullViewOpen]);
 
   return (
@@ -133,9 +170,10 @@ export const Hero: React.FC<HeroProps> = ({ content, onOpenJoin, onOpenDonate })
               aria-label="View full banner photo"
             >
               <img 
-                src={imageUrl} 
+                src={bannerSrc} 
                 alt="RCE Social Service Club Banner"
                 className="hero-main-img"
+                onError={handleImageError}
               />
 
               {/* Discreet view full photo badge */}
@@ -148,10 +186,10 @@ export const Hero: React.FC<HeroProps> = ({ content, onOpenJoin, onOpenDonate })
         </div>
       </div>
 
-      {/* Full-view Lightbox Modal for Hero Banner */}
-      {isFullViewOpen && (
+      {/* Full-view Lightbox Modal for Hero Banner - Rendered in Document Body Portal */}
+      {isFullViewOpen && typeof document !== 'undefined' && createPortal(
         <div 
-          className="modal-overlay hero-banner-lightbox-overlay" 
+          className="hero-banner-lightbox-overlay" 
           onClick={() => setIsFullViewOpen(false)}
           role="dialog"
           aria-modal="true"
@@ -170,12 +208,14 @@ export const Hero: React.FC<HeroProps> = ({ content, onOpenJoin, onOpenDonate })
               <X size={22} />
             </button>
             <img 
-              src={imageUrl} 
+              src={bannerSrc} 
               alt="RCE Official Banner Full View" 
               className="hero-banner-full-img"
+              onError={handleImageError}
             />
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </section>
   );

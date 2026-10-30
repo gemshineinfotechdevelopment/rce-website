@@ -633,6 +633,36 @@ async function saveDataToDB() {
   }
 }
 
+function isLocalPath(str) {
+  if (!str || typeof str !== 'string') return false;
+  const s = str.trim();
+  return (
+    s.startsWith('C:') ||
+    s.startsWith('c:') ||
+    s.startsWith('file:') ||
+    s.includes(':\\') ||
+    s.includes('Users\\') ||
+    s.includes('Users/')
+  );
+}
+
+function sanitizeStateUrls() {
+  let changed = false;
+  if (siteContent && siteContent.hero && siteContent.hero.imageUrl && isLocalPath(siteContent.hero.imageUrl)) {
+    siteContent.hero.imageUrl = '/hero-banner.jpeg';
+    changed = true;
+  }
+  if (Array.isArray(galleryList)) {
+    galleryList.forEach((item) => {
+      if (item && item.image && isLocalPath(item.image)) {
+        item.image = '/hero-banner.jpeg';
+        changed = true;
+      }
+    });
+  }
+  return changed;
+}
+
 async function syncWithDatabase() {
   try {
     if (mongoose.connection.readyState !== 1) return;
@@ -651,8 +681,9 @@ async function syncWithDatabase() {
       if (existing.newsletterSubscribers?.length) {
         newsletterSubscribers = new Set(existing.newsletterSubscribers);
       }
+      const didSanitize = sanitizeStateUrls();
       console.log("✅ Successfully synced and loaded live club data from MongoDB (rce_website)");
-      // Keep local file backup in sync with MongoDB
+      if (didSanitize) { saveDataToDB().catch(() => {}); }
       saveDataToFile(false);
     } else {
       console.log("🌱 Seeding initial club data into MongoDB database (rce_website)...");
@@ -715,7 +746,9 @@ function loadDataFromFile() {
       if (state.newsletterSubscribers) {
         newsletterSubscribers = new Set(state.newsletterSubscribers);
       }
+      const didSanitize = sanitizeStateUrls();
       console.log("✅ Successfully loaded persisted club data from clubData.json");
+      if (didSanitize) { saveDataToFile(false); }
     }
   } catch (err) {
     console.warn("⚠️ Could not read clubData.json:", err.message);
