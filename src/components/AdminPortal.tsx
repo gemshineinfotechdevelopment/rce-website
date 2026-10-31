@@ -1732,6 +1732,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   <tr>
                     <th>Receipt No</th>
                     <th>Donor Name</th>
+                    <th>Contact Phone</th>
                     <th>Amount</th>
                     <th>PAN Card</th>
                     <th>Allocated Cause</th>
@@ -1743,7 +1744,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 <tbody>
                   {filteredDonations.length === 0 ? (
                     <tr>
-                      <td colSpan={8} className="text-center py-8 text-stone-500">
+                      <td colSpan={9} className="text-center py-8 text-stone-500">
                         No donation records found.
                       </td>
                     </tr>
@@ -1756,7 +1757,27 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                         </td>
                         <td className="whitespace-nowrap">
                           <div className="font-bold text-stone-900 text-xs whitespace-nowrap">{d.donorName}</div>
-                          <div className="text-[11px] text-stone-500 whitespace-nowrap">{d.email} • {d.phone}</div>
+                          <div className="text-[11px] text-stone-500 flex items-center gap-1 mt-0.5 whitespace-nowrap">
+                            <Mail size={11} className="text-amber-700 flex-shrink-0" />
+                            <span>{d.email || 'No email'}</span>
+                          </div>
+                        </td>
+                        <td className="whitespace-nowrap">
+                          <div className="text-xs font-semibold text-stone-900 whitespace-nowrap flex items-center gap-1">
+                            <Phone size={12} className="text-amber-800 flex-shrink-0" />
+                            <span>{d.phone || 'N/A'}</span>
+                          </div>
+                          {d.phone && d.phone !== 'N/A' && (
+                            <a
+                              href={`https://wa.me/${d.phone.replace(/[^0-9]/g, '')}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[10px] text-emerald-700 hover:underline flex items-center gap-1 mt-0.5 whitespace-nowrap font-medium"
+                            >
+                              <Phone size={10} />
+                              <span>WhatsApp</span>
+                            </a>
+                          )}
                         </td>
                         <td className="whitespace-nowrap">
                           <div className="text-sm font-extrabold text-amber-900 whitespace-nowrap">
@@ -2367,7 +2388,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 <thead>
                   <tr>
                     <th>Ref ID</th>
-                    <th>Sender Info</th>
+                    <th>Sender Name</th>
+                    <th>Contact Phone</th>
                     <th>Subject & Purpose</th>
                     <th>Message Details</th>
                     <th>Priority</th>
@@ -2378,7 +2400,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 <tbody>
                   {(adminData?.contactMessages || []).length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="text-center py-8 text-stone-500">
+                      <td colSpan={8} className="text-center py-8 text-stone-500">
                         No inquiries or helpline messages.
                       </td>
                     </tr>
@@ -2390,7 +2412,29 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                         </td>
                         <td className="whitespace-nowrap">
                           <div className="font-bold text-stone-900 text-xs whitespace-nowrap">{msg.name}</div>
-                          <div className="text-[11px] text-stone-500 whitespace-nowrap">{msg.email} • {msg.phone || 'No phone'}</div>
+                          <div className="text-[11px] text-stone-500 flex items-center gap-1 mt-0.5 whitespace-nowrap">
+                            <Mail size={11} className="text-amber-700 flex-shrink-0" />
+                            <a href={`mailto:${msg.email}`} className="hover:underline hover:text-amber-900">
+                              {msg.email}
+                            </a>
+                          </div>
+                        </td>
+                        <td className="whitespace-nowrap">
+                          <div className="text-xs font-semibold text-stone-900 whitespace-nowrap flex items-center gap-1">
+                            <Phone size={12} className="text-emerald-700 flex-shrink-0" />
+                            <span>{msg.phone || 'No phone'}</span>
+                          </div>
+                          {msg.phone && msg.phone.toLowerCase() !== 'no phone' && (
+                            <a
+                              href={`https://wa.me/${msg.phone.replace(/[^0-9]/g, '')}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[10px] text-emerald-700 hover:underline flex items-center gap-1 mt-0.5 whitespace-nowrap font-medium"
+                            >
+                              <Phone size={10} />
+                              <span>WhatsApp</span>
+                            </a>
+                          )}
                         </td>
                         <td className="whitespace-nowrap">
                           <div className="font-semibold text-stone-800 text-xs whitespace-nowrap">{msg.subject}</div>
@@ -4417,7 +4461,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   <div><strong>Cause:</strong> {selectedDonation.cause}</div>
                   <div><strong>Mode:</strong> {selectedDonation.paymentMethod}</div>
                   <div><strong>Txn Ref:</strong> {selectedDonation.transactionId || 'UPI Verified'}</div>
-                  <div><strong>Contact:</strong> {selectedDonation.email}</div>
+                  <div><strong>Email:</strong> {selectedDonation.email}</div>
+                  <div><strong>Phone:</strong> {selectedDonation.phone || 'N/A'}</div>
                 </div>
 
                 <div className="receipt-tax-clause">
