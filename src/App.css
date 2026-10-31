@@ -382,7 +382,7 @@
 .hero-section {
   position: relative;
   width: 100%;
-  padding-top: 60px;
+  padding-top: 50px; /* Reduced by 10px on desktop (was 60px) */
   padding-bottom: 80px;
   overflow: hidden;
   background: 
@@ -445,6 +445,10 @@
 
   .hero-content {
     order: 2;
+  }
+
+  .hero-section {
+    padding-top: 20px;
   }
 }
 
@@ -6790,7 +6794,7 @@
 
   /* Sections Spacing */
   .hero-section {
-    padding-top: 36px;
+    padding-top: 14px;
     padding-bottom: 54px;
   }
 
@@ -7371,6 +7375,10 @@
 
   .trust-badge-divider {
     display: none;
+  }
+
+  .hero-section {
+    padding-top: 10px;
   }
 
   .hero-showcase-frame {

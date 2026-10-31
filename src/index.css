@@ -130,6 +130,18 @@ body {
   position: relative;
 }
 
+@media (max-width: 768px) {
+  .rce-app-root {
+    padding-top: 70px;
+  }
+}
+
+@media (max-width: 480px) {
+  .rce-app-root {
+    padding-top: 64px;
+  }
+}
+
 /* Advanced Ambient Atmospheric Background Glows (Visual Only, No Interaction) */
 .rce-app-root::before {
   content: '';
