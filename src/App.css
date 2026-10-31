@@ -437,6 +437,18 @@
   width: 100%;
 }
 
+/* Mobile & Tablet (< 1024px): Picture first, then Heading */
+@media (max-width: 1023px) {
+  .hero-visual {
+    order: 1;
+  }
+
+  .hero-content {
+    order: 2;
+  }
+}
+
+/* Desktop (>= 1024px): Heading/Content first (Left Column), Picture second (Right Column) */
 @media (min-width: 1024px) {
   .hero-grid {
     grid-template-columns: minmax(0, 1.25fr) minmax(360px, 460px);
@@ -471,7 +483,6 @@
 }
 
 .hero-content {
-  order: 2;
   width: 100%;
 }
 
@@ -557,7 +568,6 @@
 }
 
 .hero-visual {
-  order: 1;
   position: relative;
   width: 100%;
   display: flex;
