@@ -36,7 +36,6 @@ export const EventsPage: React.FC<EventsPageProps> = ({
   onOpenJoin,
   onBackToHome,
 }) => {
-  const [activeCategory, setActiveCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedEvent, setSelectedEvent] = useState<ClubEvent | null>(null);
   const [copiedEventId, setCopiedEventId] = useState<string | null>(null);
@@ -51,51 +50,22 @@ export const EventsPage: React.FC<EventsPageProps> = ({
     }
   };
 
-  // Derive unique categories dynamically for filtering
-  const categories = useMemo(() => {
-    const defaultCats = [
-      '₹5 Paadasaalai',
-      'Kalvi Mela',
-      'Teachers Award',
-      'Kit Distribution',
-      'Education Awareness',
-      'Green Forest',
-      'Youth & Culture',
-      'Career Guidance',
-    ];
-    const dynamicCats = events
-      .map((ev) => ev.category?.trim())
-      .filter((c): c is string => Boolean(c));
-    const unique = Array.from(new Set([...defaultCats, ...dynamicCats]));
-    return ['All', ...unique];
-  }, [events]);
-
-  // Search & category filter logic
+  // Search query filter logic
   const filteredEvents = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+    if (!q) return events;
     return events.filter((ev) => {
-      const matchesCategory =
-        activeCategory === 'All'
-          ? true
-          : ev.category?.toLowerCase() === activeCategory.toLowerCase() ||
-            (activeCategory === 'Teachers Award' &&
-              ev.category?.toLowerCase().includes('teacher')) ||
-            (activeCategory === '₹5 Paadasaalai' &&
-              (ev.category?.includes('5') || ev.title?.includes('5')));
-
-      const q = searchQuery.toLowerCase().trim();
-      const matchesSearch =
-        !q ||
+      return (
         ev.title.toLowerCase().includes(q) ||
         (ev.description && ev.description.toLowerCase().includes(q)) ||
         (ev.location && ev.location.toLowerCase().includes(q)) ||
         (ev.chiefGuest && ev.chiefGuest.toLowerCase().includes(q)) ||
         (ev.leader && ev.leader.toLowerCase().includes(q)) ||
         (ev.category && ev.category.toLowerCase().includes(q)) ||
-        (ev.highlights && ev.highlights.some((h) => h.toLowerCase().includes(q)));
-
-      return matchesCategory && matchesSearch;
+        (ev.highlights && ev.highlights.some((h) => h.toLowerCase().includes(q)))
+      );
     });
-  }, [events, activeCategory, searchQuery]);
+  }, [events, searchQuery]);
 
   const isScheduleOver = (ev: ClubEvent) => {
     if (!ev) return false;
@@ -204,28 +174,19 @@ export const EventsPage: React.FC<EventsPageProps> = ({
       {/* Main Content Area */}
       <section className="dedicated-content-section">
         <div className="container">
-          {/* Filter & Search Toolbar */}
-          <div className="dedicated-toolbar-wrap">
-            {/* Category Filter Pills */}
-            <div className="category-filter-bar flex-1">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setActiveCategory(cat)}
-                  className={`category-pill ${activeCategory === cat ? 'active' : ''}`}
-                >
-                  {cat === 'All' ? 'All Conclaves' : cat}
-                </button>
-              ))}
-            </div>
+          {/* Search Toolbar */}
+          <div className="dedicated-toolbar-wrap" style={{ justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
+            <span className="results-count-text">
+              Showing <strong>{filteredEvents.length}</strong> of {events.length} conclaves & drives
+              {searchQuery && ` matching "${searchQuery}"`}
+            </span>
 
             {/* Search Input Box */}
-            <div className="dedicated-search-box">
+            <div className="dedicated-search-box" style={{ maxWidth: '380px', width: '100%' }}>
               <Search size={16} className="text-stone-400 flex-shrink-0" />
               <input
                 type="text"
-                placeholder="Search events by title, location, guest, topic..."
+                placeholder="Search events by title, location, topic..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="dedicated-search-input"
@@ -241,27 +202,6 @@ export const EventsPage: React.FC<EventsPageProps> = ({
                 </button>
               )}
             </div>
-          </div>
-
-          {/* Results Summary Bar */}
-          <div className="dedicated-results-meta">
-            <span className="results-count-text">
-              Showing <strong>{filteredEvents.length}</strong> of {events.length} conclaves & drives
-              {activeCategory !== 'All' && ` in "${activeCategory}"`}
-              {searchQuery && ` matching "${searchQuery}"`}
-            </span>
-            {(activeCategory !== 'All' || searchQuery) && (
-              <button
-                type="button"
-                onClick={() => {
-                  setActiveCategory('All');
-                  setSearchQuery('');
-                }}
-                className="clear-all-filters-btn"
-              >
-                Reset Filters
-              </button>
-            )}
           </div>
 
           {/* Events Cards Grid */}
@@ -422,18 +362,17 @@ export const EventsPage: React.FC<EventsPageProps> = ({
               <BookOpen size={44} className="mx-auto text-amber-700 mb-3 opacity-60" />
               <h3 className="text-lg font-bold text-stone-900 mb-1">No Events Found</h3>
               <p className="text-sm text-stone-600 max-w-md mx-auto mb-4">
-                We couldn't find any initiatives matching your selected filters. Try searching with different keywords.
+                We couldn't find any initiatives matching your search. Try searching with different keywords.
               </p>
-              <button
-                type="button"
-                onClick={() => {
-                  setActiveCategory('All');
-                  setSearchQuery('');
-                }}
-                className="btn-primary text-sm px-5 py-2.5"
-              >
-                View All Events
-              </button>
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="btn-primary text-sm px-5 py-2.5"
+                >
+                  Clear Search
+                </button>
+              )}
             </div>
           )}
 

@@ -26,7 +26,6 @@ interface EventsSectionProps {
 }
 
 export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin }) => {
-  const [activeCategory, setActiveCategory] = useState<string>('All');
   const [selectedEvent, setSelectedEvent] = useState<ClubEvent | null>(null);
   const [copiedEventId, setCopiedEventId] = useState<string | null>(null);
 
@@ -39,33 +38,6 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
       }).catch(() => {});
     }
   };
-
-  // Derive unique categories dynamically for filtering
-  const categories = React.useMemo(() => {
-    const defaultCats = [
-      '₹5 Paadasaalai',
-      'Kalvi Mela',
-      'Teachers Award',
-      'Kit Distribution',
-      'Education Awareness',
-      'Career Guidance',
-    ];
-    const dynamicCats = events
-      .map((ev) => ev.category?.trim())
-      .filter((c): c is string => Boolean(c));
-    const unique = Array.from(new Set([...defaultCats, ...dynamicCats]));
-    return ['All', ...unique];
-  }, [events]);
-
-  const filteredEvents =
-    activeCategory === 'All'
-      ? events
-      : events.filter(
-          (ev) =>
-            ev.category?.toLowerCase() === activeCategory.toLowerCase() ||
-            (activeCategory === 'Teachers Award' && ev.category?.toLowerCase().includes('teacher')) ||
-            (activeCategory === '₹5 Paadasaalai' && (ev.category?.includes('5') || ev.title?.includes('5')))
-        );
 
   const isScheduleOver = (ev: ClubEvent) => {
     if (!ev) return false;
@@ -131,39 +103,11 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
             from daily ₹5 Paadasaalai evening centers and statewide Kalvi Melas, to honoring dedicated teachers 
             and distributing study kits to rural government school children.
           </p>
-
-          {/* Category Filter Pills */}
-          <div className="event-filters-row">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setActiveCategory(cat)}
-                className={`event-filter-pill ${activeCategory === cat ? 'active' : ''}`}
-              >
-                {cat === 'All'
-                  ? 'All Programs'
-                  : cat === '₹5 Paadasaalai'
-                  ? '₹5 Paadasaalai Centers'
-                  : cat === 'Kalvi Mela'
-                  ? 'Kalvi Mela & Science Expo'
-                  : cat === 'Teachers Award'
-                  ? 'Good Teacher Awards'
-                  : cat === 'Kit Distribution'
-                  ? 'School Kits & Aid'
-                  : cat === 'Education Awareness'
-                  ? 'Marathons & Rallies'
-                  : cat === 'Career Guidance'
-                  ? 'Higher Education Guidance'
-                  : cat}
-              </button>
-            ))}
-          </div>
         </div>
 
         {/* Events Cards Grid */}
         <div className="events-impact-grid">
-          {filteredEvents.map((ev) => {
+          {events.map((ev) => {
             const displayDate = formatEventDate(ev.date);
             const statusLabel = ev.status || 'Conducted';
             const impactMetric =
@@ -301,20 +245,13 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
         </div>
 
         {/* Empty state */}
-        {filteredEvents.length === 0 && (
+        {events.length === 0 && (
           <div className="text-center py-16 text-stone-500 bg-amber-50/40 rounded-2xl border border-amber-200/60 p-8 my-6">
             <BookOpen size={42} className="mx-auto text-amber-700 mb-3 opacity-60" />
-            <h4 className="text-lg font-bold text-amber-950 mb-1">No programs found under "{activeCategory}"</h4>
+            <h4 className="text-lg font-bold text-amber-950 mb-1">No educational programs available</h4>
             <p className="text-sm text-stone-600 max-w-md mx-auto mb-4">
-              Select another educational category or check back as we update our past and completed drives.
+              Check back soon as we update our past and completed drives.
             </p>
-            <button
-              type="button"
-              onClick={() => setActiveCategory('All')}
-              className="btn-secondary text-sm px-4 py-2"
-            >
-              View All Programs
-            </button>
           </div>
         )}
 
