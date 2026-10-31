@@ -478,3 +478,48 @@ img {
 ::-webkit-scrollbar-thumb:hover {
   background: #b45309;
 }
+
+/* Common Flex & Layout Utility Helpers */
+.flex {
+  display: flex;
+}
+
+.inline-flex {
+  display: inline-flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.items-start {
+  align-items: flex-start;
+}
+
+.items-end {
+  align-items: flex-end;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-1 {
+  gap: 4px;
+}
+
+.gap-2 {
+  gap: 8px;
+}
+
+.gap-3 {
+  gap: 14px;
+}
+
+.gap-4 {
+  gap: 16px;
+}

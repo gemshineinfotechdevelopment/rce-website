@@ -4980,7 +4980,7 @@
 .admin-sidebar-brand-group {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
 }
 
 .admin-sidebar-logo-wrap {
@@ -5115,6 +5115,23 @@
   cursor: pointer;
   text-align: left;
   transition: all var(--transition-fast);
+}
+
+.admin-nav-item > div {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.admin-nav-item svg {
+  flex-shrink: 0;
+  display: block;
+}
+
+.admin-nav-item span {
+  display: inline-block;
+  line-height: 1.2;
 }
 
 .admin-nav-item:hover {
