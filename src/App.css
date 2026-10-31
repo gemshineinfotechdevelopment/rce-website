@@ -433,7 +433,7 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 36px;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
 }
 
@@ -441,7 +441,11 @@
   .hero-grid {
     grid-template-columns: minmax(0, 1.25fr) minmax(360px, 460px);
     gap: 48px;
-    align-items: center;
+    align-items: flex-start;
+  }
+
+  .hero-content {
+    padding-top: 6px;
   }
 }
 
@@ -449,7 +453,7 @@
   .hero-grid {
     grid-template-columns: minmax(0, 1.2fr) minmax(380px, 490px);
     gap: 56px;
-    align-items: center;
+    align-items: flex-start;
   }
 }
 
@@ -457,7 +461,7 @@
   .hero-grid {
     grid-template-columns: minmax(0, 1.25fr) minmax(400px, 510px);
     gap: 64px;
-    align-items: center;
+    align-items: flex-start;
   }
 }
 

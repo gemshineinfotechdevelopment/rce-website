@@ -1615,15 +1615,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                           <span className="blood-group-chip">{vol.bloodGroup || 'O+'}</span>
                         </td>
                         <td className="whitespace-nowrap">
-                          <div className="text-xs font-mono font-bold text-stone-800 whitespace-nowrap">{vol.phone}</div>
-                          <a
-                            href={`https://wa.me/${vol.phone.replace(/[^0-9]/g, '')}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[11px] text-emerald-600 hover:underline inline-flex items-center gap-1 font-semibold whitespace-nowrap"
-                          >
-                            <Phone size={10} /> WhatsApp
-                          </a>
+                          <div className="text-xs font-semibold text-stone-900 whitespace-nowrap flex items-center gap-1.5">
+                            <Phone size={12} className="text-amber-800 flex-shrink-0" />
+                            <span>{vol.phone}</span>
+                          </div>
                         </td>
                         <td className="whitespace-nowrap">
                           <span className="text-xs font-bold text-amber-900 whitespace-nowrap" title={vol.skills || vol.preferredDomain}>
@@ -1763,21 +1758,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                           </div>
                         </td>
                         <td className="whitespace-nowrap">
-                          <div className="text-xs font-semibold text-stone-900 whitespace-nowrap flex items-center gap-1">
+                          <div className="text-xs font-semibold text-stone-900 whitespace-nowrap flex items-center gap-1.5">
                             <Phone size={12} className="text-amber-800 flex-shrink-0" />
                             <span>{d.phone || 'N/A'}</span>
                           </div>
-                          {d.phone && d.phone !== 'N/A' && (
-                            <a
-                              href={`https://wa.me/${d.phone.replace(/[^0-9]/g, '')}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-[10px] text-emerald-700 hover:underline flex items-center gap-1 mt-0.5 whitespace-nowrap font-medium"
-                            >
-                              <Phone size={10} />
-                              <span>WhatsApp</span>
-                            </a>
-                          )}
                         </td>
                         <td className="whitespace-nowrap">
                           <div className="text-sm font-extrabold text-amber-900 whitespace-nowrap">
@@ -2420,21 +2404,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                           </div>
                         </td>
                         <td className="whitespace-nowrap">
-                          <div className="text-xs font-semibold text-stone-900 whitespace-nowrap flex items-center gap-1">
-                            <Phone size={12} className="text-emerald-700 flex-shrink-0" />
+                          <div className="text-xs font-semibold text-stone-900 whitespace-nowrap flex items-center gap-1.5">
+                            <Phone size={12} className="text-amber-800 flex-shrink-0" />
                             <span>{msg.phone || 'No phone'}</span>
                           </div>
-                          {msg.phone && msg.phone.toLowerCase() !== 'no phone' && (
-                            <a
-                              href={`https://wa.me/${msg.phone.replace(/[^0-9]/g, '')}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-[10px] text-emerald-700 hover:underline flex items-center gap-1 mt-0.5 whitespace-nowrap font-medium"
-                            >
-                              <Phone size={10} />
-                              <span>WhatsApp</span>
-                            </a>
-                          )}
                         </td>
                         <td className="whitespace-nowrap">
                           <div className="font-semibold text-stone-800 text-xs whitespace-nowrap">{msg.subject}</div>
@@ -4369,15 +4342,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   className="btn-outline flex-1"
                 >
                   <Phone size={15} /> Call
-                </a>
-                <a
-                  href={`https://wa.me/${selectedVolunteer.phone.replace(/[^0-9]/g, '')}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-secondary flex-1"
-                  style={{ background: '#25D366', borderColor: '#25D366', color: '#ffffff' }}
-                >
-                  WhatsApp
                 </a>
                 {selectedVolunteer.status !== 'Approved' && (
                   <button
