@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Heart, Users, Menu, X } from 'lucide-react';
+import { Heart, Users, Menu, X, Home, Tv, Info, Layers, Calendar, Sparkles, Image as ImageIcon, Phone } from 'lucide-react';
 import type { BrandContent } from '../services/api';
 import { checkBackendHealth } from '../services/api';
 
@@ -39,6 +39,25 @@ export const Navbar: React.FC<NavbarProps> = ({
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Lock body scroll and listen for Escape key when mobile sidebar is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && mobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [mobileMenuOpen]);
 
   // Ping backend API periodically
   useEffect(() => {
@@ -278,92 +297,118 @@ export const Navbar: React.FC<NavbarProps> = ({
         />
       )}
 
-      {/* Mobile Drawer Menu */}
-      {mobileMenuOpen && (
-        <div className="mobile-menu-drawer">
-          <div className="mobile-nav-links">
-            <a
-              href="#hero"
-              onClick={(e) => handleLinkClick(e, 'home', '#hero')}
-              className={`mobile-nav-link ${activeSegment === 'hero' ? 'active' : ''}`}
-            >
-              Home
-            </a>
-            <a
-              href="#videos"
-              onClick={(e) => handleLinkClick(e, 'home', '#videos')}
-              className={`mobile-nav-link ${activeSegment === 'videos' ? 'active' : ''}`}
-            >
-              YouTube Cinema
-            </a>
-            <a
-              href="#about"
-              onClick={(e) => handleLinkClick(e, 'home', '#about')}
-              className={`mobile-nav-link ${activeSegment === 'about' ? 'active' : ''}`}
-            >
-              About Us
-            </a>
-            <a
-              href="#projects"
-              onClick={(e) => handleLinkClick(e, 'projects')}
-              className={`mobile-nav-link ${activeSegment === 'projects' ? 'active' : ''}`}
-            >
-              Projects & Causes
-            </a>
-            <a
-              href="#events"
-              onClick={(e) => handleLinkClick(e, 'events')}
-              className={`mobile-nav-link ${activeSegment === 'events' ? 'active' : ''}`}
-            >
-              Educational Events (14+)
-            </a>
-            <a
-              href="#stories"
-              onClick={(e) => handleLinkClick(e, 'home', '#stories')}
-              className={`mobile-nav-link ${activeSegment === 'stories' ? 'active' : ''}`}
-            >
-              Impact Stories
-            </a>
-            <a
-              href="#gallery"
-              onClick={(e) => handleLinkClick(e, 'home', '#gallery')}
-              className={`mobile-nav-link ${activeSegment === 'gallery' ? 'active' : ''}`}
-            >
-              Photo Gallery
-            </a>
-            <a
-              href="#contact"
-              onClick={(e) => handleLinkClick(e, 'home', '#contact')}
-              className={`mobile-nav-link ${activeSegment === 'contact' ? 'active' : ''}`}
-            >
-              Contact & Help
-            </a>
+      {/* Mobile Off-Canvas Sidebar */}
+      <aside className={`mobile-menu-drawer ${mobileMenuOpen ? 'open' : ''}`} aria-hidden={!mobileMenuOpen}>
+        <div className="mobile-drawer-header">
+          <div className="mobile-drawer-brand">
+            <div className="mobile-drawer-logo-wrap">
+              <img src="/Rce.logo.png" alt="RCE Logo" className="mobile-drawer-logo" />
+            </div>
+            <div className="mobile-drawer-titles">
+              <span className="mobile-drawer-name">{brand?.name || 'RCE'}</span>
+              <span className="mobile-drawer-tagline">SOCIAL SERVICE CLUB</span>
+            </div>
           </div>
-
-          <div className="mobile-menu-actions">
-            <button
-              type="button"
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenDonate();
-              }}
-              className="btn-primary w-full"
-            >
-              <Heart size={16} fill="currentColor" /> Donate Now
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenJoin();
-              }}
-              className="btn-secondary w-full"
-            >
-              <Users size={16} /> Join RCE Family
-            </button>
-          </div>
+          <button
+            type="button"
+            className="mobile-drawer-close-btn"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-label="Close menu"
+          >
+            <X size={20} />
+          </button>
         </div>
-      )}
+
+        <div className="mobile-nav-links">
+          <a
+            href="#hero"
+            onClick={(e) => handleLinkClick(e, 'home', '#hero')}
+            className={`mobile-nav-link ${activeSegment === 'hero' ? 'active' : ''}`}
+          >
+            <Home size={18} className="text-amber-700 flex-shrink-0" />
+            <span>Home</span>
+          </a>
+          <a
+            href="#videos"
+            onClick={(e) => handleLinkClick(e, 'home', '#videos')}
+            className={`mobile-nav-link ${activeSegment === 'videos' ? 'active' : ''}`}
+          >
+            <Tv size={18} className="text-amber-700 flex-shrink-0" />
+            <span>YouTube Cinema</span>
+          </a>
+          <a
+            href="#about"
+            onClick={(e) => handleLinkClick(e, 'home', '#about')}
+            className={`mobile-nav-link ${activeSegment === 'about' ? 'active' : ''}`}
+          >
+            <Info size={18} className="text-amber-700 flex-shrink-0" />
+            <span>About Us</span>
+          </a>
+          <a
+            href="#projects"
+            onClick={(e) => handleLinkClick(e, 'projects')}
+            className={`mobile-nav-link ${activeSegment === 'projects' ? 'active' : ''}`}
+          >
+            <Layers size={18} className="text-amber-700 flex-shrink-0" />
+            <span>Projects & Causes</span>
+          </a>
+          <a
+            href="#events"
+            onClick={(e) => handleLinkClick(e, 'events')}
+            className={`mobile-nav-link ${activeSegment === 'events' ? 'active' : ''}`}
+          >
+            <Calendar size={18} className="text-amber-700 flex-shrink-0" />
+            <span>Educational Events (14+)</span>
+          </a>
+          <a
+            href="#stories"
+            onClick={(e) => handleLinkClick(e, 'home', '#stories')}
+            className={`mobile-nav-link ${activeSegment === 'stories' ? 'active' : ''}`}
+          >
+            <Sparkles size={18} className="text-amber-700 flex-shrink-0" />
+            <span>Impact Stories</span>
+          </a>
+          <a
+            href="#gallery"
+            onClick={(e) => handleLinkClick(e, 'home', '#gallery')}
+            className={`mobile-nav-link ${activeSegment === 'gallery' ? 'active' : ''}`}
+          >
+            <ImageIcon size={18} className="text-amber-700 flex-shrink-0" />
+            <span>Photo Gallery</span>
+          </a>
+          <a
+            href="#contact"
+            onClick={(e) => handleLinkClick(e, 'home', '#contact')}
+            className={`mobile-nav-link ${activeSegment === 'contact' ? 'active' : ''}`}
+          >
+            <Phone size={18} className="text-amber-700 flex-shrink-0" />
+            <span>Contact & Help</span>
+          </a>
+        </div>
+
+        <div className="mobile-menu-actions">
+          <button
+            type="button"
+            onClick={() => {
+              setMobileMenuOpen(false);
+              onOpenDonate();
+            }}
+            className="btn-primary w-full"
+          >
+            <Heart size={16} fill="currentColor" /> Donate Now
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setMobileMenuOpen(false);
+              onOpenJoin();
+            }}
+            className="btn-secondary w-full"
+          >
+            <Users size={16} /> Join RCE Family
+          </button>
+        </div>
+      </aside>
     </header>
   );
 };

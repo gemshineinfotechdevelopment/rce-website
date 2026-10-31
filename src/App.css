@@ -343,46 +343,166 @@
   }
 }
 
+/* ---------------- Mobile Sidebar Drawer (Off-Canvas) ---------------- */
+.mobile-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(22, 11, 5, 0.65);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 10000;
+  animation: fadeIn 0.22s ease-out;
+}
+
 .mobile-menu-drawer {
-  background: rgba(252, 249, 245, 0.98);
-  border-top: 1px solid #edd9c5;
-  padding: 18px 24px 28px;
-  box-shadow: 0 15px 25px -5px rgba(36, 20, 12, 0.12);
-  animation: fadeIn 0.2s ease-out;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 320px;
+  max-width: 88vw;
+  height: 100vh;
+  height: 100dvh;
+  background: #fdfaf6;
+  border-left: 1.5px solid rgba(220, 205, 190, 0.9);
+  box-shadow: -12px 0 40px rgba(36, 18, 8, 0.25);
+  z-index: 10001;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-menu-drawer.open {
+  transform: translateX(0);
+}
+
+@media (min-width: 1024px) {
+  .mobile-menu-drawer,
+  .mobile-nav-backdrop {
+    display: none !important;
+  }
+}
+
+.mobile-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(220, 205, 190, 0.8);
+  background: #fbf5ee;
+}
+
+.mobile-drawer-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-drawer-logo-wrap {
+  width: 38px;
+  height: 38px;
+  background: #ffffff;
+  border: 1.5px solid #d97706;
+  border-radius: 10px;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.15);
+}
+
+.mobile-drawer-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.mobile-drawer-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-drawer-name {
+  font-family: var(--font-brand, 'Cinzel', serif);
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  color: #24140c;
+  line-height: 1.1;
+}
+
+.mobile-drawer-tagline {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #b45309;
+}
+
+.mobile-drawer-close-btn {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #edd9c5;
+  color: #78350f;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.mobile-drawer-close-btn:hover {
+  background: #fdf5eb;
+  color: #b45309;
+  transform: scale(1.05);
 }
 
 .mobile-nav-links {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 20px;
+  gap: 6px;
+  padding: 16px 14px;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .mobile-nav-link {
-  padding: 12px 16px;
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: #24140c;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #3e281b;
   border-radius: 12px;
   transition: all var(--transition-fast);
+  border: 1px solid transparent;
 }
 
-.mobile-nav-link:hover {
-  background: #fdf5eb;
-  color: #b45309;
+.mobile-nav-link:hover,
+.mobile-nav-link.active {
+  background: #fef3c7;
+  color: #92400e;
+  border-color: rgba(245, 158, 11, 0.4);
 }
 
 .mobile-menu-actions {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding: 16px 18px 22px;
+  border-top: 1px solid rgba(220, 205, 190, 0.8);
+  background: #fbf5ee;
 }
 
 /* ---------------- Hero Section (Royal Brown & Golden Shade) ---------------- */
 .hero-section {
   position: relative;
   width: 100%;
-  padding-top: 48px; /* Reduced by another 2px on desktop */
+  padding-top: 46px; /* Reduced to 46px on desktop as requested */
   padding-bottom: 80px;
   overflow: hidden;
   background: 
@@ -6173,15 +6293,6 @@
   gap: 14px;
 }
 
-.mobile-nav-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(27, 16, 9, 0.65);
-  backdrop-filter: blur(4px);
-  z-index: 90;
-  animation: fadeIn 0.2s ease-out;
-}
-
 /* 80G Printable Receipt & Certificate */
 .receipt-certificate-printable {
   background: #ffffff;
@@ -6581,7 +6692,7 @@
     max-width: 85vw;
     height: 100vh;
     min-height: 100vh;
-    z-index: 1000;
+    z-index: 10001;
     transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 10px 0 30px rgba(0, 0, 0, 0.45);
@@ -6604,7 +6715,7 @@
     inset: 0;
     background: rgba(15, 8, 4, 0.7);
     backdrop-filter: blur(6px);
-    z-index: 999;
+    z-index: 10000;
     animation: fadeIn 0.25s ease-out;
   }
 
