@@ -445,7 +445,12 @@
   }
 
   .hero-content {
+    order: 1;
     padding-top: 6px;
+  }
+
+  .hero-visual {
+    order: 2;
   }
 }
 
@@ -466,6 +471,7 @@
 }
 
 .hero-content {
+  order: 2;
   width: 100%;
 }
 
@@ -551,6 +557,7 @@
 }
 
 .hero-visual {
+  order: 1;
   position: relative;
   width: 100%;
   display: flex;
