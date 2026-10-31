@@ -17,6 +17,10 @@ import {
   ChevronRight,
   School,
   Flame,
+  Clock,
+  Users,
+  Share2,
+  Check,
 } from 'lucide-react';
 import type { ClubEvent } from '../services/api';
 import { getSafeImageUrl } from '../services/api';
@@ -35,6 +39,17 @@ export const EventsPage: React.FC<EventsPageProps> = ({
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedEvent, setSelectedEvent] = useState<ClubEvent | null>(null);
+  const [copiedEventId, setCopiedEventId] = useState<string | null>(null);
+
+  const handleCopyShare = (event: ClubEvent) => {
+    const shareUrl = `${window.location.origin}/#events?event=${event.id}`;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        setCopiedEventId(event.id);
+        setTimeout(() => setCopiedEventId(null), 2500);
+      }).catch(() => {});
+    }
+  };
 
   // Derive unique categories dynamically for filtering
   const categories = useMemo(() => {
@@ -461,7 +476,7 @@ export const EventsPage: React.FC<EventsPageProps> = ({
       </section>
 
       {/* ==============================================================
-          FULL EVENT DETAILS MODAL / LIGHTBOX
+          FULL EVENT DETAILS MODAL / ADVANCED IMPACT DOSSIER
          ============================================================== */}
       {selectedEvent && (
         <div
@@ -471,13 +486,14 @@ export const EventsPage: React.FC<EventsPageProps> = ({
           aria-modal="true"
         >
           <div className="modal-container event-details-modal" onClick={(e) => e.stopPropagation()}>
+            {/* Floating Close Button */}
             <button
               type="button"
-              className="modal-close-btn"
+              className="event-modal-close-pill"
               onClick={() => setSelectedEvent(null)}
               aria-label="Close dialog"
             >
-              <X size={20} />
+              <X size={18} />
             </button>
 
             {/* Modal Image Banner */}
@@ -489,82 +505,117 @@ export const EventsPage: React.FC<EventsPageProps> = ({
                 )}
                 alt={selectedEvent.title}
                 className="event-modal-img"
+                onError={(e) => {
+                  e.currentTarget.src =
+                    'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80';
+                }}
               />
               <div className="event-modal-img-overlay">
-                <span className={`event-card-cat-badge ${getCategoryBadgeClass(selectedEvent.category)}`}>
-                  {selectedEvent.category}
-                </span>
-                <span className="event-card-status-badge">
-                  <CheckCircle2 size={14} className="inline mr-1 text-emerald-400" />
-                  {selectedEvent.status || 'Conducted'}
-                </span>
+                <div className="event-modal-badge-group">
+                  <span className="event-modal-cat-pill">
+                    {selectedEvent.category || 'General Cause'}
+                  </span>
+                  <span className="event-modal-status-pill">
+                    <span className="status-pulse-dot"></span>
+                    <span>{selectedEvent.status || 'Conducted & Honored'}</span>
+                  </span>
+                </div>
               </div>
             </div>
 
             {/* Modal Body */}
             <div className="event-modal-body">
-              {/* Meta Grid */}
+              {/* Meta Grid (4 Interactive Metric Cards) */}
               <div className="event-modal-meta-grid">
-                <div className="modal-meta-cell">
-                  <span className="meta-cell-label">Date</span>
-                  <span className="meta-cell-value">
-                    <Calendar size={14} className="text-amber-700 inline mr-1.5" />
-                    {formatEventDate(selectedEvent.date)}
-                  </span>
-                </div>
-                {selectedEvent.time && (
-                  <div className="modal-meta-cell">
-                    <span className="meta-cell-label">Timing</span>
-                    <span className="meta-cell-value">{selectedEvent.time}</span>
+                <div className="modal-meta-card meta-card-date">
+                  <div className="meta-icon-bubble">
+                    <Calendar size={18} />
                   </div>
-                )}
-                <div className="modal-meta-cell">
-                  <span className="meta-cell-label">Venue / Location</span>
-                  <span className="meta-cell-value">
-                    <MapPin size={14} className="text-amber-700 inline mr-1.5" />
-                    {selectedEvent.location || 'Tamil Nadu'}
-                  </span>
+                  <div className="meta-info">
+                    <span className="meta-card-label">Conclave Date</span>
+                    <strong className="meta-card-value">{formatEventDate(selectedEvent.date)}</strong>
+                  </div>
                 </div>
-                <div className="modal-meta-cell">
-                  <span className="meta-cell-label">Community Reach</span>
-                  <span className="meta-cell-value text-emerald-700 font-bold">
-                    <GraduationCap size={15} className="inline mr-1.5" />
-                    {selectedEvent.studentsImpacted || selectedEvent.beneficiaries || 'Empowering Youth'}
-                  </span>
+
+                <div className="modal-meta-card meta-card-time">
+                  <div className="meta-icon-bubble">
+                    <Clock size={18} />
+                  </div>
+                  <div className="meta-info">
+                    <span className="meta-card-label">Timing</span>
+                    <strong className="meta-card-value">{selectedEvent.time || '10:00 AM - 01:00 PM'}</strong>
+                  </div>
+                </div>
+
+                <div className="modal-meta-card meta-card-venue">
+                  <div className="meta-icon-bubble">
+                    <MapPin size={18} />
+                  </div>
+                  <div className="meta-info">
+                    <span className="meta-card-label">Venue / Location</span>
+                    <strong className="meta-card-value" title={selectedEvent.location || 'Tamil Nadu'}>
+                      {selectedEvent.location || 'Tamil Nadu'}
+                    </strong>
+                  </div>
+                </div>
+
+                <div className="modal-meta-card meta-card-reach">
+                  <div className="meta-icon-bubble">
+                    <GraduationCap size={18} />
+                  </div>
+                  <div className="meta-info">
+                    <span className="meta-card-label">Community Reach</span>
+                    <strong className="meta-card-value text-emerald-800">
+                      {selectedEvent.studentsImpacted || selectedEvent.beneficiaries || '1,200+ Students Benefited'}
+                    </strong>
+                  </div>
                 </div>
               </div>
 
-              {/* Title */}
-              <h2 className="event-modal-title">{selectedEvent.title}</h2>
-
-              {/* Dignitaries / Leadership */}
-              <div className="event-modal-dignitaries">
-                {selectedEvent.chiefGuest && (
-                  <div className="dignitary-badge">
-                    <Award size={16} className="text-amber-800" />
-                    <div>
-                      <span className="dignitary-label">Chief Guest / Honored Dignitary</span>
-                      <strong className="dignitary-name">{selectedEvent.chiefGuest}</strong>
-                    </div>
-                  </div>
-                )}
-                {selectedEvent.leader && (
-                  <div className="dignitary-badge">
-                    <CheckCircle2 size={16} className="text-emerald-700" />
-                    <div>
-                      <span className="dignitary-label">Conclave Leadership</span>
-                      <strong className="dignitary-name">{selectedEvent.leader}</strong>
-                    </div>
-                  </div>
-                )}
+              {/* Title Section */}
+              <div className="event-modal-header-section">
+                <div className="modal-pre-title-tag">
+                  <span className="dot-indicator"></span>
+                  <span>RCE OFFICIAL CONCLAVE DOSSIER</span>
+                </div>
+                <h2 className="event-modal-title">{selectedEvent.title}</h2>
+                <div className="event-modal-title-divider"></div>
               </div>
+
+              {/* Dignitaries & Leadership Cards */}
+              {(selectedEvent.chiefGuest || selectedEvent.leader) && (
+                <div className="event-modal-dignitaries-grid">
+                  {selectedEvent.leader && (
+                    <div className="luxury-dignitary-card conclave-leader">
+                      <div className="dignitary-avatar-wrap">
+                        <Users size={20} className="text-emerald-700" />
+                      </div>
+                      <div className="dignitary-details">
+                        <span className="dignitary-role-badge">CONCLAVE LEADERSHIP & EXECUTION</span>
+                        <strong className="dignitary-full-name">{selectedEvent.leader}</strong>
+                      </div>
+                    </div>
+                  )}
+                  {selectedEvent.chiefGuest && (
+                    <div className="luxury-dignitary-card chief-guest">
+                      <div className="dignitary-avatar-wrap">
+                        <Award size={20} className="text-amber-700" />
+                      </div>
+                      <div className="dignitary-details">
+                        <span className="dignitary-role-badge">HONORED CHIEF GUEST / DIGNITARY</span>
+                        <strong className="dignitary-full-name">{selectedEvent.chiefGuest}</strong>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Online Form Banner if Schedule is Over */}
               {selectedEvent.formUrl && isScheduleOver(selectedEvent) && (
                 <div className="event-form-completed-alert">
                   <div className="flex items-center gap-2 font-bold text-stone-800 text-sm">
                     <Lock size={16} className="text-stone-500" />
-                    <span>Registration Form is Closed</span>
+                    <span>Registration Form is Closed (பதிவு நிறைவடைந்தது)</span>
                   </div>
                   <p className="text-xs text-stone-600 mt-1">
                     This conclave / drive was successfully conducted on {formatEventDate(selectedEvent.date)}.
@@ -600,50 +651,86 @@ export const EventsPage: React.FC<EventsPageProps> = ({
               )}
 
               {/* Conclave Description */}
-              <div className="event-modal-desc-box">
-                <h4 className="modal-desc-heading">About This Conclave & Impact</h4>
-                <p className="modal-desc-paragraph">{selectedEvent.description}</p>
+              <div className="event-modal-desc-container">
+                <div className="modal-section-headline">
+                  <div className="section-icon-pill">
+                    <BookOpen size={16} />
+                  </div>
+                  <h4>About This Conclave & Impact</h4>
+                </div>
+                <div className="modal-editorial-body">
+                  <p>{selectedEvent.description}</p>
+                </div>
               </div>
 
               {/* Highlights & Achievements */}
               {selectedEvent.highlights && selectedEvent.highlights.length > 0 && (
-                <div className="event-modal-highlights-box">
-                  <h4 className="modal-desc-heading flex items-center gap-2">
-                    <Sparkles size={16} className="text-amber-700" />
-                    <span>Conclave Highlights & Milestone Outcomes</span>
-                  </h4>
-                  <ul className="modal-highlights-list">
+                <div className="event-modal-highlights-container">
+                  <div className="highlights-header-bar">
+                    <div className="flex items-center gap-2.5">
+                      <div className="highlights-sparkle-pill">
+                        <Sparkles size={16} />
+                      </div>
+                      <h4 className="highlights-title">Conclave Highlights & Milestone Outcomes</h4>
+                    </div>
+                    <span className="highlights-count-badge">
+                      {selectedEvent.highlights.length} Milestones
+                    </span>
+                  </div>
+                  <div className="highlights-interactive-list">
                     {selectedEvent.highlights.map((hl, i) => (
-                      <li key={i} className="modal-hl-item">
-                        <CheckCircle2 size={15} className="text-emerald-600 flex-shrink-0 mt-0.5" />
-                        <span>{hl}</span>
-                      </li>
+                      <div key={i} className="highlight-pill-row">
+                        <div className="highlight-check-icon">
+                          <CheckCircle2 size={16} />
+                        </div>
+                        <span className="highlight-text">{hl}</span>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               )}
 
               {/* Footer Actions */}
-              <div className="modal-footer flex items-center justify-between pt-4 border-t border-stone-200 mt-6">
+              <div className="event-modal-floating-footer">
                 <button
                   type="button"
                   onClick={() => setSelectedEvent(null)}
-                  className="btn-outline text-sm py-2.5 px-5"
+                  className="btn-modal-dismiss"
                 >
-                  Close
+                  Close Dossier
                 </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const title = selectedEvent.title;
-                    setSelectedEvent(null);
-                    onOpenJoin(`Regarding Conclave: ${title}`);
-                  }}
-                  className="btn-primary text-sm py-2.5 px-6"
-                >
-                  <span>Connect Regarding This Initiative</span>
-                  <ExternalLink size={15} />
-                </button>
+                <div className="footer-right-actions">
+                  <button
+                    type="button"
+                    onClick={() => handleCopyShare(selectedEvent)}
+                    className="btn-modal-share"
+                    title="Copy share link"
+                  >
+                    {copiedEventId === selectedEvent.id ? (
+                      <>
+                        <Check size={16} className="text-emerald-700" />
+                        <span>Link Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Share2 size={16} />
+                        <span>Share Conclave</span>
+                      </>
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const title = selectedEvent.title;
+                      setSelectedEvent(null);
+                      onOpenJoin(`Regarding Conclave: ${title}`);
+                    }}
+                    className="btn-modal-connect"
+                  >
+                    <span>Connect Regarding This Initiative</span>
+                    <ExternalLink size={16} />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
