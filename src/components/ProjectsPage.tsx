@@ -1,14 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import {
   Heart,
-  Users,
   Search,
   ArrowLeft,
+  ArrowRight,
   Target,
   Sparkles,
   ChevronRight,
   ShieldCheck,
-  CheckCircle2,
   X,
 } from 'lucide-react';
 import type { ProjectItem } from '../services/api';
@@ -17,14 +16,14 @@ import { getSafeImageUrl } from '../services/api';
 interface ProjectsPageProps {
   projects: ProjectItem[];
   onOpenDonate: (cause?: string) => void;
-  onOpenJoin: (role?: string) => void;
+  onOpenJoin?: (role?: string) => void;
   onBackToHome: () => void;
 }
 
 export const ProjectsPage: React.FC<ProjectsPageProps> = ({
   projects,
   onOpenDonate,
-  onOpenJoin,
+  onOpenJoin: _onOpenJoin,
   onBackToHome,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -209,20 +208,14 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                         loading="lazy"
                       />
                       <span className="project-category-badge">{project.category}</span>
-                      {project.badge && (
-                        <span className="project-highlight-badge">{project.badge}</span>
-                      )}
                     </div>
 
                     <div className="project-content">
-                      <h3 className="project-title">{project.title}</h3>
-                      <p className="project-tagline">{project.tagline}</p>
+                      <h3 className="project-title" title={project.title}>{project.title}</h3>
 
-                      {project.description && (
-                        <p className="project-desc line-clamp-3 text-xs text-stone-600 mb-3">
-                          {project.description}
-                        </p>
-                      )}
+                      <p className="project-desc">
+                        {project.description || project.tagline}
+                      </p>
 
                       {/* Fund Progress Bar */}
                       <div className="project-progress-wrap">
@@ -230,49 +223,25 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                           <span className="raised-label">
                             Raised: <strong>₹{(project.raised || 0).toLocaleString('en-IN')}</strong>
                           </span>
-                          <span className="percent-label">{percent}%</span>
+                          <span className="goal-label">
+                            Goal: ₹{(project.goal || 0).toLocaleString('en-IN')}
+                          </span>
                         </div>
                         <div className="progress-track" role="progressbar" aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100}>
                           <div className="progress-fill" style={{ width: `${percent}%` }}></div>
                         </div>
-                        <div className="goal-label">
-                          Goal: ₹{(project.goal || 0).toLocaleString('en-IN')}
-                        </div>
                       </div>
 
-                      {/* Beneficiaries & Volunteers Meta */}
-                      <div className="project-meta-strip">
-                        <span className="meta-pill" title="Target beneficiaries">
-                          <CheckCircle2 size={13} className="text-emerald-600" />
-                          <span>{project.beneficiaries || 'Rural Community'}</span>
-                        </span>
-                        <span className="meta-pill" title="Volunteers currently enrolled">
-                          <Users size={13} className="text-amber-700" />
-                          <span>{project.volunteersEnrolled || 24} Enrolled</span>
-                        </span>
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="project-actions">
-                        <button
-                          type="button"
-                          onClick={() => onOpenDonate(project.title)}
-                          className="btn-primary btn-project-donate flex-1"
-                          title={`Contribute to ${project.title}`}
-                        >
-                          <Heart size={15} fill="currentColor" />
-                          <span>Support This Cause</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => onOpenJoin('Volunteer')}
-                          className="btn-outline btn-project-join"
-                          title="Join this initiative as a volunteer"
-                        >
-                          <Users size={15} />
-                          <span>Join Drive</span>
-                        </button>
-                      </div>
+                      {/* Action Button */}
+                      <button
+                        type="button"
+                        onClick={() => onOpenDonate(project.title)}
+                        className="btn-card-donate-now"
+                        title={`Contribute to ${project.title}`}
+                      >
+                        <span>Donate Now</span>
+                        <ArrowRight size={15} />
+                      </button>
                     </div>
                   </article>
                 );

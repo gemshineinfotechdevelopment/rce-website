@@ -182,18 +182,6 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
                   {/* Short Description */}
                   <p className="event-card-desc">{ev.description}</p>
 
-                  {/* Highlights Bullet Tags */}
-                  {ev.highlights && ev.highlights.length > 0 && (
-                    <div className="event-card-highlights">
-                      {ev.highlights.slice(0, 3).map((hl, idx) => (
-                        <div key={idx} className="highlight-pill">
-                          <CheckCircle2 size={12} className="text-amber-600 flex-shrink-0" />
-                          <span className="line-clamp-1">{hl}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
                   {/* Card Footer: Organizer & Action Button */}
                   <div className="event-card-footer">
                     <div className="event-card-organizer">

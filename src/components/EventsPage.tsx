@@ -290,18 +290,6 @@ export const EventsPage: React.FC<EventsPageProps> = ({
                       {/* Short Description */}
                       <p className="event-card-desc">{ev.description}</p>
 
-                      {/* Highlights Bullet Tags */}
-                      {ev.highlights && ev.highlights.length > 0 && (
-                        <div className="event-card-highlights">
-                          {ev.highlights.slice(0, 3).map((hl, idx) => (
-                            <div key={idx} className="event-hl-item">
-                              <span className="hl-bullet">✓</span>
-                              <span className="hl-text line-clamp-1">{hl}</span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
                       {/* Card Footer: Action Buttons */}
                       <div className="event-card-footer">
                         {ev.chiefGuest ? (
