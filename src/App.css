@@ -1640,47 +1640,58 @@
   grid-template-columns: 1fr;
   gap: 28px;
   width: 100%;
-  max-width: 880px;
+  max-width: 960px;
   margin: 0 auto;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 820px) {
   .events-impact-grid {
-    grid-template-columns: 1fr;
     gap: 32px;
-  }
-
-  .event-card-media {
-    height: 350px;
   }
 }
 
-/* Event Impact Card */
+/* Event Impact Card - Modern Split Magazine Layout */
 .event-impact-card {
   background: #ffffff;
-  border: 1px solid #ebdcd0;
+  border: 1px solid #e7ded7;
   border-radius: 18px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 2px 8px rgba(40, 20, 10, 0.03);
+  box-shadow: 0 4px 18px rgba(40, 20, 10, 0.05);
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
   position: relative;
+  width: 100%;
 }
 
 .event-impact-card:hover {
   transform: translateY(-4px);
-  border-color: #d97706;
-  box-shadow: 0 12px 28px rgba(40, 20, 10, 0.08);
+  border-color: #cbd5e1;
+  box-shadow: 0 14px 32px rgba(40, 20, 10, 0.09);
+}
+
+@media (min-width: 820px) {
+  .event-impact-card {
+    flex-direction: row;
+    min-height: 290px;
+  }
 }
 
 /* Card Media & Badges */
 .event-card-media {
   position: relative;
   width: 100%;
-  height: 250px;
+  height: 230px;
   overflow: hidden;
   background: #2a160d;
+}
+
+@media (min-width: 820px) {
+  .event-card-media {
+    width: 42%;
+    min-width: 42%;
+    height: auto;
+  }
 }
 
 .event-card-img {
@@ -1688,82 +1699,124 @@
   height: 100%;
   object-fit: cover;
   object-position: center 25%;
-  transition: transform 0.5s ease;
+  transition: transform 0.4s ease;
 }
 
 .event-impact-card:hover .event-card-img {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
-.event-card-overlay {
+/* Floating Date Tile on Photo */
+.event-date-tile {
   position: absolute;
-  top: 14px;
-  left: 14px;
-  right: 14px;
+  top: 12px;
+  left: 12px;
+  background: #ffffff;
+  border-radius: 9px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  min-width: 52px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.date-tile-month {
+  background: #b45309;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 3px 5px;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.date-tile-day {
+  color: #1c1917;
+  font-size: 1.2rem;
+  font-weight: 800;
+  line-height: 1.1;
+  padding: 2px 4px 1px;
+}
+
+.date-tile-year {
+  color: #78716c;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 0 4px 4px;
+  line-height: 1;
+}
+
+/* Top-Right Status Badge on Photo */
+.event-card-top-status {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 3;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  pointer-events: none;
+  gap: 6px;
 }
 
-.event-card-cat-badge {
+/* Category Pill Tag on Photo Bottom-Left */
+.event-photo-category-tag {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: #059669;
+  color: #ffffff;
   font-size: 0.72rem;
-  font-weight: 800;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  z-index: 2;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 5px 12px;
-  border-radius: var(--radius-full);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(8px);
 }
 
 .cat-paadasaalai {
-  background: #78350f;
-  color: #fef08a;
-  border: 1px solid rgba(254, 240, 138, 0.4);
+  background: #78350f !important;
+  color: #fef08a !important;
 }
 
 .cat-kalvimela {
-  background: #065f46;
-  color: #a7f3d0;
-  border: 1px solid rgba(167, 243, 208, 0.4);
+  background: #065f46 !important;
+  color: #a7f3d0 !important;
 }
 
 .cat-award {
-  background: #831843;
-  color: #fbcfe8;
-  border: 1px solid rgba(251, 207, 232, 0.4);
+  background: #831843 !important;
+  color: #fbcfe8 !important;
 }
 
 .cat-distribution {
-  background: #1e3a8a;
-  color: #bfdbfe;
-  border: 1px solid rgba(191, 219, 254, 0.4);
+  background: #1e3a8a !important;
+  color: #bfdbfe !important;
 }
 
 .cat-awareness {
-  background: #9a3412;
-  color: #fed7aa;
-  border: 1px solid rgba(254, 215, 170, 0.4);
+  background: #9a3412 !important;
+  color: #fed7aa !important;
 }
 
 .cat-career {
-  background: #4c1d95;
-  color: #ddd6fe;
-  border: 1px solid rgba(221, 214, 254, 0.4);
+  background: #4c1d95 !important;
+  color: #ddd6fe !important;
 }
 
 .cat-default {
-  background: #44403c;
-  color: #f5f5f4;
-  border: 1px solid rgba(245, 245, 244, 0.3);
+  background: #44403c !important;
+  color: #f5f5f4 !important;
 }
 
 .event-card-status-badge {
   font-size: 0.72rem;
   font-weight: 700;
-  background: rgba(15, 23, 42, 0.75);
+  background: rgba(15, 23, 42, 0.78);
   color: #ffffff;
   padding: 4px 10px;
   border-radius: var(--radius-full);
@@ -1772,7 +1825,7 @@
   align-items: center;
 }
 
-/* Card Content */
+/* Card Content Area */
 .event-card-content {
   padding: 22px;
   display: flex;
@@ -1780,51 +1833,78 @@
   flex: 1;
 }
 
+@media (min-width: 820px) {
+  .event-card-content {
+    width: 58%;
+    padding: 24px 28px;
+  }
+}
+
 .event-card-meta {
   display: flex;
   align-items: center;
-  gap: 14px;
-  font-size: 0.8rem;
-  color: #78350f;
-  font-weight: 600;
-  margin-bottom: 12px;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
-.event-card-meta .meta-item {
+.event-card-meta .meta-item.location {
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #9a3412;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.event-card-meta .meta-item.mobile-date {
+  display: none;
+}
+
+@media (max-width: 819px) {
+  .event-card-meta .meta-item.mobile-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.76rem;
+    color: #78716c;
+    font-weight: 600;
+  }
 }
 
 .event-card-title {
-  font-size: 1.22rem;
+  font-size: 1.24rem;
   font-weight: 800;
-  color: #24140c;
+  color: #1c1917;
   line-height: 1.35;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-/* Impact Metric Box */
-.event-impact-metric-box {
-  background: linear-gradient(135deg, #fef3c7 0%, #fae8d0 100%);
-  border: 1px solid #fcd34d;
-  padding: 8px 14px;
-  border-radius: var(--radius-md);
-  display: flex;
+/* Compact Impact Pill */
+.event-impact-pill {
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 14px;
+  gap: 7px;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #92400e;
+  width: fit-content;
+  margin-bottom: 12px;
 }
 
-.event-impact-metric-text {
-  font-size: 0.84rem;
+.event-impact-pill .impact-pill-text {
   font-weight: 800;
-  color: #78350f;
-  letter-spacing: 0.01em;
 }
 
 .event-card-desc {
@@ -1834,28 +1914,9 @@
   margin-bottom: 16px;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-}
-
-/* Highlights */
-.event-card-highlights {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 18px;
-}
-
-.highlight-pill {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 0.78rem;
-  color: #6b4e3d;
-  background: #f9f4ed;
-  padding: 4px 10px;
-  border-radius: var(--radius-sm);
-  border: 1px solid #ebd9c8;
 }
 
 /* Card Footer */
@@ -1875,26 +1936,39 @@
   max-width: 55%;
 }
 
+.event-card-organizer .organizer-label {
+  font-size: 0.72rem;
+  color: #a8a29e;
+  display: block;
+}
+
+.event-card-organizer .organizer-name {
+  font-size: 0.82rem;
+  color: #44403c;
+  font-weight: 700;
+}
+
 .btn-event-view {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: linear-gradient(135deg, #78350f 0%, #b45309 100%);
+  background: #f59e0b;
   color: #ffffff;
-  font-size: 0.82rem;
+  font-size: 0.86rem;
   font-weight: 700;
-  padding: 7px 14px;
-  border-radius: var(--radius-md);
+  padding: 8px 18px;
+  border-radius: 8px;
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
   white-space: nowrap;
 }
 
 .btn-event-view:hover {
-  background: linear-gradient(135deg, #5c270a 0%, #92400e 100%);
-  transform: translateX(2px);
-  box-shadow: 0 4px 10px rgba(120, 53, 15, 0.25);
+  background: #d97706;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
 }
 
 /* Event Card Actions & Form Link Button */

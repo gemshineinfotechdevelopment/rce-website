@@ -97,6 +97,20 @@ export const EventsPage: React.FC<EventsPageProps> = ({
     }
   };
 
+  const getEventDateParts = (dateStr: string) => {
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return { month: 'EVENT', day: '•', year: dateStr };
+      return {
+        month: d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase(),
+        day: d.toLocaleDateString('en-US', { day: 'numeric' }),
+        year: d.toLocaleDateString('en-US', { year: 'numeric' }),
+      };
+    } catch {
+      return { month: 'EVENT', day: '•', year: dateStr };
+    }
+  };
+
   const getCategoryBadgeClass = (cat?: string) => {
     const c = (cat || '').toLowerCase();
     if (c.includes('5') || c.includes('paada')) return 'badge-cat-paada';
@@ -209,6 +223,7 @@ export const EventsPage: React.FC<EventsPageProps> = ({
             <div className="events-impact-grid">
               {filteredEvents.map((ev) => {
                 const displayDate = formatEventDate(ev.date);
+                const dateParts = getEventDateParts(ev.date);
                 const statusLabel = ev.status || 'Conducted';
                 const impactMetric =
                   ev.studentsImpacted ||
@@ -234,10 +249,16 @@ export const EventsPage: React.FC<EventsPageProps> = ({
                             'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80';
                         }}
                       />
-                      <div className="event-card-overlay">
-                        <span className={`event-card-cat-badge ${getCategoryBadgeClass(ev.category)}`}>
-                          {ev.category}
-                        </span>
+
+                      {/* Floating Date Tile */}
+                      <div className="event-date-tile" title={displayDate}>
+                        <span className="date-tile-month">{dateParts.month}</span>
+                        <span className="date-tile-day">{dateParts.day}</span>
+                        <span className="date-tile-year">{dateParts.year}</span>
+                      </div>
+
+                      {/* Top-Right Status Badge */}
+                      <div className="event-card-top-status">
                         {ev.formUrl && ev.formUrl.trim() ? (
                           isScheduleOver(ev) ? (
                             <span
@@ -260,31 +281,34 @@ export const EventsPage: React.FC<EventsPageProps> = ({
                           </span>
                         )}
                       </div>
+
+                      {/* Category Pill Tag (Bottom-Left) */}
+                      <div className={`event-photo-category-tag ${getCategoryBadgeClass(ev.category)}`}>
+                        {ev.category}
+                      </div>
                     </div>
 
                     {/* Event Card Content */}
                     <div className="event-card-content">
-                      {/* Meta Bar: Date & Location */}
+                      {/* Meta Bar: Location & Mobile Date */}
                       <div className="event-card-meta">
-                        <span className="meta-item">
-                          <Calendar size={14} className="text-amber-700" />
-                          {displayDate}
+                        <span className="meta-item location">
+                          <MapPin size={13} className="text-amber-700 flex-shrink-0" />
+                          <span className="line-clamp-1">{ev.location}</span>
                         </span>
-                        {ev.location && (
-                          <span className="meta-item" title={ev.location}>
-                            <MapPin size={14} className="text-amber-700" />
-                            <span className="truncate max-w-[170px]">{ev.location}</span>
-                          </span>
-                        )}
+                        <span className="meta-item mobile-date">
+                          <Calendar size={13} className="text-amber-700 flex-shrink-0" />
+                          <span>{displayDate}</span>
+                        </span>
                       </div>
 
                       {/* Title */}
                       <h3 className="event-card-title">{ev.title}</h3>
 
-                      {/* Impact Metric Banner */}
-                      <div className="event-impact-metric-box">
-                        <GraduationCap size={16} className="text-amber-800 flex-shrink-0" />
-                        <span className="impact-metric-text">{impactMetric}</span>
+                      {/* Impact Metric Pill */}
+                      <div className="event-impact-pill">
+                        <GraduationCap size={15} className="text-amber-800 flex-shrink-0" />
+                        <span className="impact-pill-text">{impactMetric}</span>
                       </div>
 
                       {/* Short Description */}

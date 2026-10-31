@@ -86,6 +86,20 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
     }
   };
 
+  const getEventDateParts = (dateStr: string) => {
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return { month: 'EVENT', day: '•', year: dateStr };
+      return {
+        month: d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase(),
+        day: d.toLocaleDateString('en-US', { day: 'numeric' }),
+        year: d.toLocaleDateString('en-US', { year: 'numeric' }),
+      };
+    } catch {
+      return { month: 'EVENT', day: '•', year: dateStr };
+    }
+  };
+
   return (
     <section id="events" className="events-section">
       <div className="container">
@@ -109,6 +123,7 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
         <div className="events-impact-grid">
           {events.map((ev) => {
             const displayDate = formatEventDate(ev.date);
+            const dateParts = getEventDateParts(ev.date);
             const statusLabel = ev.status || 'Conducted';
             const impactMetric =
               ev.studentsImpacted ||
@@ -131,10 +146,16 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
                         'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80';
                     }}
                   />
-                  <div className="event-card-overlay">
-                    <span className={`event-card-cat-badge ${getCategoryBadgeClass(ev.category)}`}>
-                      {ev.category}
-                    </span>
+
+                  {/* Floating Date Tile */}
+                  <div className="event-date-tile" title={displayDate}>
+                    <span className="date-tile-month">{dateParts.month}</span>
+                    <span className="date-tile-day">{dateParts.day}</span>
+                    <span className="date-tile-year">{dateParts.year}</span>
+                  </div>
+
+                  {/* Top-Right Status Badge */}
+                  <div className="event-card-top-status">
                     {ev.formUrl && ev.formUrl.trim() ? (
                       isScheduleOver(ev) ? (
                         <span className="event-card-form-closed-badge" title="Event schedule is completed">
@@ -154,29 +175,34 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
                       </span>
                     )}
                   </div>
+
+                  {/* Category Pill Tag (Bottom-Left) */}
+                  <div className={`event-photo-category-tag ${getCategoryBadgeClass(ev.category)}`}>
+                    {ev.category}
+                  </div>
                 </div>
 
                 {/* Event Card Content */}
                 <div className="event-card-content">
-                  {/* Meta Bar: Date & Location */}
+                  {/* Meta Bar: Location & Mobile Date */}
                   <div className="event-card-meta">
-                    <span className="meta-item">
-                      <Calendar size={14} className="text-amber-700" />
-                      {displayDate}
-                    </span>
-                    <span className="meta-item">
-                      <MapPin size={14} className="text-amber-700" />
+                    <span className="meta-item location">
+                      <MapPin size={13} className="text-amber-700 flex-shrink-0" />
                       <span className="line-clamp-1">{ev.location}</span>
+                    </span>
+                    <span className="meta-item mobile-date">
+                      <Calendar size={13} className="text-amber-700 flex-shrink-0" />
+                      <span>{displayDate}</span>
                     </span>
                   </div>
 
                   {/* Title */}
                   <h3 className="event-card-title">{ev.title}</h3>
 
-                  {/* Impact Metric Banner */}
-                  <div className="event-impact-metric-box">
-                    <GraduationCap size={16} className="text-amber-800 flex-shrink-0" />
-                    <span className="event-impact-metric-text">{impactMetric}</span>
+                  {/* Impact Metric Pill */}
+                  <div className="event-impact-pill">
+                    <GraduationCap size={15} className="text-amber-800 flex-shrink-0" />
+                    <span className="impact-pill-text">{impactMetric}</span>
                   </div>
 
                   {/* Short Description */}
@@ -185,8 +211,8 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
                   {/* Card Footer: Organizer & Action Button */}
                   <div className="event-card-footer">
                     <div className="event-card-organizer">
-                      <span className="text-stone-400 text-xs block">Organized by</span>
-                      <strong className="text-stone-700 text-xs">{ev.leader || 'RCE Initiative Team'}</strong>
+                      <span className="organizer-label">Organized by</span>
+                      <strong className="organizer-name">{ev.leader || 'RCE Initiative Team'}</strong>
                     </div>
 
                     <div className="event-card-actions">
