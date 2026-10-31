@@ -775,6 +775,19 @@
   ],
   "donationRecords": [
     {
+      "receiptNo": "RCE-REC-071912922",
+      "donorName": "savithan",
+      "email": "savithan45@gmail.com",
+      "phone": "7845269542",
+      "pan": "34WEJ7667",
+      "amount": 5000,
+      "cause": "Green Earth: 25,000 Miyawaki Plantation",
+      "paymentMethod": "UPI",
+      "taxBenefit": "Eligible for 80G Indian Income Tax Exemption (50% Deduction)",
+      "timestamp": "2026-10-30T12:57:51.912Z",
+      "status": "Verified & Received"
+    },
+    {
       "receiptNo": "80G-2026-00412",
       "donorName": "Dr. Sundararajan Ramanathan",
       "email": "dr.sundar@medicare.in",

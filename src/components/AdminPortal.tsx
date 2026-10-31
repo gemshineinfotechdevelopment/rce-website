@@ -1119,7 +1119,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               <img src="/Rce.logo.png" alt="RCE Logo" className="admin-sidebar-logo-img" />
             </div>
             <div className="admin-sidebar-text">
-              <span className="admin-brand-pretitle">TRUST & NGO</span>
               <h3>{brandName || 'RCE'}</h3>
               <span className="admin-brand-portal-pill">ADMIN PORTAL</span>
             </div>

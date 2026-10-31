@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Heart, Users, ArrowRight, ShieldCheck, Sparkles, Award, X } from 'lucide-react';
+import { Heart, Users, ArrowRight, ShieldCheck, Sparkles, Award, X, Maximize2 } from 'lucide-react';
 import type { ClubStats, HeroContent } from '../services/api';
 import defaultHeroBanner from '../assets/Screenshot_27-10-2026_13299_www.instagram.com.jpeg';
 
@@ -131,22 +131,20 @@ export const Hero: React.FC<HeroProps> = ({ content, onOpenJoin, onOpenDonate })
             {/* Trust Badges */}
             <div className="hero-trust-badges">
               {trustBadge1 && (
-                <div className="trust-badge-item">
-                  <ShieldCheck size={18} color="#b45309" className="trust-icon" />
+                <div className="trust-badge-pill">
+                  <ShieldCheck size={16} className="trust-icon" />
                   <span>{trustBadge1}</span>
                 </div>
               )}
-              {trustBadge1 && trustBadge2 && <div className="trust-badge-divider"></div>}
               {trustBadge2 && (
-                <div className="trust-badge-item">
-                  <Award size={18} color="#d97706" className="trust-icon" />
+                <div className="trust-badge-pill">
+                  <Award size={16} className="trust-icon" />
                   <span>{trustBadge2}</span>
                 </div>
               )}
-              {trustBadge2 && trustBadge3 && <div className="trust-badge-divider"></div>}
               {trustBadge3 && (
-                <div className="trust-badge-item">
-                  <Sparkles size={18} color="#b45309" className="trust-icon" />
+                <div className="trust-badge-pill">
+                  <Sparkles size={16} className="trust-icon" />
                   <span>{trustBadge3}</span>
                 </div>
               )}
@@ -178,6 +176,14 @@ export const Hero: React.FC<HeroProps> = ({ content, onOpenJoin, onOpenDonate })
                   className="hero-main-img"
                   onError={handleImageError}
                 />
+                <div className="hero-floating-badge top-badge">
+                  <Sparkles size={13} className="text-amber-400" />
+                  <span>Impact Archive • RCE</span>
+                </div>
+                <div className="hero-floating-badge bottom-badge">
+                  <Maximize2 size={12} className="text-amber-300" />
+                  <span>Tap to view photo</span>
+                </div>
               </div>
             </div>
           </div>
