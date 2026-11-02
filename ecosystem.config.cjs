@@ -8,7 +8,7 @@ module.exports = {
     {
       name: "rce-backend",
       cwd: "./server",
-      script: "src/server.js",
+      script: "server.js",
       instances: 1,
       exec_mode: "fork",
       autorestart: true,

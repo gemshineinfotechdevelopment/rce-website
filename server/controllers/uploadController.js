@@ -2,7 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const { cloudinary, isCloudinaryConfigured } = require("../config/cloudinary");
 
-const UPLOAD_DIR = path.join(__dirname, "../../uploads");
+const UPLOAD_DIR = path.join(__dirname, "../uploads");
 
 const uploadFile = async (req, res) => {
   try {

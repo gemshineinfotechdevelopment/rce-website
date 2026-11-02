@@ -86,7 +86,7 @@ module.exports = {
     {
       name: "rce-backend",
       cwd: "./server",
-      script: "src/server.js",
+      script: "server.js",
       instances: 1,
       exec_mode: "fork",
       autorestart: true,
@@ -133,4 +133,3 @@ echo "🌐 Frontend URL: https://rce.gemshine.tech"
 echo "🔌 Backend API: http://127.0.0.1:5024"
 echo "🍃 MongoDB: Active (Database: rce_website)"
 echo "=========================================================="
-
