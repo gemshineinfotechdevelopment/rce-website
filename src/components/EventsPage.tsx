@@ -189,14 +189,14 @@ export const EventsPage: React.FC<EventsPageProps> = ({
       <section className="dedicated-content-section">
         <div className="container">
           {/* Search Toolbar */}
-          <div className="dedicated-toolbar-wrap" style={{ justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
+          <div className="dedicated-toolbar-wrap">
             <span className="results-count-text">
               Showing <strong>{filteredEvents.length}</strong> of {events.length} conclaves & drives
               {searchQuery && ` matching "${searchQuery}"`}
             </span>
 
             {/* Search Input Box */}
-            <div className="dedicated-search-box" style={{ maxWidth: '380px', width: '100%' }}>
+            <div className="dedicated-search-box">
               <Search size={16} className="text-stone-400 flex-shrink-0" />
               <input
                 type="text"
