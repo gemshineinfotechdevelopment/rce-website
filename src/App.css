@@ -8097,8 +8097,8 @@
 .spotlight-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 28px;
-  max-width: 980px;
+  gap: 32px;
+  max-width: 1040px;
   margin: 0 auto;
   width: 100%;
 }
@@ -8106,7 +8106,13 @@
 @media (min-width: 768px) {
   .spotlight-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 58px;
+    gap: 64px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .spotlight-grid {
+    gap: 84px;
   }
 }
 
