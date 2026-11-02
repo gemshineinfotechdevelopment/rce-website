@@ -24,6 +24,13 @@ export const InitiativesSpotlight: React.FC<InitiativesSpotlightProps> = ({
         !p.image.toLowerCase().includes('qr')
     ) || projects[0];
 
+  const cleanProjectImage =
+    featuredProject?.image &&
+    !featuredProject.image.includes('wlg5whcb71akjg9dakft') &&
+    !featuredProject.image.toLowerCase().includes('qr')
+      ? featuredProject.image
+      : 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80';
+
   const featuredEvent =
     events.find(
       (e) =>
@@ -62,7 +69,7 @@ export const InitiativesSpotlight: React.FC<InitiativesSpotlightProps> = ({
               {featuredProject ? (
                 <img
                   src={getSafeImageUrl(
-                    featuredProject.image,
+                    cleanProjectImage,
                     'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80'
                   )}
                   alt="RCE Flagship Projects"
