@@ -16,8 +16,20 @@ export const InitiativesSpotlight: React.FC<InitiativesSpotlightProps> = ({
   onNavigateToProjects,
   onNavigateToEvents,
 }) => {
-  const featuredProject = projects[0];
-  const featuredEvent = events[0] || events[1];
+  const featuredProject =
+    projects.find(
+      (p) =>
+        p.image &&
+        !p.image.includes('wlg5whcb71akjg9dakft') &&
+        !p.image.toLowerCase().includes('qr')
+    ) || projects[0];
+
+  const featuredEvent =
+    events.find(
+      (e) =>
+        e.image &&
+        !e.image.toLowerCase().includes('qr')
+    ) || events[0] || events[1];
 
   return (
     <section className="initiatives-spotlight-section">
