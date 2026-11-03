@@ -7,7 +7,7 @@
     "clean:port": "node -e \"const { execSync } = require('child_process'); try { const out = execSync('netstat -ano | findstr :5024').toString(); for (const l of out.trim().split('\\n')) { const pid = l.trim().split(/\\s+/).pop(); if (pid && parseInt(pid) > 4) try { process.kill(parseInt(pid), 'SIGKILL'); } catch (e) { try { execSync('taskkill /F /PID ' + pid); } catch (e2) {} } } console.log('Cleaned port 5024'); } catch (e) { console.log('Port 5024 is clean'); }\"",
     "dev": "concurrently -n \"FRONTEND,BACKEND\" -c \"cyan,green\" \"npm run client\" \"npm run server\"",
     "client": "vite",
-    "server": "node server/server.js",
+    "server": "npm run clean:port && node server/server.js",
     "server:dev": "nodemon server/server.js",
     "server:start": "node server/server.js",
     "dev:all": "concurrently -n \"FRONTEND,BACKEND\" -c \"cyan,green\" \"npm run client\" \"npm run server\"",

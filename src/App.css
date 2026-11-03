@@ -1675,25 +1675,32 @@
 .event-card-media {
   position: relative;
   width: 100%;
-  height: 230px;
+  height: 240px;
+  min-height: 240px;
   overflow: hidden;
   background: #2a160d;
+  cursor: pointer;
 }
 
 @media (min-width: 820px) {
   .event-card-media {
     width: 42%;
     min-width: 42%;
+    min-height: 290px;
     height: auto;
+    position: relative;
   }
 }
 
 .event-card-img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center 25%;
   transition: transform 0.4s ease;
+  display: block;
 }
 
 .event-impact-card:hover .event-card-img {
@@ -2139,33 +2146,17 @@
 .event-details-modal,
 .event-detail-modal,
 .modal-container.event-details-modal {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 
 .event-details-modal::-webkit-scrollbar,
 .event-detail-modal::-webkit-scrollbar,
 .modal-container.event-details-modal::-webkit-scrollbar {
-  display: none;
-  width: 0;
-  height: 0;
-}
-
-.event-details-modal::-webkit-scrollbar-track,
-.event-detail-modal::-webkit-scrollbar-track {
-  background: rgba(245, 158, 11, 0.05);
-  border-radius: 8px;
-}
-
-.event-details-modal::-webkit-scrollbar-thumb,
-.event-detail-modal::-webkit-scrollbar-thumb {
-  background: rgba(217, 119, 6, 0.25);
-  border-radius: 8px;
-}
-
-.event-details-modal::-webkit-scrollbar-thumb:hover,
-.event-detail-modal::-webkit-scrollbar-thumb:hover {
-  background: rgba(217, 119, 6, 0.5);
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
 }
 
 /* Floating Close Pill */
@@ -6104,21 +6095,25 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 14px;
-  margin-top: 28px;
-  padding-top: 20px;
-  margin-bottom: 16px;
-  padding-bottom: 8px;
+  gap: 16px;
+  margin-top: 32px;
+  padding-top: 22px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
   border-top: 1.5px solid rgba(217, 119, 6, 0.16);
 }
 
 .modal-actions-bar .btn-outline,
 .modal-actions-bar .btn-primary {
   min-width: 140px;
-  padding: 10px 24px;
+  padding: 11px 26px;
   font-weight: 700;
   border-radius: 9999px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   transition: all 0.2s ease;
 }
 
@@ -6613,9 +6608,14 @@
   max-height: 90vh;
   overflow-y: auto;
   border-radius: 20px;
-  padding-bottom: 18px;
+  padding-bottom: 36px;
+  box-sizing: border-box;
   scrollbar-width: thin;
   scrollbar-color: rgba(217, 119, 6, 0.3) transparent;
+}
+
+.admin-modal-edit form {
+  padding-bottom: 28px;
 }
 
 .admin-edit-badge {

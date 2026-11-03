@@ -7,16 +7,6 @@ const { notFound, errorHandler } = require("./middleware/errorHandler");
 
 const app = express();
 
-// Ensure uploads directory exists
-const uploadsDir = path.join(__dirname, "uploads");
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
-// Serve uploaded static assets
-app.use("/api/uploads", express.static(uploadsDir));
-app.use("/uploads", express.static(uploadsDir));
-
 // CORS configuration - Allow frontend port & production domain
 const clientUrl = process.env.CLIENT_URL || "https://rce.gemshine.tech";
 const allowedOrigins = [
@@ -41,6 +31,16 @@ app.use(
     credentials: true,
   })
 );
+
+// Ensure uploads directory exists
+const uploadsDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+// Serve uploaded static assets (with CORS enabled)
+app.use("/api/uploads", express.static(uploadsDir));
+app.use("/uploads", express.static(uploadsDir));
 
 // Body parsers with generous limit for image uploads
 app.use(express.json({ limit: "50mb" }));

@@ -45,6 +45,24 @@ export const EventsPage: React.FC<EventsPageProps> = ({
   const [copiedEventId, setCopiedEventId] = useState<string | null>(null);
   const [modalPhotoIndex, setModalPhotoIndex] = useState(0);
   const [lightboxPhoto, setLightboxPhoto] = useState<string | null>(null);
+  const modalContainerRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (selectedEvent || lightboxPhoto) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [selectedEvent, lightboxPhoto]);
+
+  React.useEffect(() => {
+    if (selectedEvent && modalContainerRef.current) {
+      modalContainerRef.current.scrollTop = 0;
+    }
+  }, [selectedEvent]);
 
   const handleSelectEvent = (ev: ClubEvent) => {
     setSelectedEvent(ev);
@@ -250,7 +268,11 @@ export const EventsPage: React.FC<EventsPageProps> = ({
                 return (
                   <article key={ev.id} className="event-impact-card card-hover">
                     {/* Event Photo with Overlays */}
-                    <div className="event-card-media">
+                    <div
+                      className="event-card-media cursor-pointer"
+                      onClick={() => handleSelectEvent(ev)}
+                      title="Click to view details & all photographs"
+                    >
                       <img
                         src={defaultPhoto}
                         alt={ev.title}
@@ -456,7 +478,7 @@ export const EventsPage: React.FC<EventsPageProps> = ({
           role="dialog"
           aria-modal="true"
         >
-          <div className="modal-container event-details-modal" onClick={(e) => e.stopPropagation()}>
+          <div ref={modalContainerRef} className="modal-container event-details-modal" onClick={(e) => e.stopPropagation()}>
             {/* Floating Close Button */}
             <button
               type="button"
@@ -707,7 +729,7 @@ export const EventsPage: React.FC<EventsPageProps> = ({
               {/* Event Photo Gallery Grid */}
               {(() => {
                 const galleryPhotos = selectedEvent ? getEventImages(selectedEvent) : [];
-                if (galleryPhotos.length <= 1) return null;
+                if (galleryPhotos.length === 0) return null;
                 return (
                   <div className="event-modal-gallery-container mt-6 pt-5 border-t border-amber-200/50">
                     <div className="highlights-header-bar mb-3">
@@ -715,7 +737,7 @@ export const EventsPage: React.FC<EventsPageProps> = ({
                         <div className="highlights-sparkle-pill">
                           <Camera size={16} />
                         </div>
-                        <h4 className="highlights-title">Event Moments & Photo Gallery ({galleryPhotos.length} Photos)</h4>
+                        <h4 className="highlights-title">Event Moments & Photo Gallery ({galleryPhotos.length} {galleryPhotos.length === 1 ? 'Photo' : 'Photos'})</h4>
                       </div>
                       <span className="highlights-count-badge">
                         Click photo to enlarge

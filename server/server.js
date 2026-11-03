@@ -2,6 +2,7 @@ const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 require("dotenv").config({ path: path.join(__dirname, "../.env") });
 const http = require("http");
+const { execSync } = require("child_process");
 const app = require("./app");
 const connectDB = require("./config/db");
 
@@ -11,6 +12,29 @@ const { syncWithDatabase } = require("./controllers/clubController");
 
 let retryCount = 0;
 const MAX_RETRIES = 5;
+
+// Automatically terminate any orphaned Windows process holding this port
+function freePort(port) {
+  if (process.platform !== "win32") return;
+  try {
+    const netstat = execSync(`netstat -ano | findstr :${port}`).toString();
+    const lines = netstat.trim().split("\n");
+    for (const line of lines) {
+      if (line.includes("LISTENING")) {
+        const parts = line.trim().split(/\s+/);
+        const pid = parseInt(parts[parts.length - 1], 10);
+        if (pid && pid !== process.pid && pid > 4) {
+          console.warn(`🧹 Auto-clearing stale process (PID: ${pid}) holding port ${port}...`);
+          try {
+            execSync(`taskkill /F /PID ${pid}`);
+          } catch (e) {}
+        }
+      }
+    }
+  } catch (e) {
+    // Port is free or netstat found no listener
+  }
+}
 
 function listenWithRetry(server) {
   server.listen(PORT, HOST, () => {
@@ -25,11 +49,17 @@ function listenWithRetry(server) {
 
 async function startServer() {
   try {
+    // Pre-emptively clear port 5024 if a zombie process is holding it
+    freePort(PORT);
+
     const server = http.createServer(app);
 
     server.on("error", (err) => {
       if (err.code === "EADDRINUSE") {
         retryCount++;
+        // Attempt to forcefully release the port
+        freePort(PORT);
+
         if (retryCount <= MAX_RETRIES) {
           console.warn(
             `⚠️ Port ${PORT} is temporarily busy. Retrying in 1.2s (${retryCount}/${MAX_RETRIES})...`

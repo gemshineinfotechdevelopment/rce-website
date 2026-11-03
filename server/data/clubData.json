@@ -226,7 +226,11 @@
       "slotsBooked": 0,
       "formUrl": "",
       "images": [
-        "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793685499/pr65gwekqv45ktbach6i.png"
+        "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793685499/pr65gwekqv45ktbach6i.png",
+        "/api/uploads/pazhavam-kurungadu-award.jpg",
+        "/api/uploads/WhatsAppImage2026-10-31at10544-1793433270670-6783.jpeg",
+        "/api/uploads/Screenshot2026-10-30115215-1793341376498-9113.png",
+        "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1200&q=80"
       ]
     },
     {
@@ -252,7 +256,10 @@
       "slotsBooked": 0,
       "formUrl": "",
       "images": [
-        "/api/uploads/hackathon-1793363701450-705.jpg"
+        "/api/uploads/hackathon-1793363701450-705.jpg",
+        "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1200&q=80"
       ]
     },
     {
@@ -277,7 +284,11 @@
       "slotsTotal": 100,
       "slotsBooked": 0,
       "images": [
-        "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=800&q=80"
+        "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1200&q=80",
+        "/api/uploads/Screenshot2026-10-30115355-1793341788513-4474.png",
+        "https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80"
       ],
       "formUrl": ""
     },
@@ -304,7 +315,11 @@
       "slotsBooked": 0,
       "formUrl": "https://forms.gle/MdXLG6yPZrSRVejm6",
       "images": [
-        "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80"
+        "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80",
+        "/api/uploads/Screenshot2026-10-30120906-1793342382807-7268.png",
+        "/api/uploads/Screenshot2026-10-30121105-1793342482386-9330.png",
+        "https://images.unsplash.com/photo-1511629091441-ee46146481b6?auto=format&fit=crop&w=1200&q=80"
       ]
     },
     {
@@ -331,7 +346,11 @@
       "slotsBooked": 0,
       "formUrl": "",
       "images": [
-        "https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=800&q=80"
+        "https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=1200&q=80",
+        "/api/uploads/Screenshot2026-10-30121327-1793342628230-2346.png",
+        "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?auto=format&fit=crop&w=1200&q=80"
       ]
     },
     {
@@ -356,7 +375,11 @@
       "slotsTotal": 100,
       "slotsBooked": 0,
       "images": [
-        "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=800&q=80"
+        "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80",
+        "/api/uploads/hackathon-1793363701450-705.jpg",
+        "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=1200&q=80"
       ],
       "formUrl": ""
     },
@@ -382,7 +405,10 @@
       "slotsTotal": 100,
       "slotsBooked": 0,
       "images": [
-        "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80"
+        "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80"
       ],
       "formUrl": ""
     },
@@ -412,7 +438,8 @@
       "images": [
         "/api/uploads/Screenshot2026-10-30121327-1793342628230-2346.png",
         "/api/uploads/Screenshot2026-10-30121105-1793342482386-9330.png",
-        "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=80"
+        "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=80",
+        "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793685567/wo0vw4agplbt4v5ltenf.png"
       ]
     },
     {
@@ -439,7 +466,10 @@
       "slotsBooked": 0,
       "formUrl": "",
       "images": [
-        "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=800&q=80"
+        "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1200&q=80",
+        "/api/uploads/Screenshot2026-10-30115215-1793341376498-9113.png",
+        "https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=1200&q=80"
       ]
     },
     {
@@ -466,7 +496,10 @@
       "slotsBooked": 0,
       "formUrl": "",
       "images": [
-        "https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=800&q=80"
+        "https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=1200&q=80",
+        "/api/uploads/Screenshot2026-10-30121327-1793342628230-2346.png",
+        "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=80"
       ]
     },
     {
@@ -493,7 +526,10 @@
       "slotsBooked": 0,
       "formUrl": "https://forms.gle/MdXLG6yPZrSRVejm6",
       "images": [
-        "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80"
+        "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80",
+        "/api/uploads/Screenshot2026-10-30120906-1793342382807-7268.png",
+        "/api/uploads/Screenshot2026-10-30121105-1793342482386-9330.png"
       ]
     },
     {
@@ -521,7 +557,8 @@
       "images": [
         "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793689049/sit3smgr4qh9tsem6kkh.png",
         "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793689062/mrd4msfd9vr5tbhbhp0l.png",
-        "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793689073/wkocsdgjnejuwzerbm1n.png"
+        "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793689073/wkocsdgjnejuwzerbm1n.png",
+        "https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?auto=format&fit=crop&w=800&q=80"
       ]
     },
     {
@@ -551,7 +588,10 @@
         "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793685679/vrj7vvzt42gwp2ey5phg.png",
         "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793690919/v1rzrfmmmb0bv6hvajuz.png",
         "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793690945/eyqgox1lh1ndcbyvilbi.png",
-        "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793690956/rn8wuynkxrxmvfse18c7.png"
+        "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793690956/rn8wuynkxrxmvfse18c7.png",
+        "/api/uploads/Screenshot2026-10-30121105-1793342482386-9330.png",
+        "/api/uploads/Screenshot2026-10-30120906-1793342382807-7268.png",
+        "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80"
       ]
     },
     {
@@ -578,7 +618,10 @@
       "slotsBooked": 0,
       "formUrl": "",
       "images": [
-        "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793685641/hq6c97fnbio0fuishngj.png"
+        "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793685641/hq6c97fnbio0fuishngj.png",
+        "/api/uploads/Screenshot2026-10-30115215-1793341376498-9113.png",
+        "/api/uploads/Screenshot2026-10-30115355-1793341788513-4474.png",
+        "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1200&q=80"
       ]
     }
   ],
