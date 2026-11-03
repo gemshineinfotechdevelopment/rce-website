@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "server": "nodemon server.js"
   },
   "dependencies": {
     "cloudinary": "^2.11.0",
@@ -16,6 +17,6 @@
     "multer": "^2.5.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "nodemon": "^1.0.2"
   }
 }

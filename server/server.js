@@ -6,13 +6,14 @@ const app = require("./app");
 const connectDB = require("./config/db");
 
 const PORT = process.env.PORT || 5024;
+const HOST = process.env.HOST || "0.0.0.0";
 const { syncWithDatabase } = require("./controllers/clubController");
 
 async function startServer() {
   try {
     const server = http.createServer(app);
 
-    server.listen(PORT, "0.0.0.0", () => {
+    server.listen(PORT, HOST, () => {
       console.log(`===============================================`);
       console.log(`🚀 Backend server is running on PORT: ${PORT}`);
       console.log(`🌐 API URL: http://localhost:${PORT}`);

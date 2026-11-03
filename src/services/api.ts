@@ -1,6 +1,6 @@
 // API service connecting to backend on port 5024 (or relative path in production)
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? '' : 'http://localhost:5024');
+const API_BASE = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5024');
 
 export interface ClubStats {
   livesImpacted: number;
@@ -41,6 +41,7 @@ export interface ClubEvent {
   studentsImpacted?: string;
   beneficiaries?: string;
   image?: string;
+  images?: string[];
   description: string;
   highlights?: string[];
   leader?: string;
@@ -50,6 +51,20 @@ export interface ClubEvent {
   formUrl?: string;
   registrationUrl?: string;
 }
+
+export const getEventImages = (event: Partial<ClubEvent> | null | undefined): string[] => {
+  if (!event) return [];
+  const list: string[] = [];
+  if (Array.isArray(event.images) && event.images.length > 0) {
+    list.push(...event.images);
+  } else if (event.image) {
+    list.push(event.image);
+  }
+  const cleanList = Array.from(new Set(list.map((u) => (typeof u === 'string' ? u.trim() : '')).filter(Boolean)));
+  return cleanList.length > 0
+    ? cleanList
+    : ['https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80'];
+};
 
 export interface StoryItem {
   id: string;
