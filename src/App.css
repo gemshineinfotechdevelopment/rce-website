@@ -2136,9 +2136,19 @@
   animation: modalSpringIn 0.32s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.event-details-modal,
+.event-detail-modal,
+.modal-container.event-details-modal {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
 .event-details-modal::-webkit-scrollbar,
-.event-detail-modal::-webkit-scrollbar {
-  width: 6px;
+.event-detail-modal::-webkit-scrollbar,
+.modal-container.event-details-modal::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .event-details-modal::-webkit-scrollbar-track,
@@ -6092,7 +6102,34 @@
 
 .modal-actions-bar {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  margin-top: 28px;
+  padding-top: 20px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-top: 1.5px solid rgba(217, 119, 6, 0.16);
+}
+
+.modal-actions-bar .btn-outline,
+.modal-actions-bar .btn-primary {
+  min-width: 140px;
+  padding: 10px 24px;
+  font-weight: 700;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-actions-bar .btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
+}
+
+.modal-actions-bar .btn-outline:hover {
+  background: #fdf8f4;
+  border-color: #d97706;
 }
 
 /* Printable 80G Tax Exemption Certificate */
@@ -6575,6 +6612,10 @@
   width: 92%;
   max-height: 90vh;
   overflow-y: auto;
+  border-radius: 20px;
+  padding-bottom: 18px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(217, 119, 6, 0.3) transparent;
 }
 
 .admin-edit-badge {
@@ -8335,4 +8376,139 @@
   background: #047857;
   transform: translateY(-1px);
   box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+}
+
+
+/* ==============================================================
+   MULTIPLE EVENT PICTURES & CAROUSEL GALLERY STYLES
+   ============================================================== */
+
+/* Card Photo Count Pill */
+.event-photo-count-pill {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(18, 10, 5, 0.82);
+  backdrop-filter: blur(8px);
+  color: #fef3c7;
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+  z-index: 2;
+  letter-spacing: 0.02em;
+}
+
+/* Modal Carousel Navigation Buttons */
+.event-modal-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(20, 10, 5, 0.7);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  z-index: 5;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+.event-modal-nav-btn:hover {
+  background: rgba(217, 119, 6, 0.95);
+  border-color: #fef08a;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.event-modal-nav-btn.prev {
+  left: 14px;
+}
+
+.event-modal-nav-btn.next {
+  right: 14px;
+}
+
+/* Modal Photo Counter Badge */
+.event-modal-photo-counter {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(18, 10, 5, 0.82);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  color: #fef3c7;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 14px;
+  z-index: 5;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+/* Lightbox Modal */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.94);
+  backdrop-filter: blur(12px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+.lightbox-content {
+  position: relative;
+  max-width: 92vw;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-img {
+  max-width: 100%;
+  max-height: 88vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: -45px;
+  right: 0;
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lightbox-close:hover {
+  background: #d97706;
+  transform: scale(1.1);
 }

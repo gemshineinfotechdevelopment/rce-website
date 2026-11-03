@@ -82,6 +82,7 @@ import type {
   SiteContent
 } from '../services/api';
 import { ImageUploadInput } from './ImageUploadInput';
+import { MultiImageUploadInput } from './MultiImageUploadInput';
 
 interface AdminPortalProps {
   onBackToWebsite: () => void;
@@ -171,6 +172,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
   const [eventCategory, setEventCategory] = useState('');
   const [eventStudentsImpacted, setEventStudentsImpacted] = useState('1,200+ Students Benefited');
   const [eventImage, setEventImage] = useState('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80');
+  const [eventImages, setEventImages] = useState<string[]>([]);
   const [eventStatus, setEventStatus] = useState('Conducted');
   const [eventLeader, setEventLeader] = useState('RCE Educational Team');
   const [eventChiefGuest, setEventChiefGuest] = useState('');
@@ -738,6 +740,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       showNotice('Please enter an event title', true);
       return;
     }
+    const finalImages = eventImages.length > 0 ? eventImages : (eventImage ? [eventImage] : []);
+    const coverPhoto = eventImage || finalImages[0] || 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80';
     try {
       await createClubEvent({
         title: eventTitle.trim(),
@@ -747,9 +751,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
         category: eventCategory.trim() || 'Educational Initiative',
         status: eventStatus || 'Conducted',
         studentsImpacted: eventStudentsImpacted || '1,000+ Students Benefited',
-        image:
-          eventImage ||
-          'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80',
+        image: coverPhoto,
+        images: finalImages,
         highlights: eventHighlights
           ? eventHighlights.split(',').map((s) => s.trim()).filter(Boolean)
           : ['Educational initiative', 'Volunteer led'],
@@ -765,6 +768,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       setEventDesc('');
       setEventFormUrl('');
       setEventChiefGuest('');
+      setEventImages([]);
+      setEventImage('');
       setShowAddEvent(false);
       await loadData();
       if (onDataUpdated) onDataUpdated();
@@ -1939,12 +1944,15 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     </div>
                   </div>
 
-                  <ImageUploadInput
-                    label="Event Photograph"
-                    value={eventImage}
-                    onChange={setEventImage}
-                    helpText="Upload an event photo from your computer or phone (JPG, PNG, WEBP)"
-                    previewHeight="160px"
+                  <MultiImageUploadInput
+                    label="Event Photographs (Multiple Photos Allowed)"
+                    images={eventImages.length > 0 ? eventImages : (eventImage ? [eventImage] : [])}
+                    coverImage={eventImage}
+                    onChange={(updatedList, newCover) => {
+                      setEventImages(updatedList);
+                      setEventImage(newCover || updatedList[0] || '');
+                    }}
+                    helpText="Upload all photographs and moments for this event. The first picture will be the primary cover photo."
                   />
 
                   <div className="form-row-2 mb-3">
@@ -2117,6 +2125,9 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
 
                   <div className="admin-event-meta-grid">
                     <span className="meta-pill">📅 {ev.date}</span>
+                    <span className="meta-pill bg-amber-50 text-amber-900 font-semibold" title="Attached event photos">
+                      📸 {Array.isArray(ev.images) && ev.images.length > 0 ? ev.images.length : (ev.image ? 1 : 0)} photos
+                    </span>
                     <span className="meta-pill">📍 {ev.location}</span>
                     <span className="meta-pill text-amber-900 font-bold bg-amber-50">
                       🎓 {ev.studentsImpacted || ev.beneficiaries || 'Students Benefited'}
@@ -3734,11 +3745,11 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 <button
                   type="button"
                   onClick={() => setEditingProject(null)}
-                  className="btn-outline flex-1"
+                  className="btn-outline"
                 >
                   Cancel
                 </button>
-                <button type="submit" className="btn-primary flex-1">
+                <button type="submit" className="btn-primary">
                   <Save size={16} /> Save Changes
                 </button>
               </div>
@@ -3852,12 +3863,18 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 </div>
               </div>
 
-              <ImageUploadInput
-                label="Event Photograph"
-                value={editingEvent.image || ''}
-                onChange={(url) => setEditingEvent({ ...editingEvent, image: url })}
-                helpText="Upload new photo to replace current event picture"
-                previewHeight="160px"
+              <MultiImageUploadInput
+                label="Event Photographs (Multiple Photos)"
+                images={editingEvent.images && editingEvent.images.length > 0 ? editingEvent.images : (editingEvent.image ? [editingEvent.image] : [])}
+                coverImage={editingEvent.image}
+                onChange={(updatedList, newCover) => {
+                  setEditingEvent({
+                    ...editingEvent,
+                    images: updatedList,
+                    image: newCover || updatedList[0] || '',
+                  });
+                }}
+                helpText="Add, reorder, or remove event photos. Click 'Set Cover' to pick the main photo."
               />
 
               <div className="form-row-2 mb-3">
@@ -3926,11 +3943,11 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 <button
                   type="button"
                   onClick={() => setEditingEvent(null)}
-                  className="btn-outline flex-1"
+                  className="btn-outline"
                 >
                   Cancel
                 </button>
-                <button type="submit" className="btn-primary flex-1">
+                <button type="submit" className="btn-primary">
                   <Save size={16} /> Save Changes
                 </button>
               </div>
@@ -4021,11 +4038,11 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 <button
                   type="button"
                   onClick={() => setEditingGallery(null)}
-                  className="btn-outline flex-1"
+                  className="btn-outline"
                 >
                   Cancel
                 </button>
-                <button type="submit" className="btn-primary flex-1">
+                <button type="submit" className="btn-primary">
                   <Save size={16} /> Save Changes
                 </button>
               </div>
@@ -4120,11 +4137,11 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 <button
                   type="button"
                   onClick={() => setEditingStory(null)}
-                  className="btn-outline flex-1"
+                  className="btn-outline"
                 >
                   Cancel
                 </button>
-                <button type="submit" className="btn-primary flex-1">
+                <button type="submit" className="btn-primary">
                   <Save size={16} /> Save Changes
                 </button>
               </div>
@@ -4249,11 +4266,11 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 <button
                   type="button"
                   onClick={() => setEditingVideo(null)}
-                  className="btn-outline flex-1"
+                  className="btn-outline"
                 >
                   Cancel
                 </button>
-                <button type="submit" className="btn-primary flex-1">
+                <button type="submit" className="btn-primary">
                   <Save size={16} /> Save Changes
                 </button>
               </div>
@@ -4339,7 +4356,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               <div className="modal-actions-bar mt-6">
                 <a
                   href={`tel:${selectedVolunteer.phone}`}
-                  className="btn-outline flex-1"
+                  className="btn-outline"
                 >
                   <Phone size={15} /> Call
                 </a>
@@ -4350,7 +4367,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                       handleUpdateVolunteerStatus(selectedVolunteer.id, 'Approved');
                       setSelectedVolunteer(null);
                     }}
-                    className="btn-primary flex-1"
+                    className="btn-primary"
                   >
                     Approve Application
                   </button>

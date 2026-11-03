@@ -55,12 +55,17 @@ export interface ClubEvent {
 export const getEventImages = (event: Partial<ClubEvent> | null | undefined): string[] => {
   if (!event) return [];
   const list: string[] = [];
-  if (Array.isArray(event.images) && event.images.length > 0) {
-    list.push(...event.images);
-  } else if (event.image) {
-    list.push(event.image);
+  if (event.image && typeof event.image === 'string' && event.image.trim()) {
+    list.push(event.image.trim());
   }
-  const cleanList = Array.from(new Set(list.map((u) => (typeof u === 'string' ? u.trim() : '')).filter(Boolean)));
+  if (Array.isArray(event.images)) {
+    for (const img of event.images) {
+      if (typeof img === 'string' && img.trim() && !list.includes(img.trim())) {
+        list.push(img.trim());
+      }
+    }
+  }
+  const cleanList = list.filter(Boolean);
   return cleanList.length > 0
     ? cleanList
     : ['https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80'];
@@ -92,6 +97,14 @@ export const getSafeImageUrl = (
     trimmed.includes('Users/')
   ) {
     return fallback;
+  }
+  // Automatically resolve local backend upload paths to the backend URL
+  if (trimmed.startsWith("/api/uploads") || trimmed.startsWith("/uploads")) {
+    if (API_BASE && API_BASE.startsWith("http")) {
+      const base = API_BASE.replace(/\/+$/, "");
+      const pathPart = trimmed.startsWith("/") ? trimmed : "/" + trimmed;
+      return base + pathPart;
+    }
   }
   return trimmed;
 };
@@ -205,7 +218,14 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "description": "சிவகாசி மற்றும் சுற்றுவட்டாரப் பகுதிகளில் பசுமையை மீட்டெடுக்கும் உன்னத நோக்கில் Right Club for Education (₹5 ரூபாய் பாடசாலை) முன்னெடுத்த 'பழவம் குறுங்காடு' அடர்வனத் திட்டத்தை பாராட்டி தமிழ்நாடு அரசு மற்றும் மாவட்ட நிர்வாகத்தின் சார்பில் சிறப்பு விருது வழங்கி கௌரவிக்கப்பட்டது.",
     "slotsTotal": 100,
     "slotsBooked": 0,
-    "formUrl": ""
+    "formUrl": "",
+    "images": [
+      "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793685499/pr65gwekqv45ktbach6i.png",
+      "/api/uploads/pazhavam-kurungadu-award.jpg",
+      "/api/uploads/WhatsAppImage2026-10-31at10544-1793433270670-6783.jpeg",
+      "/api/uploads/Screenshot2026-10-30115215-1793341376498-9113.png",
+      "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1200&q=80"
+    ]
   },
   {
     "id": "ev-rce-1",
@@ -227,7 +247,13 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "leader": "RCE Paadasaalai Mentors Team",
     "chiefGuest": "Elders & Village Education Committee",
     "slotsTotal": 100,
-    "slotsBooked": 0
+    "slotsBooked": 0,
+    "images": [
+      "/api/uploads/hackathon-1793363701450-705.jpg",
+      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1200&q=80"
+    ]
   },
   {
     "id": "ev-rce-2",
@@ -249,7 +275,13 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "leader": "RCE Kalvi Mela Organizing Board",
     "chiefGuest": "District Educational Officer (DEO) & Eminent Scientists",
     "slotsTotal": 100,
-    "slotsBooked": 0
+    "slotsBooked": 0,
+    "images": [
+      "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1200&q=80",
+      "/api/uploads/Screenshot2026-10-30115355-1793341788513-4474.png",
+      "https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80"
+    ]
   },
   {
     "id": "ev-rce-3",
@@ -272,7 +304,13 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "chiefGuest": "Retd. Vice Chancellor & Distinguished Educationists",
     "slotsTotal": 100,
     "slotsBooked": 0,
-    "formUrl": "https://forms.gle/MdXLG6yPZrSRVejm6"
+    "formUrl": "https://forms.gle/MdXLG6yPZrSRVejm6",
+    "images": [
+      "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80",
+      "/api/uploads/Screenshot2026-10-30120906-1793342382807-7268.png",
+      "/api/uploads/Screenshot2026-10-30121105-1793342482386-9330.png",
+      "https://images.unsplash.com/photo-1511629091441-ee46146481b6?auto=format&fit=crop&w=1200&q=80"
+    ]
   },
   {
     "id": "ev-rce-4",
@@ -296,7 +334,13 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "chiefGuest": "மாவட்ட காவல் கண்காணிப்பாளர் (SP) & திரு. செந்தில் (சிவகாசி லவ்லி)",
     "slotsTotal": 2500,
     "slotsBooked": 0,
-    "formUrl": ""
+    "formUrl": "",
+    "images": [
+      "https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=1200&q=80",
+      "/api/uploads/Screenshot2026-10-30121327-1793342628230-2346.png",
+      "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?auto=format&fit=crop&w=1200&q=80"
+    ]
   },
   {
     "id": "ev-rce-5",
@@ -318,7 +362,13 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "leader": "RCE Student Welfare Team",
     "chiefGuest": "Village Panchayat President & School Headmistress",
     "slotsTotal": 100,
-    "slotsBooked": 0
+    "slotsBooked": 0,
+    "images": [
+      "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80",
+      "/api/uploads/hackathon-1793363701450-705.jpg",
+      "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=1200&q=80"
+    ]
   },
   {
     "id": "ev-rce-6",
@@ -340,7 +390,12 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "leader": "RCE Higher Education Cell",
     "chiefGuest": "University Professors & Career Counselors",
     "slotsTotal": 100,
-    "slotsBooked": 0
+    "slotsBooked": 0,
+    "images": [
+      "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80"
+    ]
   },
   {
     "id": "ev-rce-mou-psr",
@@ -364,7 +419,12 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "chiefGuest": "Mr. T Chandrarajan (Advisor, RCE), Dr. P Kannan (HOD - Management Studies, PSREC) & Mr. M Venkatesh",
     "slotsTotal": 300,
     "slotsBooked": 0,
-    "formUrl": ""
+    "formUrl": "",
+    "images": [
+      "/api/uploads/Screenshot2026-10-30121327-1793342628230-2346.png",
+      "/api/uploads/Screenshot2026-10-30121105-1793342482386-9330.png",
+      "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=80"
+    ]
   },
   {
     "id": "ev-rce-gandhi-jayanti-2023",
@@ -388,7 +448,12 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "chiefGuest": "திருமதி. பொற்கொடி (கல்லூரி தமிழ் பேராசிரியை - நடுவர்)",
     "slotsTotal": 200,
     "slotsBooked": 0,
-    "formUrl": ""
+    "formUrl": "",
+    "images": [
+      "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1200&q=80",
+      "/api/uploads/Screenshot2026-10-30115215-1793341376498-9113.png",
+      "https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=1200&q=80"
+    ]
   },
   {
     "id": "ev-rce-white-marathon-2024",
@@ -412,7 +477,12 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "chiefGuest": "Dr. Venkatesh Babu IRS & Mrs. Thilagabama",
     "slotsTotal": 3500,
     "slotsBooked": 0,
-    "formUrl": ""
+    "formUrl": "",
+    "images": [
+      "https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=1200&q=80",
+      "/api/uploads/Screenshot2026-10-30121327-1793342628230-2346.png",
+      "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=80"
+    ]
   },
   {
     "id": "ev-rce-teachers-award-2024",
@@ -436,7 +506,12 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "chiefGuest": "ஓய்வுபெற்ற தமிழாசிரியர் திரு. சந்திரபோஸ் & RCE ஆலோசகர் திரு. சந்திரராஜன் ஐயா",
     "slotsTotal": 150,
     "slotsBooked": 0,
-    "formUrl": "https://forms.gle/MdXLG6yPZrSRVejm6"
+    "formUrl": "https://forms.gle/MdXLG6yPZrSRVejm6",
+    "images": [
+      "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80",
+      "/api/uploads/Screenshot2026-10-30120906-1793342382807-7268.png",
+      "/api/uploads/Screenshot2026-10-30121105-1793342482386-9330.png"
+    ]
   },
   {
     "id": "ev-rce-anbumani-ramadoss-meeting",
@@ -459,7 +534,10 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "chiefGuest": "Dr. Anbumani Ramadoss MP & Mrs. Thilagabama",
     "slotsTotal": 50,
     "slotsBooked": 0,
-    "formUrl": ""
+    "formUrl": "",
+    "images": [
+      "https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?auto=format&fit=crop&w=800&q=80"
+    ]
   },
   {
     "id": "ev-rce-drug-free-sivakasi-2024",
@@ -483,7 +561,12 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "chiefGuest": "Mr. Venkatesh Babu IRS & College Principals",
     "slotsTotal": 2500,
     "slotsBooked": 0,
-    "formUrl": ""
+    "formUrl": "",
+    "images": [
+      "/api/uploads/Screenshot2026-10-30121105-1793342482386-9330.png",
+      "/api/uploads/Screenshot2026-10-30120906-1793342382807-7268.png",
+      "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80"
+    ]
   },
   {
     "id": "ev-rce-kalvi-mela-2024",
@@ -507,7 +590,12 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "chiefGuest": "சிவகாசி கல்விப் பெருமக்கள் & சிறப்பு நடுவர் குழுவினர்",
     "slotsTotal": 650,
     "slotsBooked": 0,
-    "formUrl": ""
+    "formUrl": "",
+    "images": [
+      "/api/uploads/Screenshot2026-10-30115215-1793341376498-9113.png",
+      "/api/uploads/Screenshot2026-10-30115355-1793341788513-4474.png",
+      "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1200&q=80"
+    ]
   }
 ];
 

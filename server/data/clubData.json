@@ -224,7 +224,10 @@
       "description": "சிவகாசி மற்றும் சுற்றுவட்டாரப் பகுதிகளில் பசுமையை மீட்டெடுக்கும் உன்னத நோக்கில் Right Club for Education (₹5 ரூபாய் பாடசாலை) முன்னெடுத்த 'பழவம் குறுங்காடு' அடர்வனத் திட்டத்தை பாராட்டி தமிழ்நாடு அரசு மற்றும் மாவட்ட நிர்வாகத்தின் சார்பில் சிறப்பு விருது வழங்கி கௌரவிக்கப்பட்டது.",
       "slotsTotal": 100,
       "slotsBooked": 0,
-      "formUrl": ""
+      "formUrl": "",
+      "images": [
+        "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793685499/pr65gwekqv45ktbach6i.png"
+      ]
     },
     {
       "id": "ev-rce-1",
@@ -247,7 +250,10 @@
       "chiefGuest": "Elders & Village Education Committee",
       "slotsTotal": 100,
       "slotsBooked": 0,
-      "formUrl": ""
+      "formUrl": "",
+      "images": [
+        "/api/uploads/hackathon-1793363701450-705.jpg"
+      ]
     },
     {
       "id": "ev-rce-2",
@@ -269,7 +275,11 @@
       "leader": "RCE Kalvi Mela Organizing Board",
       "chiefGuest": "District Educational Officer (DEO) & Eminent Scientists",
       "slotsTotal": 100,
-      "slotsBooked": 0
+      "slotsBooked": 0,
+      "images": [
+        "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=800&q=80"
+      ],
+      "formUrl": ""
     },
     {
       "id": "ev-rce-3",
@@ -292,7 +302,10 @@
       "chiefGuest": "Retd. Vice Chancellor & Distinguished Educationists",
       "slotsTotal": 100,
       "slotsBooked": 0,
-      "formUrl": "https://forms.gle/MdXLG6yPZrSRVejm6"
+      "formUrl": "https://forms.gle/MdXLG6yPZrSRVejm6",
+      "images": [
+        "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80"
+      ]
     },
     {
       "id": "ev-rce-4",
@@ -316,7 +329,10 @@
       "chiefGuest": "மாவட்ட காவல் கண்காணிப்பாளர் (SP) & திரு. செந்தில் (சிவகாசி லவ்லி)",
       "slotsTotal": 2500,
       "slotsBooked": 0,
-      "formUrl": ""
+      "formUrl": "",
+      "images": [
+        "https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=800&q=80"
+      ]
     },
     {
       "id": "ev-rce-5",
@@ -338,7 +354,11 @@
       "leader": "RCE Student Welfare Team",
       "chiefGuest": "Village Panchayat President & School Headmistress",
       "slotsTotal": 100,
-      "slotsBooked": 0
+      "slotsBooked": 0,
+      "images": [
+        "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=800&q=80"
+      ],
+      "formUrl": ""
     },
     {
       "id": "ev-rce-6",
@@ -360,7 +380,11 @@
       "leader": "RCE Higher Education Cell",
       "chiefGuest": "University Professors & Career Counselors",
       "slotsTotal": 100,
-      "slotsBooked": 0
+      "slotsBooked": 0,
+      "images": [
+        "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80"
+      ],
+      "formUrl": ""
     },
     {
       "id": "ev-rce-mou-psr",
@@ -384,7 +408,12 @@
       "chiefGuest": "Mr. T Chandrarajan (Advisor, RCE), Dr. P Kannan (HOD - Management Studies, PSREC) & Mr. M Venkatesh",
       "slotsTotal": 300,
       "slotsBooked": 0,
-      "formUrl": ""
+      "formUrl": "",
+      "images": [
+        "/api/uploads/Screenshot2026-10-30121327-1793342628230-2346.png",
+        "/api/uploads/Screenshot2026-10-30121105-1793342482386-9330.png",
+        "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=80"
+      ]
     },
     {
       "id": "ev-rce-gandhi-jayanti-2023",
@@ -408,7 +437,10 @@
       "chiefGuest": "திருமதி. பொற்கொடி (கல்லூரி தமிழ் பேராசிரியை - நடுவர்)",
       "slotsTotal": 200,
       "slotsBooked": 0,
-      "formUrl": ""
+      "formUrl": "",
+      "images": [
+        "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=800&q=80"
+      ]
     },
     {
       "id": "ev-rce-white-marathon-2024",
@@ -432,7 +464,10 @@
       "chiefGuest": "Dr. Venkatesh Babu IRS & Mrs. Thilagabama",
       "slotsTotal": 3500,
       "slotsBooked": 0,
-      "formUrl": ""
+      "formUrl": "",
+      "images": [
+        "https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=800&q=80"
+      ]
     },
     {
       "id": "ev-rce-teachers-award-2024",
@@ -456,7 +491,10 @@
       "chiefGuest": "ஓய்வுபெற்ற தமிழாசிரியர் திரு. சந்திரபோஸ் & RCE ஆலோசகர் திரு. சந்திரராஜன் ஐயா",
       "slotsTotal": 150,
       "slotsBooked": 0,
-      "formUrl": "https://forms.gle/MdXLG6yPZrSRVejm6"
+      "formUrl": "https://forms.gle/MdXLG6yPZrSRVejm6",
+      "images": [
+        "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80"
+      ]
     },
     {
       "id": "ev-rce-anbumani-ramadoss-meeting",
@@ -467,7 +505,7 @@
       "category": "Leadership & Honors",
       "status": "Conducted",
       "studentsImpacted": "RCE Youth Leadership & Social Service Outreach",
-      "image": "https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?auto=format&fit=crop&w=800&q=80",
+      "image": "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793689049/sit3smgr4qh9tsem6kkh.png",
       "description": "It was an honor for Right Club for Education (RCE) to meet Dr. Anbumani Ramadoss MP, whose motivational words emboldened our RCE leaders to create lasting positive change across our communities.\n\nHis recognition of our RCE team’s tireless efforts—from our daily ₹5 Paadasaalai rural centers to social awareness campaigns and tree planting drives—was a heartwarming testament to the dedication of our youth volunteers.\n\nA special thank you to Mrs. Thilagabama for her unwavering support and guidance. Your encouragement has been invaluable to our mission.\n\nTogether, let’s continue to build a brighter and more educated society!\n\n– Right Club for Education",
       "highlights": [
         "Honorary interaction with Dr. Anbumani Ramadoss MP",
@@ -479,7 +517,12 @@
       "chiefGuest": "Dr. Anbumani Ramadoss MP & Mrs. Thilagabama",
       "slotsTotal": 50,
       "slotsBooked": 0,
-      "formUrl": ""
+      "formUrl": "",
+      "images": [
+        "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793689049/sit3smgr4qh9tsem6kkh.png",
+        "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793689062/mrd4msfd9vr5tbhbhp0l.png",
+        "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793689073/wkocsdgjnejuwzerbm1n.png"
+      ]
     },
     {
       "id": "ev-rce-drug-free-sivakasi-2024",
@@ -503,7 +546,13 @@
       "chiefGuest": "Mr. Venkatesh Babu IRS & College Principals",
       "slotsTotal": 2500,
       "slotsBooked": 0,
-      "formUrl": ""
+      "formUrl": "",
+      "images": [
+        "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793685679/vrj7vvzt42gwp2ey5phg.png",
+        "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793690919/v1rzrfmmmb0bv6hvajuz.png",
+        "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793690945/eyqgox1lh1ndcbyvilbi.png",
+        "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793690956/rn8wuynkxrxmvfse18c7.png"
+      ]
     },
     {
       "id": "ev-rce-kalvi-mela-2024",
@@ -527,7 +576,10 @@
       "chiefGuest": "சிவகாசி கல்விப் பெருமக்கள் & சிறப்பு நடுவர் குழுவினர்",
       "slotsTotal": 650,
       "slotsBooked": 0,
-      "formUrl": ""
+      "formUrl": "",
+      "images": [
+        "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793685641/hq6c97fnbio0fuishngj.png"
+      ]
     }
   ],
   "storiesList": [

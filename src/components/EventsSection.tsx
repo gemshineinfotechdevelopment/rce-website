@@ -16,9 +16,14 @@ import {
   Users,
   Share2,
   Check,
+  Images,
+  Camera,
+  ChevronLeft,
+  ChevronRight,
+  ZoomIn,
 } from 'lucide-react';
 import type { ClubEvent } from '../services/api';
-import { getSafeImageUrl } from '../services/api';
+import { getSafeImageUrl, getEventImages } from '../services/api';
 
 interface EventsSectionProps {
   events: ClubEvent[];
@@ -28,6 +33,13 @@ interface EventsSectionProps {
 export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin }) => {
   const [selectedEvent, setSelectedEvent] = useState<ClubEvent | null>(null);
   const [copiedEventId, setCopiedEventId] = useState<string | null>(null);
+  const [modalPhotoIndex, setModalPhotoIndex] = useState(0);
+  const [lightboxPhoto, setLightboxPhoto] = useState<string | null>(null);
+
+  const handleSelectEvent = (ev: ClubEvent) => {
+    setSelectedEvent(ev);
+    setModalPhotoIndex(0);
+  };
 
   const handleCopyShare = (event: ClubEvent) => {
     const shareUrl = `${window.location.origin}/#events?event=${event.id}`;
@@ -130,7 +142,8 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
               ev.beneficiaries ||
               (ev.slotsTotal ? `${ev.slotsTotal}+ Students Benefited` : 'Rural Children Empowered');
 
-            const defaultPhoto = getSafeImageUrl(ev.image, 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80');
+            const eventPhotos = getEventImages(ev);
+            const defaultPhoto = getSafeImageUrl(eventPhotos[0] || ev.image, 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80');
 
             return (
               <div key={ev.id} className="event-impact-card card-hover">
@@ -180,6 +193,14 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
                   <div className={`event-photo-category-tag ${getCategoryBadgeClass(ev.category)}`}>
                     {ev.category}
                   </div>
+
+                  {/* Multi-Photo Count Pill */}
+                  {eventPhotos.length > 1 && (
+                    <div className="event-photo-count-pill" title={`${eventPhotos.length} photographs from this drive`}>
+                      <Images size={12} />
+                      <span>{eventPhotos.length} Photos</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Event Card Content */}
@@ -220,7 +241,7 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
                         isScheduleOver(ev) ? (
                           <button
                             type="button"
-                            onClick={() => setSelectedEvent(ev)}
+                            onClick={() => handleSelectEvent(ev)}
                             className="btn-event-form-closed"
                             title="Schedule already completed - Registration closed (Click to view details)"
                           >
@@ -244,7 +265,7 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
                       )}
                       <button
                         type="button"
-                        onClick={() => setSelectedEvent(ev)}
+                        onClick={() => handleSelectEvent(ev)}
                         className="btn-event-view"
                       >
                         <span>View Highlights</span>
@@ -315,32 +336,75 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
               <X size={18} />
             </button>
 
-            {/* Modal Image Banner */}
-            <div className="event-modal-media">
-              <img
-                src={getSafeImageUrl(
-                  selectedEvent.image,
-                  'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80'
-                )}
-                alt={selectedEvent.title}
-                className="event-modal-img"
-                onError={(e) => {
-                  e.currentTarget.src =
-                    'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80';
-                }}
-              />
-              <div className="event-modal-img-overlay">
-                <div className="event-modal-badge-group">
-                  <span className="event-modal-cat-pill">
-                    {selectedEvent.category || 'General Cause'}
-                  </span>
-                  <span className="event-modal-status-pill">
-                    <span className="status-pulse-dot"></span>
-                    <span>{selectedEvent.status || 'Conducted & Honored'}</span>
-                  </span>
-                </div>
-              </div>
-            </div>
+            {/* Modal Image Banner with Multi-Photo Carousel */}
+            {(() => {
+              const selectedEventPhotos = selectedEvent ? getEventImages(selectedEvent) : [];
+              return (
+                <>
+                  <div className="event-modal-media relative group">
+                    <img
+                      src={getSafeImageUrl(
+                        selectedEventPhotos[modalPhotoIndex] || selectedEvent.image,
+                        'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80'
+                      )}
+                      alt={selectedEvent.title}
+                      className="event-modal-img cursor-pointer"
+                      onClick={() => setLightboxPhoto(selectedEventPhotos[modalPhotoIndex] || selectedEvent.image || '')}
+                      title="Click to view full screen"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src =
+                          'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80';
+                      }}
+                    />
+
+                    {/* Carousel Navigation Arrows */}
+                    {selectedEventPhotos.length > 1 && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setModalPhotoIndex((prev) => (prev > 0 ? prev - 1 : selectedEventPhotos.length - 1));
+                          }}
+                          className="event-modal-nav-btn prev"
+                          title="Previous photo"
+                        >
+                          <ChevronLeft size={20} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setModalPhotoIndex((prev) => (prev < selectedEventPhotos.length - 1 ? prev + 1 : 0));
+                          }}
+                          className="event-modal-nav-btn next"
+                          title="Next photo"
+                        >
+                          <ChevronRight size={20} />
+                        </button>
+                        <div className="event-modal-photo-counter">
+                          <Camera size={13} />
+                          <span>{modalPhotoIndex + 1} / {selectedEventPhotos.length}</span>
+                        </div>
+                      </>
+                    )}
+
+                    <div className="event-modal-img-overlay">
+                      <div className="event-modal-badge-group">
+                        <span className="event-modal-cat-pill">
+                          {selectedEvent.category || 'General Cause'}
+                        </span>
+                        <span className="event-modal-status-pill">
+                          <span className="status-pulse-dot"></span>
+                          <span>{selectedEvent.status || 'Conducted & Honored'}</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  </>
+              );
+            })()}
 
             {/* Modal Body */}
             <div className="event-modal-body">
@@ -509,6 +573,55 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
                 </div>
               )}
 
+              {/* Event Photo Gallery Grid */}
+              {(() => {
+                const galleryPhotos = selectedEvent ? getEventImages(selectedEvent) : [];
+                if (galleryPhotos.length <= 1) return null;
+                return (
+                  <div className="event-modal-gallery-container mt-6 pt-5 border-t border-amber-200/50">
+                    <div className="highlights-header-bar mb-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="highlights-sparkle-pill">
+                          <Camera size={16} />
+                        </div>
+                        <h4 className="highlights-title">Event Moments & Photo Gallery ({galleryPhotos.length} Photos)</h4>
+                      </div>
+                      <span className="highlights-count-badge">
+                        Click photo to enlarge
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
+                      {galleryPhotos.map((photoUrl, pIdx) => (
+                        <div
+                          key={pIdx}
+                          onClick={() => {
+                            setModalPhotoIndex(pIdx);
+                            setLightboxPhoto(photoUrl);
+                          }}
+                          className={`relative rounded-xl overflow-hidden cursor-pointer group aspect-[4/3] bg-stone-100 border transition-all ${
+                            pIdx === modalPhotoIndex ? 'ring-2 ring-amber-600 border-amber-600 shadow-md' : 'border-stone-200 hover:border-amber-400'
+                          }`}
+                          title="Click to view full photo"
+                        >
+                          <img
+                            src={getSafeImageUrl(photoUrl)}
+                            alt={`Event Moment ${pIdx + 1}`}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                            loading="lazy"
+                          />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                            <ZoomIn size={20} />
+                          </div>
+                          <span className="absolute bottom-1 right-1 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded font-mono">
+                            #{pIdx + 1}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
+
               {/* Footer Actions */}
               <div className="event-modal-floating-footer">
                 <button
@@ -552,6 +665,30 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Lightbox Fullscreen Viewer */}
+      {lightboxPhoto && (
+        <div
+          className="lightbox-overlay"
+          onClick={() => setLightboxPhoto(null)}
+        >
+          <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className="lightbox-close"
+              onClick={() => setLightboxPhoto(null)}
+              title="Close full view"
+            >
+              <X size={22} />
+            </button>
+            <img
+              src={getSafeImageUrl(lightboxPhoto)}
+              alt="Enlarged event moment"
+              className="lightbox-img"
+            />
           </div>
         </div>
       )}

@@ -1165,6 +1165,7 @@ const createEvent = (req, res) => {
     studentsImpacted,
     beneficiaries,
     image,
+    images,
     highlights,
     leader,
     chiefGuest,
@@ -1178,6 +1179,16 @@ const createEvent = (req, res) => {
     return res.status(400).json({ success: false, message: "Event title and date are required." });
   }
 
+  const rawImages = Array.isArray(images)
+    ? images
+    : typeof images === "string" && images.trim()
+    ? images.split(",").map((s) => s.trim())
+    : [];
+
+  const cleanedImages = Array.from(new Set([...rawImages, image].filter((s) => Boolean(s && typeof s === 'string' && s.trim()))));
+  const mainImage = image || (cleanedImages.length > 0 ? cleanedImages[0] : "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80");
+  const finalImages = cleanedImages.length > 0 ? cleanedImages : [mainImage];
+
   const newEvent = {
     id: "ev-" + Date.now(),
     title: title.trim(),
@@ -1187,9 +1198,8 @@ const createEvent = (req, res) => {
     category: category || "₹5 Paadasaalai",
     status: status || "Conducted",
     studentsImpacted: studentsImpacted || beneficiaries || "500+ Students Benefited",
-    image:
-      image ||
-      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80",
+    image: mainImage,
+    images: finalImages,
     highlights: Array.isArray(highlights)
       ? highlights
       : typeof highlights === "string" && highlights.trim()
@@ -1232,6 +1242,7 @@ const updateEvent = (req, res) => {
     studentsImpacted,
     beneficiaries,
     image,
+    images,
     highlights,
     leader,
     chiefGuest,
@@ -1241,6 +1252,22 @@ const updateEvent = (req, res) => {
     formUrl,
     registrationUrl,
   } = req.body;
+
+  let updatedImages = existing.images || (existing.image ? [existing.image] : []);
+  if (images !== undefined) {
+    const rawImages = Array.isArray(images)
+      ? images
+      : typeof images === "string" && images.trim()
+      ? images.split(",").map((s) => s.trim())
+      : [];
+    updatedImages = Array.from(new Set(rawImages.filter((s) => Boolean(s && typeof s === 'string' && s.trim()))));
+  } else if (image !== undefined && image && !updatedImages.includes(image)) {
+    updatedImages = [image, ...updatedImages];
+  }
+
+  const updatedMainImage = image !== undefined
+    ? image
+    : (updatedImages.length > 0 ? updatedImages[0] : existing.image);
 
   eventsList[index] = {
     ...existing,
@@ -1256,7 +1283,8 @@ const updateEvent = (req, res) => {
         : beneficiaries !== undefined
         ? beneficiaries
         : existing.studentsImpacted,
-    image: image !== undefined ? image : existing.image,
+    image: updatedMainImage,
+    images: updatedImages.length > 0 ? updatedImages : (updatedMainImage ? [updatedMainImage] : []),
     highlights:
       highlights !== undefined
         ? Array.isArray(highlights)

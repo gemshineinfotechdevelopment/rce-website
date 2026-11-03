@@ -5,20 +5,82 @@ const http = require("http");
 const app = require("./app");
 const connectDB = require("./config/db");
 
-const PORT = process.env.PORT || 5024;
+const PORT = parseInt(process.env.PORT || "5024", 10);
 const HOST = process.env.HOST || "0.0.0.0";
 const { syncWithDatabase } = require("./controllers/clubController");
+
+let retryCount = 0;
+const MAX_RETRIES = 5;
+
+function listenWithRetry(server) {
+  server.listen(PORT, HOST, () => {
+    retryCount = 0;
+    console.log(`===============================================`);
+    console.log(`🚀 Backend server is running on PORT: ${PORT}`);
+    console.log(`🌐 API URL: http://localhost:${PORT}`);
+    console.log(`🩺 Health Check: http://localhost:${PORT}/api/health`);
+    console.log(`===============================================`);
+  });
+}
 
 async function startServer() {
   try {
     const server = http.createServer(app);
 
-    server.listen(PORT, HOST, () => {
-      console.log(`===============================================`);
-      console.log(`🚀 Backend server is running on PORT: ${PORT}`);
-      console.log(`🌐 API URL: http://localhost:${PORT}`);
-      console.log(`🩺 Health Check: http://localhost:${PORT}/api/health`);
-      console.log(`===============================================`);
+    server.on("error", (err) => {
+      if (err.code === "EADDRINUSE") {
+        retryCount++;
+        if (retryCount <= MAX_RETRIES) {
+          console.warn(
+            `⚠️ Port ${PORT} is temporarily busy. Retrying in 1.2s (${retryCount}/${MAX_RETRIES})...`
+          );
+          setTimeout(() => {
+            try {
+              server.close();
+            } catch (e) {}
+            listenWithRetry(server);
+          }, 1200);
+          return;
+        }
+        console.error(
+          `❌ Port ${PORT} is permanently occupied by another process. Please close it and restart.`
+        );
+      } else {
+        console.error("❌ Server error:", err);
+      }
+      process.exit(1);
+    });
+
+    listenWithRetry(server);
+
+    // Nodemon graceful reload support
+    process.once("SIGUSR2", () => {
+      try {
+        server.close(() => {
+          process.kill(process.pid, "SIGUSR2");
+        });
+      } catch (e) {
+        process.kill(process.pid, "SIGUSR2");
+      }
+    });
+
+    // Process termination handling
+    process.on("SIGINT", () => {
+      try {
+        server.close(() => process.exit(0));
+      } catch (e) {
+        process.exit(0);
+      }
+      setTimeout(() => process.exit(0), 1000).unref();
+    });
+
+    process.on("SIGTERM", () => {
+      try {
+        server.close(() => process.exit(0));
+      } catch (e) {
+        process.exit(0);
+      }
+      setTimeout(() => process.exit(0), 1000).unref();
     });
 
     // Connect to DB asynchronously (doesn't block server listening)
