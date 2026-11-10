@@ -169,6 +169,12 @@ export const Hero: React.FC<HeroProps> = ({ content, onOpenJoin, onOpenDonate })
               title="Click to view full photo in high resolution"
               aria-label="View full banner photo"
             >
+              {/* Floating badge centered on top frame border - does not overlap image text */}
+              <div className="hero-floating-badge top-badge">
+                <Sparkles size={12} className="text-amber-400" />
+                <span>Impact Archive • RCE</span>
+              </div>
+
               <div className="hero-card-main">
                 <img 
                   src={bannerSrc} 
@@ -176,14 +182,12 @@ export const Hero: React.FC<HeroProps> = ({ content, onOpenJoin, onOpenDonate })
                   className="hero-main-img"
                   onError={handleImageError}
                 />
-                <div className="hero-floating-badge top-badge">
-                  <Sparkles size={13} className="text-amber-400" />
-                  <span>Impact Archive • RCE</span>
-                </div>
-                <div className="hero-floating-badge bottom-badge">
-                  <Maximize2 size={12} className="text-amber-300" />
-                  <span>Tap to view photo</span>
-                </div>
+              </div>
+
+              {/* Floating badge centered on bottom frame border */}
+              <div className="hero-floating-badge bottom-badge">
+                <Maximize2 size={12} className="text-amber-300" />
+                <span>Tap to view photo</span>
               </div>
             </div>
           </div>

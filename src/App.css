@@ -575,9 +575,9 @@
 /* Desktop (>= 1024px): Heading/Content first (Left Column), Picture second (Right Column) */
 @media (min-width: 1024px) {
   .hero-grid {
-    grid-template-columns: minmax(0, 1.25fr) minmax(360px, 460px);
+    grid-template-columns: minmax(0, 1.35fr) minmax(280px, 360px);
     gap: 48px;
-    align-items: flex-start;
+    align-items: center;
   }
 
   .hero-content {
@@ -592,9 +592,9 @@
 
 @media (min-width: 1280px) {
   .hero-grid {
-    grid-template-columns: minmax(0, 1.2fr) minmax(380px, 490px);
+    grid-template-columns: minmax(0, 1.35fr) minmax(300px, 380px);
     gap: 56px;
-    align-items: flex-start;
+    align-items: center;
   }
 }
 
@@ -722,16 +722,16 @@
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 490px;
-  margin: 0 auto;
-  padding: 7px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(254, 243, 199, 0.45) 50%, rgba(255, 255, 255, 0.95) 100%);
-  border: 2px solid rgba(217, 119, 6, 0.32);
-  border-radius: 26px;
+  max-width: 360px;
+  margin: 18px auto 14px;
+  padding: 6px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(254, 243, 199, 0.5) 50%, rgba(255, 255, 255, 0.96) 100%);
+  border: 2px solid rgba(217, 119, 6, 0.35);
+  border-radius: 22px;
   box-shadow: 
-    0 24px 60px -12px rgba(36, 18, 8, 0.2),
+    0 20px 48px -10px rgba(36, 18, 8, 0.18),
     0 4px 16px rgba(36, 18, 8, 0.06),
-    0 0 28px rgba(245, 158, 11, 0.12);
+    0 0 24px rgba(245, 158, 11, 0.12);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
 }
 
@@ -740,10 +740,10 @@
 }
 
 .hero-showcase-frame:hover {
-  transform: translateY(-6px) scale(1.01);
+  transform: translateY(-5px);
   border-color: #d97706;
   box-shadow: 
-    0 32px 70px -10px rgba(36, 18, 8, 0.25),
+    0 28px 65px -8px rgba(36, 18, 8, 0.24),
     0 8px 24px rgba(217, 119, 6, 0.2),
     0 0 35px rgba(245, 158, 11, 0.22);
 }
@@ -751,67 +751,82 @@
 .hero-card-main {
   position: relative;
   width: 100%;
-  border-radius: 20px;
+  border-radius: 16px;
   overflow: hidden;
-  background: #180e07;
-  display: block;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  background: #140b05;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2);
 }
 
 .hero-main-img {
   width: 100%;
   height: auto;
+  max-height: 520px;
   display: block;
-  object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  object-fit: contain;
+  border-radius: 12px;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hero-showcase-frame:hover .hero-main-img {
-  transform: scale(1.03);
+  transform: scale(1.02);
 }
 
-/* Floating Badges on Hero Banner */
+/* Floating Badges on Hero Banner - Mounted cleanly on Frame Borders */
 .hero-floating-badge {
   position: absolute;
-  z-index: 5;
+  z-index: 10;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
+  padding: 5px 13px;
   border-radius: 9999px;
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   font-weight: 800;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
   pointer-events: none;
-  transition: transform var(--transition-fast);
+  white-space: nowrap;
+  transition: all var(--transition-fast);
 }
 
 .hero-floating-badge.top-badge {
-  top: 14px;
-  left: 14px;
-  background: rgba(22, 10, 4, 0.85);
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(22, 10, 4, 0.94);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   color: #fde68a;
-  border: 1px solid rgba(251, 191, 36, 0.4);
+  border: 1px solid rgba(251, 191, 36, 0.45);
 }
 
 .hero-floating-badge.bottom-badge {
-  bottom: 14px;
-  right: 14px;
-  background: rgba(22, 10, 4, 0.85);
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(22, 10, 4, 0.94);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.35);
 }
 
 .hero-showcase-frame:hover .hero-floating-badge.bottom-badge {
   background: rgba(217, 119, 6, 0.95);
   border-color: #fde68a;
   color: #ffffff;
+  transform: translateX(-50%) translateY(2px);
+}
+
+.hero-showcase-frame:hover .hero-floating-badge.top-badge {
+  transform: translateX(-50%) translateY(-2px);
+  border-color: #fbbf24;
 }
 
 
@@ -6957,13 +6972,14 @@
   }
 
   .hero-showcase-frame {
-    max-width: 440px;
-    margin: 0 auto;
+    max-width: 320px;
+    margin: 18px auto 14px;
   }
 
   .hero-main-img {
     height: auto;
-    object-fit: cover;
+    max-height: 480px;
+    object-fit: contain;
   }
 
   /* Floating badges scaled on mobile */
@@ -7496,18 +7512,36 @@
   }
 
   .hero-showcase-frame {
-    max-width: 100%;
+    max-width: 290px;
+    margin: 16px auto 14px;
     padding: 5px;
     border-radius: 20px;
   }
 
   .hero-card-main {
     border-radius: 15px;
+    padding: 4px;
   }
 
   .hero-main-img {
     height: auto;
-    object-fit: cover;
+    max-height: 420px;
+    object-fit: contain;
+    border-radius: 11px;
+  }
+
+  .hero-floating-badge {
+    font-size: 0.66rem;
+    padding: 4px 10px;
+    gap: 4px;
+  }
+
+  .hero-floating-badge.top-badge {
+    top: -10px;
+  }
+
+  .hero-floating-badge.bottom-badge {
+    bottom: -10px;
   }
 
 
