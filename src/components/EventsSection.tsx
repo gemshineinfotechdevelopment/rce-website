@@ -21,9 +21,11 @@ import {
   ChevronLeft,
   ChevronRight,
   ZoomIn,
+  Video,
+  Play,
 } from 'lucide-react';
 import type { ClubEvent } from '../services/api';
-import { getSafeImageUrl, getEventImages } from '../services/api';
+import { getSafeImageUrl, getEventImages, extractYouTubeId } from '../services/api';
 
 interface EventsSectionProps {
   events: ClubEvent[];
@@ -151,7 +153,7 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
 
         {/* Events Cards Grid */}
         <div className="events-impact-grid">
-          {events.map((ev) => {
+          {events.map((ev, index) => {
             const displayDate = formatEventDate(ev.date);
             const dateParts = getEventDateParts(ev.date);
             const statusLabel = ev.status || 'Conducted';
@@ -175,7 +177,8 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
                     src={defaultPhoto}
                     alt={ev.title}
                     className="event-card-img"
-                    loading="lazy"
+                    loading={index < 3 ? 'eager' : 'lazy'}
+                    decoding="async"
                     onError={(e) => {
                       (e.currentTarget as HTMLImageElement).src =
                         'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80';
@@ -191,6 +194,12 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
 
                   {/* Top-Right Status Badge */}
                   <div className="event-card-top-status">
+                    {(ev.youtubeUrl || ev.youtubeId) && (
+                      <span className="event-card-video-pill" title="Event video coverage available">
+                        <Play size={10} fill="currentColor" />
+                        <span>Video</span>
+                      </span>
+                    )}
                     {ev.formUrl && ev.formUrl.trim() ? (
                       isScheduleOver(ev) ? (
                         <span className="event-card-form-closed-badge" title="Event schedule is completed">
@@ -595,6 +604,42 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
                 </div>
               )}
 
+              {/* YouTube Video Coverage Section */}
+              {(() => {
+                const yId = selectedEvent.youtubeId || (selectedEvent.youtubeUrl ? extractYouTubeId(selectedEvent.youtubeUrl) : '');
+                if (!yId) return null;
+                return (
+                  <div className="event-modal-video-section mt-6 pt-5 border-t border-amber-200/50">
+                    <div className="highlights-header-bar mb-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="highlights-sparkle-pill bg-red-100 text-red-600 border border-red-200">
+                          <Video size={16} />
+                        </div>
+                        <h4 className="highlights-title">Event Video Coverage & Highlights</h4>
+                      </div>
+                      <a
+                        href={selectedEvent.youtubeUrl || `https://www.youtube.com/watch?v=${yId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs font-bold text-red-600 hover:text-red-700 flex items-center gap-1 hover:underline"
+                        title="Open on YouTube in new tab"
+                      >
+                        <span>Watch on YouTube</span>
+                        <ExternalLink size={12} />
+                      </a>
+                    </div>
+                    <div className="event-video-frame-wrap">
+                      <iframe
+                        src={`https://www.youtube-nocookie.com/embed/${yId}?rel=0`}
+                        title={`Video coverage: ${selectedEvent.title}`}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      ></iframe>
+                    </div>
+                  </div>
+                );
+              })()}
+
               {/* Event Photo Gallery Grid */}
               {(() => {
                 const galleryPhotos = selectedEvent ? getEventImages(selectedEvent) : [];
@@ -629,7 +674,8 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
                             src={getSafeImageUrl(photoUrl)}
                             alt={`Event Moment ${pIdx + 1}`}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                            loading="lazy"
+                            loading={pIdx < 8 ? 'eager' : 'lazy'}
+                            decoding="async"
                           />
                           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
                             <ZoomIn size={20} />

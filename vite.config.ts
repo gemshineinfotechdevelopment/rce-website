@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
   // Frontend port (default: 5173)
   const port = Number(env.VITE_PORT || 5173)
   // Backend API port (default: http://localhost:5024)
-  const apiTarget = env.VITE_API_BASE_URL || env.VITE_API_URL || 'http://localhost:5024'
+  const apiTarget = env.VITE_API_BACKEND_PORT || env.BACKEND_URL || 'http://localhost:5024'
 
   return {
     plugins: [react()],
@@ -25,7 +25,12 @@ export default defineConfig(({ mode }) => {
       strictPort: false,
       open: true,
       proxy: {
+        // Transparently proxy all API and upload requests to backend so frontend & backend act as the SAME port (5173)
         '/api': {
+          target: apiTarget,
+          changeOrigin: true,
+        },
+        '/uploads': {
           target: apiTarget,
           changeOrigin: true,
         },

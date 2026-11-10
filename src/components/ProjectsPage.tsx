@@ -190,7 +190,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
           {/* Projects Cards Grid */}
           {filteredProjects.length > 0 ? (
             <div className="projects-grid">
-              {filteredProjects.map((project) => {
+              {filteredProjects.map((project, index) => {
                 const percent = Math.min(
                   100,
                   Math.round(((project.raised || 0) / (project.goal || 1)) * 100)
@@ -205,7 +205,8 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                         )}
                         alt={project.title}
                         className="project-img"
-                        loading="lazy"
+                        loading={index < 4 ? "eager" : "lazy"}
+                        decoding="async"
                       />
                       <span className="project-category-badge">{project.category}</span>
                     </div>

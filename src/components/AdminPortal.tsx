@@ -37,7 +37,8 @@ import {
   Building2,
   Award,
   Tv,
-  Play
+  Play,
+  Video
 } from 'lucide-react';
 import {
   fetchAdminData,
@@ -179,6 +180,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
   const [eventHighlights, setEventHighlights] = useState('Daily evening tutoring, Spoken English, Free stationery');
   const [eventDesc, setEventDesc] = useState('');
   const [eventFormUrl, setEventFormUrl] = useState('');
+  const [eventYoutubeUrl, setEventYoutubeUrl] = useState('');
 
   // New Project Form State
   const [projTitle, setProjTitle] = useState('');
@@ -761,12 +763,14 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
         slotsTotal: 100,
         description: eventDesc || 'Educational program conducted by Right Club for Education.',
         formUrl: eventFormUrl.trim(),
+        youtubeUrl: eventYoutubeUrl.trim(),
       });
       showNotice('Event uploaded and published to the live website!');
       setEventTitle('');
       setEventCategory('');
       setEventDesc('');
       setEventFormUrl('');
+      setEventYoutubeUrl('');
       setEventChiefGuest('');
       setEventImages([]);
       setEventImage('');
@@ -2006,6 +2010,52 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                         </span>
                       )}
                     </div>
+                  </div>
+
+                  <div className="form-group mb-3">
+                    <label className="input-sublabel flex items-center justify-between">
+                      <span className="flex items-center gap-1.5 font-semibold text-stone-800">
+                        <Video size={14} className="text-red-600" />
+                        <span>YouTube Video Coverage Link (Optional / விருப்பப்பட்டால்)</span>
+                      </span>
+                      {eventYoutubeUrl && extractYouTubeId(eventYoutubeUrl) && (
+                        <span className="text-xs text-emerald-700 font-semibold flex items-center gap-1">
+                          <CheckCircle2 size={12} /> Video ID: {extractYouTubeId(eventYoutubeUrl)}
+                        </span>
+                      )}
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="url"
+                        placeholder="Paste YouTube link (e.g. https://www.youtube.com/watch?v=... or https://youtu.be/...)"
+                        value={eventYoutubeUrl}
+                        onChange={(e) => setEventYoutubeUrl(e.target.value)}
+                        className="form-input pr-10"
+                      />
+                      {eventYoutubeUrl && (
+                        <button
+                          type="button"
+                          onClick={() => setEventYoutubeUrl('')}
+                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 text-xs px-1.5 py-0.5 rounded"
+                          title="Clear link"
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </div>
+                    {eventYoutubeUrl && extractYouTubeId(eventYoutubeUrl) && (
+                      <div className="mt-2 p-2.5 bg-stone-50 border border-stone-200 rounded-xl flex items-center gap-3">
+                        <img
+                          src={`https://img.youtube.com/vi/${extractYouTubeId(eventYoutubeUrl)}/mqdefault.jpg`}
+                          alt="YouTube preview"
+                          className="w-28 h-16 object-cover rounded-lg border border-stone-300 flex-shrink-0 shadow-sm"
+                        />
+                        <div className="text-xs text-stone-600">
+                          <strong className="text-stone-900 block font-semibold">✅ YouTube Video Attached to Event</strong>
+                          <span>This video player will be embedded directly in the event details modal on the live website.</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="form-group mb-4">
@@ -3927,6 +3977,52 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     </span>
                   )}
                 </div>
+              </div>
+
+              <div className="form-group mb-3">
+                <label className="input-sublabel flex items-center justify-between">
+                  <span className="flex items-center gap-1.5 font-semibold text-stone-800">
+                    <Video size={14} className="text-red-600" />
+                    <span>YouTube Video Coverage Link (Optional / விருப்பப்பட்டால்)</span>
+                  </span>
+                  {editingEvent.youtubeUrl && extractYouTubeId(editingEvent.youtubeUrl) && (
+                    <span className="text-xs text-emerald-700 font-semibold flex items-center gap-1">
+                      <CheckCircle2 size={12} /> Video ID: {extractYouTubeId(editingEvent.youtubeUrl)}
+                    </span>
+                  )}
+                </label>
+                <div className="relative">
+                  <input
+                    type="url"
+                    placeholder="Paste YouTube link (e.g. https://www.youtube.com/watch?v=... or https://youtu.be/...)"
+                    value={editingEvent.youtubeUrl || ''}
+                    onChange={(e) => setEditingEvent({ ...editingEvent, youtubeUrl: e.target.value })}
+                    className="form-input pr-10"
+                  />
+                  {editingEvent.youtubeUrl && (
+                    <button
+                      type="button"
+                      onClick={() => setEditingEvent({ ...editingEvent, youtubeUrl: '' })}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 text-xs px-1.5 py-0.5 rounded"
+                      title="Clear link"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+                {editingEvent.youtubeUrl && extractYouTubeId(editingEvent.youtubeUrl) && (
+                  <div className="mt-2 p-2.5 bg-stone-50 border border-stone-200 rounded-xl flex items-center gap-3">
+                    <img
+                      src={`https://img.youtube.com/vi/${extractYouTubeId(editingEvent.youtubeUrl)}/mqdefault.jpg`}
+                      alt="YouTube preview"
+                      className="w-28 h-16 object-cover rounded-lg border border-stone-300 flex-shrink-0 shadow-sm"
+                    />
+                    <div className="text-xs text-stone-600">
+                      <strong className="text-stone-900 block font-semibold">✅ YouTube Video Attached to Event</strong>
+                      <span>This video player will be embedded directly in the event details modal on the live website.</span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="form-group mb-4">

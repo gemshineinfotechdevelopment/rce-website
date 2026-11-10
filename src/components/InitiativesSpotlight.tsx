@@ -74,7 +74,8 @@ export const InitiativesSpotlight: React.FC<InitiativesSpotlightProps> = ({
                   )}
                   alt="RCE Flagship Projects"
                   className="spotlight-img"
-                  loading="lazy"
+                  loading="eager"
+                  decoding="async"
                 />
               ) : (
                 <div className="spotlight-img-placeholder" />

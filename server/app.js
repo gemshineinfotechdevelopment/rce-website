@@ -46,18 +46,27 @@ app.use("/uploads", express.static(uploadsDir));
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
-// Root welcome route
-app.get("/", (req, res) => {
-  res.json({
-    project: "RCE Website API",
-    status: "running",
-    version: "1.0.0",
-    docs: "/api/health",
-  });
-});
-
 // API Routes
 app.use("/api", apiRoutes);
+
+// Serve built frontend assets in production / single-server mode
+const distDir = path.join(__dirname, "../dist");
+if (fs.existsSync(distDir)) {
+  app.use(express.static(distDir));
+  app.get(/^(?!\/api).*/, (req, res) => {
+    res.sendFile(path.join(distDir, "index.html"));
+  });
+} else {
+  // Root welcome route if dist has not been built
+  app.get("/", (req, res) => {
+    res.json({
+      project: "RCE Website API",
+      status: "running",
+      version: "1.0.0",
+      docs: "/api/health",
+    });
+  });
+}
 
 // Error Handling Middlewares
 app.use(notFound);

@@ -1173,7 +1173,12 @@ const createEvent = (req, res) => {
     slotsTotal,
     formUrl,
     registrationUrl,
+    youtubeUrl,
+    youtubeId,
   } = req.body;
+
+  const cleanYoutubeUrl = (youtubeUrl || "").trim();
+  const cleanYoutubeId = (youtubeId || extractYoutubeId(cleanYoutubeUrl) || "").trim();
 
   if (!title || !date) {
     return res.status(400).json({ success: false, message: "Event title and date are required." });
@@ -1212,6 +1217,8 @@ const createEvent = (req, res) => {
     slotsTotal: Number(slotsTotal) || 100,
     slotsBooked: 0,
     formUrl: (formUrl || registrationUrl || "").trim(),
+    youtubeUrl: cleanYoutubeUrl,
+    youtubeId: cleanYoutubeId,
   };
 
   eventsList.unshift(newEvent);
@@ -1251,7 +1258,16 @@ const updateEvent = (req, res) => {
     slotsBooked,
     formUrl,
     registrationUrl,
+    youtubeUrl,
+    youtubeId,
   } = req.body;
+
+  const cleanYoutubeUrl = youtubeUrl !== undefined
+    ? String(youtubeUrl).trim()
+    : (existing.youtubeUrl || "");
+  const cleanYoutubeId = youtubeId !== undefined
+    ? String(youtubeId).trim()
+    : (youtubeUrl !== undefined ? extractYoutubeId(cleanYoutubeUrl) : (existing.youtubeId || ""));
 
   let updatedImages = existing.images || (existing.image ? [existing.image] : []);
   if (images !== undefined) {
@@ -1304,6 +1320,8 @@ const updateEvent = (req, res) => {
         : registrationUrl !== undefined
         ? String(registrationUrl).trim()
         : existing.formUrl || existing.registrationUrl || "",
+    youtubeUrl: cleanYoutubeUrl,
+    youtubeId: cleanYoutubeId,
   };
 
   saveDataToFile();

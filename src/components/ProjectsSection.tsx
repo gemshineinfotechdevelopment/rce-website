@@ -58,7 +58,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
 
         {/* Projects Grid */}
         <div className="projects-grid">
-          {filteredProjects.map((project) => {
+          {filteredProjects.map((project, index) => {
             const percentage = Math.min(
               100,
               Math.round((project.raised / project.goal) * 100)
@@ -71,7 +71,8 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
                     src={getSafeImageUrl(project.image, 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80')}
                     alt={project.title}
                     className="project-img"
-                    loading="lazy"
+                    loading={index < 3 ? 'eager' : 'lazy'}
+                    decoding="async"
                   />
                   <div className="project-category-tag">{project.category}</div>
                 </div>

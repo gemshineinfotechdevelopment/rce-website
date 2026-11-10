@@ -89,44 +89,6 @@
   },
   "projectsList": [
     {
-      "id": "proj-1",
-      "title": "Vidhya Connect: Youth & Child Education",
-      "category": "Education",
-      "tagline": "Empowering 1,500+ rural & underprivileged students with after-school tutoring and study kits",
-      "description": "Providing quality learning kits, digital tabs, mentorship, and weekend coaching for government school students across Tamil Nadu to reduce dropout rates.",
-      "goal": 500000,
-      "raised": 412000,
-      "volunteersEnrolled": 84,
-      "beneficiaries": "1,500+ Students",
-      "badge": "Flagship Initiative",
-      "featured": true,
-      "image": "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80",
-      "highlights": [
-        "Free STEM toolkits",
-        "English fluency workshops",
-        "High school scholarship grants"
-      ]
-    },
-    {
-      "id": "proj-2",
-      "title": "Green Earth: 25,000 Miyawaki Plantation",
-      "category": "Environment",
-      "tagline": "Restoring local biodiversity, urban green pockets, and rejuvenating dried water bodies",
-      "description": "Transforming barren public grounds, school perimeters, and lakeshores into dense native oxygen groves using the proven Miyawaki afforestation method.",
-      "goal": 350000,
-      "raised": 295000,
-      "volunteersEnrolled": 230,
-      "beneficiaries": "12+ Local Ecosystems",
-      "badge": "Eco Champion",
-      "featured": true,
-      "image": "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80",
-      "highlights": [
-        "Native indigenous saplings",
-        "Drip irrigation maintenance",
-        "Community sapling gifting"
-      ]
-    },
-    {
       "id": "proj-3",
       "title": "Arogya: Community Eye & Health Camps",
       "category": "Healthcare",
@@ -143,44 +105,6 @@
         "Free spectacles given",
         "Full general health review",
         "Zero-cost referral treatments"
-      ]
-    },
-    {
-      "id": "proj-4",
-      "title": "Annapoorna: Zero-Hunger Weekend Drives",
-      "category": "Relief",
-      "tagline": "Nutritious warm meals distributed to hospital attendants and homeless shelters",
-      "description": "Every Saturday & Sunday morning, our volunteer team prepares wholesome, hygienic meals and delivers them to government hospital attenders and night shelters.",
-      "goal": 250000,
-      "raised": 218000,
-      "volunteersEnrolled": 110,
-      "beneficiaries": "45,000+ Meals Served",
-      "badge": "Weekly Active",
-      "featured": false,
-      "image": "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80",
-      "highlights": [
-        "100% hygienic prep",
-        "Eco-friendly packaging",
-        "Zero food wastage network"
-      ]
-    },
-    {
-      "id": "proj-5",
-      "title": "Kala Uday: Youth Talent & Sports Wing",
-      "category": "Culture & Youth",
-      "tagline": "Fostering arts, traditional crafts, leadership workshops, and youth sports",
-      "description": "Creating a vibrant platform for youth to discover civic leadership, public speaking, folk arts, and district-level sports tournaments.",
-      "goal": 200000,
-      "raised": 165000,
-      "volunteersEnrolled": 95,
-      "beneficiaries": "3,000+ Young Leaders",
-      "badge": "Inspiring Youth",
-      "featured": false,
-      "image": "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80",
-      "highlights": [
-        "Inter-college youth summit",
-        "Folk art revival camps",
-        "Sports equipment grants"
       ]
     },
     {
@@ -226,11 +150,7 @@
       "slotsBooked": 0,
       "formUrl": "",
       "images": [
-        "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793685499/pr65gwekqv45ktbach6i.png",
-        "/api/uploads/pazhavam-kurungadu-award.jpg",
-        "/api/uploads/WhatsAppImage2026-10-31at10544-1793433270670-6783.jpeg",
-        "/api/uploads/Screenshot2026-10-30115215-1793341376498-9113.png",
-        "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1200&q=80"
+        "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793685499/pr65gwekqv45ktbach6i.png"
       ]
     },
     {
@@ -242,7 +162,7 @@
       "category": "₹5 Paadasaalai",
       "status": "Ongoing Flagship",
       "studentsImpacted": "1,200+ Students Daily",
-      "image": "/api/uploads/hackathon-1793363701450-705.jpg",
+      "image": "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80",
       "description": "Right Club for Education's revolutionary daily evening study hub where rural & underprivileged children receive structured coaching, homework assistance, spoken English, and holistic mentoring for just ₹5 token fee.",
       "highlights": [
         "Daily evening tutoring for grades 1 to 10",
@@ -256,10 +176,7 @@
       "slotsBooked": 0,
       "formUrl": "",
       "images": [
-        "/api/uploads/hackathon-1793363701450-705.jpg",
-        "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1200&q=80"
+        "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80"
       ]
     },
     {
@@ -284,13 +201,11 @@
       "slotsTotal": 100,
       "slotsBooked": 0,
       "images": [
-        "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=800&q=80",
-        "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1200&q=80",
-        "/api/uploads/Screenshot2026-10-30115355-1793341788513-4474.png",
-        "https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80"
+        "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=800&q=80"
       ],
-      "formUrl": ""
+      "formUrl": "",
+      "youtubeUrl": "https://www.youtube.com/watch?v=IXj0j1G0UtA",
+      "youtubeId": "IXj0j1G0UtA"
     },
     {
       "id": "ev-rce-3",
@@ -320,7 +235,9 @@
         "/api/uploads/Screenshot2026-10-30120906-1793342382807-7268.png",
         "/api/uploads/Screenshot2026-10-30121105-1793342482386-9330.png",
         "https://images.unsplash.com/photo-1511629091441-ee46146481b6?auto=format&fit=crop&w=1200&q=80"
-      ]
+      ],
+      "youtubeUrl": "https://www.youtube.com/watch?v=j-4RyG3S1l4",
+      "youtubeId": "j-4RyG3S1l4"
     },
     {
       "id": "ev-rce-4",
@@ -351,7 +268,9 @@
         "/api/uploads/Screenshot2026-10-30121327-1793342628230-2346.png",
         "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=80",
         "https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?auto=format&fit=crop&w=1200&q=80"
-      ]
+      ],
+      "youtubeUrl": "https://www.youtube.com/watch?v=Ftle5THUD-M",
+      "youtubeId": "Ftle5THUD-M"
     },
     {
       "id": "ev-rce-5",

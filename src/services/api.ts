@@ -1,6 +1,7 @@
 // API service connecting to backend on port 5024 (or relative path in production)
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5024');
+// In both dev & prod, use relative URL ("") so all requests go through the same port via Vite proxy or Express static
+const API_BASE = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '';
 
 export interface ClubStats {
   livesImpacted: number;
@@ -50,6 +51,8 @@ export interface ClubEvent {
   slotsBooked?: number;
   formUrl?: string;
   registrationUrl?: string;
+  youtubeUrl?: string;
+  youtubeId?: string;
 }
 
 export const getEventImages = (event: Partial<ClubEvent> | null | undefined): string[] => {
