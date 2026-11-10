@@ -4,10 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently -k -n \"FRONTEND,BACKEND\" -c \"cyan,green\" \"npm run client\" \"npm run server\"",
+    "src": "vite",
     "client": "vite",
+    "frontend": "vite",
     "server": "node server/server.js",
-    "start": "node server/server.js",
+    "backend": "node server/server.js",
+    "dev": "concurrently -k -n \"FRONTEND,BACKEND\" -c \"cyan,green\" \"npm run client\" \"npm run server\"",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview"

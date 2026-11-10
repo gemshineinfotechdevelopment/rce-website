@@ -1,0 +1,13 @@
+{
+  "name": "rce-website-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite ..",
+    "start": "vite ..",
+    "client": "vite ..",
+    "frontend": "vite ..",
+    "build": "vite build .."
+  }
+}

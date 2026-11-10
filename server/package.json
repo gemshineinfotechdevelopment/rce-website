@@ -4,9 +4,8 @@
   "private": true,
   "main": "server.js",
   "scripts": {
-    "clean:port": "node -e \"const { execSync } = require('child_process'); try { const out = execSync('netstat -ano | findstr :5024').toString(); for (const l of out.trim().split('\\n')) { const pid = l.trim().split(/\\s+/).pop(); if (pid && parseInt(pid) > 4) try { process.kill(parseInt(pid), 'SIGKILL'); } catch (e) { try { execSync('taskkill /F /PID ' + pid); } catch (e2) {} } } console.log('Cleaned port 5024'); } catch (e) { console.log('Port 5024 is clean'); }\"",
     "start": "node server.js",
-    "dev": "nodemon server.js",
+    "dev": "node server.js",
     "server": "node server.js"
   },
   "dependencies": {
