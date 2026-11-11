@@ -4481,18 +4481,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       {selectedDonation && (
         <div className="modal-overlay" onClick={() => setSelectedDonation(null)}>
           <div className="modal-content modal-receipt-preview p-0" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <span className="section-tag gold">OFFICIAL 80G RECEIPT & TAX CERTIFICATE</span>
-              <button
-                type="button"
-                className="modal-close-btn"
-                onClick={() => setSelectedDonation(null)}
-                aria-label="Close receipt"
-              >
-                ✕
-              </button>
-            </div>
-
             <DonationReceipt
               receipt={selectedDonation}
               onClose={() => setSelectedDonation(null)}

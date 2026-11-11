@@ -1,5 +1,5 @@
-import React from 'react';
-import { Printer, CheckCircle, ShieldCheck, Award } from 'lucide-react';
+import React, { useState } from 'react';
+import { Printer, CheckCircle, ShieldCheck, Award, X } from 'lucide-react';
 
 export interface DonationReceiptData {
   receiptNo: string;
@@ -64,6 +64,8 @@ export const DonationReceipt: React.FC<DonationReceiptProps> = ({
   onClose,
   showCloseBtn = true,
 }) => {
+  const [isPrinting, setIsPrinting] = useState(false);
+
   const receiptDate = new Date(receipt.timestamp || Date.now());
   const formattedDate = receiptDate.toLocaleDateString('en-IN', {
     day: '2-digit',
@@ -83,8 +85,393 @@ export const DonationReceipt: React.FC<DonationReceiptProps> = ({
 
   const amountInWords = numberToWordsINR(receipt.amount);
 
+  // Reliable Direct Print Function: Injects clean standalone certificate into hidden iframe
   const handlePrint = () => {
-    window.print();
+    setIsPrinting(true);
+    const receiptElem = document.getElementById('printable-receipt');
+
+    if (!receiptElem) {
+      window.print();
+      setIsPrinting(false);
+      return;
+    }
+
+    try {
+      // Remove any prior print iframe
+      const oldIframe = document.getElementById('rce-print-frame');
+      if (oldIframe) {
+        oldIframe.remove();
+      }
+
+      // Create isolated invisible iframe for printing
+      const iframe = document.createElement('iframe');
+      iframe.id = 'rce-print-frame';
+      iframe.style.position = 'fixed';
+      iframe.style.right = '0';
+      iframe.style.bottom = '0';
+      iframe.style.width = '1px';
+      iframe.style.height = '1px';
+      iframe.style.opacity = '0.01';
+      iframe.style.pointerEvents = 'none';
+      iframe.style.border = '0';
+      iframe.title = 'RCE Donation Bill Print';
+      document.body.appendChild(iframe);
+
+      const iframeDoc = iframe.contentWindow?.document;
+      if (!iframeDoc) {
+        window.print();
+        setIsPrinting(false);
+        return;
+      }
+
+      const receiptClone = receiptElem.cloneNode(true) as HTMLElement;
+
+      iframeDoc.open();
+      iframeDoc.write(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <title>RCE_Donation_Bill_${receipt.receiptNo}</title>
+          <link rel="preconnect" href="https://fonts.googleapis.com">
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+          <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Outfit:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+          <style>
+            * { box-sizing: border-box; margin: 0; padding: 0; }
+            body {
+              background: #ffffff;
+              font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+              color: #1c1917;
+              line-height: 1.45;
+              padding: 6mm 8mm;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            @page {
+              size: A4 portrait;
+              margin: 8mm;
+            }
+            .receipt-certificate-printable {
+              background: #ffffff;
+              border: 2px solid #b45309;
+              border-radius: 6px;
+              padding: 14px;
+              color: #1c1917;
+            }
+            .receipt-inner-frame {
+              border: 1.5px solid #b45309;
+              outline: 1px solid #dfcebc;
+              outline-offset: -4px;
+              border-radius: 4px;
+              padding: 18px 22px;
+              background: #ffffff;
+              position: relative;
+            }
+            .receipt-cert-header {
+              display: flex;
+              align-items: center;
+              gap: 16px;
+              padding-bottom: 14px;
+              border-bottom: 2px solid #d97706;
+            }
+            .receipt-trust-logo { flex-shrink: 0; }
+            .receipt-logo-img {
+              width: 72px;
+              height: 72px;
+              object-fit: contain;
+              border-radius: 50%;
+              border: 2px solid #b45309;
+              padding: 2px;
+              background: #ffffff;
+            }
+            .receipt-trust-info { flex: 1; }
+            .receipt-org-badge {
+              font-size: 0.64rem;
+              font-weight: 800;
+              letter-spacing: 0.1em;
+              color: #b45309;
+              text-transform: uppercase;
+            }
+            .receipt-trust-title {
+              font-family: 'Cinzel', Georgia, serif;
+              font-size: 1.35rem;
+              font-weight: 900;
+              color: #451a03;
+              margin: 0;
+              line-height: 1.15;
+            }
+            .receipt-trust-subtitle {
+              font-size: 0.78rem;
+              font-weight: 800;
+              color: #78350f;
+              letter-spacing: 0.05em;
+              margin-top: 1px;
+            }
+            .receipt-trust-address {
+              font-size: 0.72rem;
+              color: #57534e;
+              margin: 2px 0 5px;
+            }
+            .receipt-trust-reg-chips {
+              display: flex;
+              flex-wrap: wrap;
+              gap: 5px;
+            }
+            .reg-chip {
+              background: #f7f2ea;
+              border: 1px solid #dfcebc;
+              padding: 2px 6px;
+              border-radius: 3px;
+              font-size: 0.65rem;
+              color: #44403c;
+            }
+            .reg-chip.gold-chip {
+              background: #fef3c7;
+              border-color: #f59e0b;
+              color: #92400e;
+              font-weight: 800;
+            }
+            .receipt-title-banner {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 10px;
+              margin: 12px 0 10px;
+            }
+            .title-banner-line {
+              flex: 1;
+              height: 1.5px;
+              background: #b45309;
+            }
+            .title-banner-text {
+              font-family: 'Cinzel', Georgia, serif;
+              font-size: 0.8rem;
+              font-weight: 900;
+              letter-spacing: 0.06em;
+              color: #78350f;
+              background: #fef3c7;
+              border: 1px solid #fde68a;
+              padding: 3px 12px;
+              border-radius: 9999px;
+              text-align: center;
+              white-space: nowrap;
+            }
+            .receipt-serial-strip {
+              display: flex;
+              justify-content: space-between;
+              background: #faf5ee;
+              border: 1px solid #ebdccb;
+              border-radius: 5px;
+              padding: 6px 12px;
+              margin-bottom: 12px;
+              font-size: 0.78rem;
+            }
+            .serial-col { display: flex; flex-direction: column; }
+            .serial-label {
+              font-size: 0.64rem;
+              text-transform: uppercase;
+              color: #78716c;
+              font-weight: 700;
+            }
+            .serial-value { font-weight: 800; color: #1c1917; }
+            .serial-col:first-child .serial-value {
+              font-family: monospace;
+              color: #9a3412;
+              font-size: 0.9rem;
+            }
+            .receipt-acknowledgement {
+              font-size: 0.78rem;
+              color: #44403c;
+              font-style: italic;
+              margin-bottom: 6px;
+            }
+            .receipt-details-table {
+              border: 1px solid #e7d8c9;
+              border-radius: 5px;
+              overflow: hidden;
+              margin-bottom: 12px;
+              background: #ffffff;
+            }
+            .receipt-table-row {
+              display: flex;
+              border-bottom: 1px solid #f2e8dc;
+            }
+            .receipt-table-row:last-child { border-bottom: none; }
+            .receipt-col {
+              padding: 6px 10px;
+              font-size: 0.78rem;
+              display: flex;
+              align-items: center;
+            }
+            .receipt-col.label-col {
+              width: 130px;
+              flex-shrink: 0;
+              background: #faf6f0;
+              color: #78350f;
+              font-weight: 700;
+              border-right: 1px solid #f2e8dc;
+            }
+            .receipt-col.value-col {
+              flex: 1;
+              color: #1c1917;
+              border-right: 1px solid #f2e8dc;
+            }
+            .receipt-col.value-col:last-child { border-right: none; }
+            .receipt-amount-box {
+              background: #fdf8ef;
+              border: 2px dashed #b45309;
+              border-radius: 6px;
+              padding: 10px 14px;
+              margin-bottom: 12px;
+              display: flex;
+              flex-direction: column;
+              gap: 4px;
+            }
+            .amount-digit-section {
+              display: flex;
+              align-items: baseline;
+              justify-content: space-between;
+              border-bottom: 1px solid rgba(180, 83, 9, 0.2);
+              padding-bottom: 4px;
+            }
+            .amount-currency-label {
+              font-size: 0.76rem;
+              font-weight: 800;
+              color: #78350f;
+              text-transform: uppercase;
+            }
+            .amount-number {
+              font-size: 1.5rem;
+              font-weight: 900;
+              color: #9a3412;
+              font-family: 'Outfit', sans-serif;
+            }
+            .amount-words-section {
+              display: flex;
+              align-items: baseline;
+              gap: 6px;
+              font-size: 0.78rem;
+            }
+            .words-label { font-weight: 700; color: #78350f; flex-shrink: 0; }
+            .words-value { font-weight: 800; color: #1c1917; font-style: italic; }
+            .receipt-tax-clause {
+              display: flex;
+              gap: 8px;
+              align-items: flex-start;
+              background: #f0fdf4;
+              border: 1px solid #bbf7d0;
+              border-radius: 5px;
+              padding: 8px 10px;
+              margin-bottom: 14px;
+              font-size: 0.7rem;
+              line-height: 1.4;
+              color: #166534;
+            }
+            .tax-clause-text strong {
+              color: #14532d;
+              display: block;
+              margin-bottom: 2px;
+              font-size: 0.72rem;
+            }
+            .receipt-sign-row {
+              display: flex;
+              align-items: flex-end;
+              justify-content: space-between;
+              margin-top: 14px;
+              padding-top: 10px;
+              border-top: 1.5px solid #ebdccb;
+            }
+            .seal-round-stamp {
+              width: 86px;
+              height: 86px;
+              border: 2px dashed #b45309;
+              border-radius: 50%;
+              color: #b45309;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              padding: 3px;
+              background: rgba(254, 243, 199, 0.25);
+            }
+            .seal-outer-ring {
+              width: 100%;
+              height: 100%;
+              border: 1px solid #b45309;
+              border-radius: 50%;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: space-between;
+              padding: 4px 2px;
+              text-align: center;
+            }
+            .seal-top-text { font-size: 0.42rem; font-weight: 900; color: #b45309; }
+            .seal-center-crest { display: flex; flex-direction: column; align-items: center; }
+            .seal-star { font-size: 0.55rem; color: #d97706; }
+            .seal-name { font-family: 'Cinzel', serif; font-weight: 900; font-size: 0.8rem; color: #78350f; }
+            .seal-year { font-size: 0.48rem; font-weight: 800; color: #92400e; }
+            .seal-bottom-text { font-size: 0.4rem; font-weight: 800; color: #b45309; }
+            .seal-caption { font-size: 0.58rem; color: #78716c; font-style: italic; text-align: center; }
+            .receipt-verification-box { text-align: center; }
+            .verification-badge {
+              display: inline-block;
+              background: #fdf6ec;
+              border: 1px solid #ebdccb;
+              padding: 2px 8px;
+              border-radius: 9999px;
+              font-size: 0.65rem;
+              font-weight: 800;
+              color: #78350f;
+              margin-bottom: 2px;
+            }
+            .verification-text { font-size: 0.6rem; color: #78716c; line-height: 1.3; }
+            .receipt-signature-box { text-align: center; min-width: 160px; }
+            .signature-stylized {
+              font-family: 'Brush Script MT', 'Segoe Script', cursive;
+              font-size: 1.25rem;
+              color: #1e3a8a;
+              margin-bottom: -4px;
+            }
+            .sig-line {
+              font-weight: 800;
+              font-size: 0.78rem;
+              border-top: 1.5px solid #292524;
+              padding-top: 3px;
+              color: #1c1917;
+            }
+            .sig-role { font-size: 0.68rem; font-weight: 700; color: #78350f; }
+            .sig-org { font-size: 0.6rem; color: #78716c; }
+            .receipt-cert-footer {
+              margin-top: 12px;
+              text-align: center;
+              font-size: 0.62rem;
+              color: #a8a29e;
+              border-top: 1px solid #f2e8dc;
+              padding-top: 6px;
+            }
+          </style>
+        </head>
+        <body>
+          ${receiptClone.outerHTML}
+        </body>
+        </html>
+      `);
+      iframeDoc.close();
+
+      setTimeout(() => {
+        setIsPrinting(false);
+        try {
+          iframe.contentWindow?.focus();
+          iframe.contentWindow?.print();
+        } catch (e) {
+          window.print();
+        }
+      }, 300);
+    } catch (err) {
+      console.warn('Iframe print error, falling back to window.print():', err);
+      window.print();
+      setIsPrinting(false);
+    }
   };
 
   return (
@@ -103,16 +490,20 @@ export const DonationReceipt: React.FC<DonationReceiptProps> = ({
             onClick={handlePrint}
             className="btn-receipt-action btn-print-primary"
             title="Print or Save as PDF"
+            disabled={isPrinting}
           >
             <Printer size={16} />
-            <span>Print / Save PDF</span>
+            <span>{isPrinting ? 'Preparing Bill...' : 'Print / Save PDF'}</span>
           </button>
           {showCloseBtn && onClose && (
             <button
               type="button"
               onClick={onClose}
               className="btn-receipt-action btn-receipt-close"
+              title="Close receipt preview"
+              aria-label="Close receipt preview"
             >
+              <X size={15} />
               <span>Close</span>
             </button>
           )}

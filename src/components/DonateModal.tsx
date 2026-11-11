@@ -111,40 +111,41 @@ export const DonateModal: React.FC<DonateModalProps> = ({
   return (
     <div className="modal-overlay" onClick={resetAndClose}>
       <div 
-        className={`modal-content modal-donate ${receiptData ? 'modal-receipt-active' : ''}`} 
+        className={`modal-content modal-donate ${receiptData ? 'modal-receipt-active p-0' : ''}`} 
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Modal Header */}
-        <div className="modal-header">
-          <div>
-            <span className="section-tag gold">
-              <Heart size={12} fill="currentColor" />
-              {receiptData ? 'Official Contribution Receipt' : 'Empower Lives Through Giving'}
-            </span>
-            <h2 className="modal-title">
-              {receiptData ? 'Donation Verified & 80G Receipt Generated' : 'Make a Tax-Deductible Contribution'}
-            </h2>
-          </div>
-          <button
-            type="button"
-            className="modal-close-btn"
-            onClick={resetAndClose}
-            aria-label="Close modal"
-          >
-            <X size={20} />
-          </button>
-        </div>
+        {receiptData ? (
+          <DonationReceipt
+            receipt={receiptData}
+            onClose={resetAndClose}
+            showCloseBtn={true}
+          />
+        ) : (
+          <>
+            {/* Modal Header */}
+            <div className="modal-header">
+              <div>
+                <span className="section-tag gold">
+                  <Heart size={12} fill="currentColor" />
+                  Empower Lives Through Giving
+                </span>
+                <h2 className="modal-title">
+                  Make a Tax-Deductible Contribution
+                </h2>
+              </div>
+              <button
+                type="button"
+                className="modal-close-btn"
+                onClick={resetAndClose}
+                aria-label="Close modal"
+              >
+                <X size={20} />
+              </button>
+            </div>
 
-        {/* Modal Body */}
-        <div className={`modal-body ${receiptData ? 'p-0' : ''}`}>
-          {receiptData ? (
-            <DonationReceipt
-              receipt={receiptData}
-              onClose={resetAndClose}
-              showCloseBtn={true}
-            />
-          ) : (
-            <form onSubmit={handleSubmit} className="donate-form">
+            {/* Modal Body */}
+            <div className="modal-body">
+              <form onSubmit={handleSubmit} className="donate-form">
               {/* Select Cause */}
               <div className="form-group">
                 <label className="form-label">1. Select Cause / Initiative</label>
@@ -330,9 +331,10 @@ export const DonateModal: React.FC<DonateModalProps> = ({
                 </button>
               </div>
             </form>
-          )}
-        </div>
-      </div>
+          </div>
+        </>
+      )}
     </div>
+  </div>
   );
 };
