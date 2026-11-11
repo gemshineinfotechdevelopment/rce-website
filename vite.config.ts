@@ -29,10 +29,38 @@ export default defineConfig(({ mode }) => {
         '/api': {
           target: apiTarget,
           changeOrigin: true,
+          configure: (proxy) => {
+            proxy.on('error', (_err, _req, res) => {
+              // Gracefully handle backend offline without polluting terminal with huge AggregateError stack traces
+              if (res && 'writeHead' in res) {
+                const serverRes = res as import('http').ServerResponse
+                if (!serverRes.headersSent) {
+                  serverRes.writeHead(503, { 'Content-Type': 'application/json' })
+                  serverRes.end(
+                    JSON.stringify({
+                      error: 'Backend Offline',
+                      message: `Backend server is not running at ${apiTarget}. Run "npm run server" in a separate terminal or "npm run dev" in root.`,
+                    })
+                  )
+                }
+              }
+            });
+          },
         },
         '/uploads': {
           target: apiTarget,
           changeOrigin: true,
+          configure: (proxy) => {
+            proxy.on('error', (_err, _req, res) => {
+              if (res && 'writeHead' in res) {
+                const serverRes = res as import('http').ServerResponse
+                if (!serverRes.headersSent) {
+                  serverRes.writeHead(404)
+                  serverRes.end()
+                }
+              }
+            });
+          },
         },
       },
     },

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Heart, Users, Menu, X, Home, Tv, Info, Layers, Calendar, Sparkles, Image as ImageIcon, Phone } from 'lucide-react';
+import { Heart, Users, Menu, X, Home, Video, Info, Layers, Calendar, Sparkles, Image as ImageIcon, Phone } from 'lucide-react';
 import type { BrandContent } from '../services/api';
 import { checkBackendHealth } from '../services/api';
 
@@ -21,6 +21,14 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [backendOnline, setBackendOnline] = useState<boolean | null>(null);
+
+  // Helper to safely close mobile drawer and clear active focus to prevent WAI-ARIA aria-hidden warnings
+  const closeMobileMenu = () => {
+    if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+    setMobileMenuOpen(false);
+  };
 
   // Active Section / Segment state for live ScrollSpy
   const [activeSegment, setActiveSegment] = useState<string>(() => {
@@ -49,7 +57,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     }
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && mobileMenuOpen) {
-        setMobileMenuOpen(false);
+        closeMobileMenu();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -137,7 +145,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     sectionId?: string
   ) => {
     e.preventDefault();
-    setMobileMenuOpen(false);
+    closeMobileMenu();
 
     if (view === 'projects') {
       setActiveSegment('projects');
@@ -178,7 +186,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           aria-label="RCE Social Service Club Home"
         >
           <div className="brand-logo-frame">
-            <img src="/Rce.logo.png" alt="RCE - Right Club for Education" className="brand-logo-img" />
+            <img src="/Rce.logo.png" alt="RCE - Right Club for Education" className="brand-logo-img" loading="eager" decoding="async" />
             {backendOnline && (
               <span
                 className="brand-online-dot"
@@ -292,13 +300,17 @@ export const Navbar: React.FC<NavbarProps> = ({
       {mobileMenuOpen && (
         <div
           className="mobile-nav-backdrop"
-          onClick={() => setMobileMenuOpen(false)}
+          onClick={closeMobileMenu}
           aria-label="Close mobile navigation"
         />
       )}
 
       {/* Mobile Off-Canvas Sidebar */}
-      <aside className={`mobile-menu-drawer ${mobileMenuOpen ? 'open' : ''}`} aria-hidden={!mobileMenuOpen}>
+      <aside 
+        className={`mobile-menu-drawer ${mobileMenuOpen ? 'open' : ''}`} 
+        aria-hidden={!mobileMenuOpen}
+        inert={!mobileMenuOpen ? true : undefined}
+      >
         <div className="mobile-drawer-header">
           <div className="mobile-drawer-brand">
             <div className="mobile-drawer-logo-wrap">
@@ -312,7 +324,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             type="button"
             className="mobile-drawer-close-btn"
-            onClick={() => setMobileMenuOpen(false)}
+            onClick={closeMobileMenu}
             aria-label="Close menu"
           >
             <X size={20} />
@@ -333,8 +345,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={(e) => handleLinkClick(e, 'home', '#videos')}
             className={`mobile-nav-link ${activeSegment === 'videos' ? 'active' : ''}`}
           >
-            <Tv size={18} className="text-amber-700 flex-shrink-0" />
-            <span>YouTube Cinema</span>
+            <Video size={18} className="text-amber-700 flex-shrink-0" />
+            <span>Videos</span>
           </a>
           <a
             href="#about"
@@ -350,7 +362,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             className={`mobile-nav-link ${activeSegment === 'projects' ? 'active' : ''}`}
           >
             <Layers size={18} className="text-amber-700 flex-shrink-0" />
-            <span>Projects & Causes</span>
+            <span>Projects</span>
           </a>
           <a
             href="#events"
@@ -358,7 +370,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             className={`mobile-nav-link ${activeSegment === 'events' ? 'active' : ''}`}
           >
             <Calendar size={18} className="text-amber-700 flex-shrink-0" />
-            <span>Educational Events (14+)</span>
+            <span>Events (14+)</span>
           </a>
           <a
             href="#stories"
@@ -366,7 +378,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             className={`mobile-nav-link ${activeSegment === 'stories' ? 'active' : ''}`}
           >
             <Sparkles size={18} className="text-amber-700 flex-shrink-0" />
-            <span>Impact Stories</span>
+            <span>Stories</span>
           </a>
           <a
             href="#gallery"
@@ -374,7 +386,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             className={`mobile-nav-link ${activeSegment === 'gallery' ? 'active' : ''}`}
           >
             <ImageIcon size={18} className="text-amber-700 flex-shrink-0" />
-            <span>Photo Gallery</span>
+            <span>Gallery</span>
           </a>
           <a
             href="#contact"
@@ -382,7 +394,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             className={`mobile-nav-link ${activeSegment === 'contact' ? 'active' : ''}`}
           >
             <Phone size={18} className="text-amber-700 flex-shrink-0" />
-            <span>Contact & Help</span>
+            <span>Contact</span>
           </a>
         </div>
 
@@ -390,7 +402,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             type="button"
             onClick={() => {
-              setMobileMenuOpen(false);
+              closeMobileMenu();
               onOpenDonate();
             }}
             className="btn-primary w-full"
@@ -400,7 +412,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             type="button"
             onClick={() => {
-              setMobileMenuOpen(false);
+              closeMobileMenu();
               onOpenJoin();
             }}
             className="btn-secondary w-full"

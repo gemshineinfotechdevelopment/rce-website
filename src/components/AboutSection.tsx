@@ -101,6 +101,8 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ content, onOpenJoin 
                 src={imageUrl} 
                 alt="Community volunteers organizing relief supplies"
                 className="story-main-img"
+                loading="lazy"
+                decoding="async"
               />
               <div className="story-experience-card">
                 <div className="experience-num">{yearsExperience}</div>

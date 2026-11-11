@@ -180,6 +180,9 @@ export const Hero: React.FC<HeroProps> = ({ content, onOpenJoin, onOpenDonate })
                   src={bannerSrc} 
                   alt="RCE Social Service Club Banner"
                   className="hero-main-img"
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
                   onError={handleImageError}
                 />
               </div>
