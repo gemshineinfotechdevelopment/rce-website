@@ -84,6 +84,7 @@ import type {
 } from '../services/api';
 import { ImageUploadInput } from './ImageUploadInput';
 import { MultiImageUploadInput } from './MultiImageUploadInput';
+import { DonationReceipt } from './DonationReceipt';
 
 interface AdminPortalProps {
   onBackToWebsite: () => void;
@@ -4479,94 +4480,24 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
          ============================================================== */}
       {selectedDonation && (
         <div className="modal-overlay" onClick={() => setSelectedDonation(null)}>
-          <div className="modal-content modal-receipt-preview" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content modal-receipt-preview p-0" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <span className="section-tag gold">OFFICIAL 80G RECEIPT</span>
+              <span className="section-tag gold">OFFICIAL 80G RECEIPT & TAX CERTIFICATE</span>
               <button
                 type="button"
                 className="modal-close-btn"
                 onClick={() => setSelectedDonation(null)}
+                aria-label="Close receipt"
               >
                 ✕
               </button>
             </div>
 
-            <div className="receipt-certificate-printable" id="printable-receipt">
-              <div className="receipt-cert-header">
-                <div className="receipt-trust-logo">
-                  <img src="/Rce.logo.png" alt="RCE Logo" className="receipt-logo-img" />
-                </div>
-                <div className="receipt-trust-info">
-                  <h2>{brandName || 'RCE SOCIAL SERVICE CLUB CHARITABLE TRUST'}</h2>
-                  <p>Registered Public Charitable Trust • Chennai, Tamil Nadu</p>
-                  <p className="text-xs text-stone-500">
-                    Trust Reg: {brandTrustReg || 'TN/CH/2021/84920'} • PAN: {brandPAN || 'AAATR8492G'} • 12A: {brand12A || 'AAATR8492GE20210'}
-                  </p>
-                  <div className="receipt-80g-badge">
-                    <strong>80G Approval:</strong> {brand80G || 'CIT(E)/CHN/80G/2021-22/A-412'}
-                  </div>
-                </div>
-              </div>
-
-              <div className="receipt-serial-strip">
-                <div>
-                  <span className="text-xs text-stone-500">Receipt Serial:</span>
-                  <div className="font-mono font-bold text-amber-900">{selectedDonation.receiptNo}</div>
-                </div>
-                <div>
-                  <span className="text-xs text-stone-500">Date:</span>
-                  <div className="font-bold text-stone-800">
-                    {new Date(selectedDonation.timestamp).toLocaleDateString('en-IN', {
-                      day: '2-digit',
-                      month: 'long',
-                      year: 'numeric'
-                    })}
-                  </div>
-                </div>
-              </div>
-
-              <div className="receipt-body-content">
-                <p>
-                  Received with gratitude from <strong>{selectedDonation.donorName}</strong> (PAN: <strong>{selectedDonation.pan}</strong>), the sum of:
-                </p>
-
-                <div className="receipt-amount-display">
-                  <span>INR ₹{selectedDonation.amount.toLocaleString('en-IN')}</span>
-                </div>
-
-                <div className="receipt-particulars-grid">
-                  <div><strong>Cause:</strong> {selectedDonation.cause}</div>
-                  <div><strong>Mode:</strong> {selectedDonation.paymentMethod}</div>
-                  <div><strong>Txn Ref:</strong> {selectedDonation.transactionId || 'UPI Verified'}</div>
-                  <div><strong>Email:</strong> {selectedDonation.email}</div>
-                  <div><strong>Phone:</strong> {selectedDonation.phone || 'N/A'}</div>
-                </div>
-
-                <div className="receipt-tax-clause">
-                  <strong>Tax Benefit:</strong> Donations made to {brandName} are eligible for 50% deduction under Section 80G of the Income Tax Act, 1961.
-                </div>
-
-                <div className="receipt-sign-row">
-                  <div className="receipt-seal-box">
-                    <div className="seal-circle">OFFICIAL TRUST SEAL</div>
-                  </div>
-                  <div className="receipt-signature-box">
-                    <div className="sig-line">Dr. V. Sundaresan, Ph.D.</div>
-                    <span className="text-xs text-stone-500">Managing Trustee / Club Patron</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="modal-actions-bar p-4 border-t border-stone-200">
-              <button
-                type="button"
-                onClick={() => window.print()}
-                className="btn-primary w-full"
-              >
-                <Printer size={16} /> Print Official 80G Certificate
-              </button>
-            </div>
+            <DonationReceipt
+              receipt={selectedDonation}
+              onClose={() => setSelectedDonation(null)}
+              showCloseBtn={true}
+            />
           </div>
         </div>
       )}

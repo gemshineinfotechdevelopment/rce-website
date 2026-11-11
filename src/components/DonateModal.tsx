@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { X, Heart, ShieldCheck, QrCode, CheckCircle2, Printer } from 'lucide-react';
+import { X, Heart, ShieldCheck, QrCode } from 'lucide-react';
 import { submitDonation, type ProjectItem } from '../services/api';
+import { DonationReceipt } from './DonationReceipt';
 
 interface DonateModalProps {
   isOpen: boolean;
@@ -109,15 +110,20 @@ export const DonateModal: React.FC<DonateModalProps> = ({
 
   return (
     <div className="modal-overlay" onClick={resetAndClose}>
-      <div className="modal-content modal-donate" onClick={(e) => e.stopPropagation()}>
+      <div 
+        className={`modal-content modal-donate ${receiptData ? 'modal-receipt-active' : ''}`} 
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Modal Header */}
         <div className="modal-header">
           <div>
             <span className="section-tag gold">
               <Heart size={12} fill="currentColor" />
-              Empower Lives Through Giving
+              {receiptData ? 'Official Contribution Receipt' : 'Empower Lives Through Giving'}
             </span>
-            <h2 className="modal-title">Make a Tax-Deductible Contribution</h2>
+            <h2 className="modal-title">
+              {receiptData ? 'Donation Verified & 80G Receipt Generated' : 'Make a Tax-Deductible Contribution'}
+            </h2>
           </div>
           <button
             type="button"
@@ -130,62 +136,13 @@ export const DonateModal: React.FC<DonateModalProps> = ({
         </div>
 
         {/* Modal Body */}
-        <div className="modal-body">
+        <div className={`modal-body ${receiptData ? 'p-0' : ''}`}>
           {receiptData ? (
-            <div className="receipt-card">
-              <div className="receipt-header">
-                <div className="receipt-check">
-                  <CheckCircle2 size={44} color="#b45309" />
-                </div>
-                <h3>Contribution Received!</h3>
-                <p>Thank you, {receiptData.donorName}. Your kindness helps shape a brighter tomorrow.</p>
-              </div>
-
-              <div className="receipt-table">
-                <div className="receipt-row">
-                  <span>Receipt No:</span>
-                  <strong>{receiptData.receiptNo}</strong>
-                </div>
-                <div className="receipt-row">
-                  <span>Amount Contributed:</span>
-                  <strong className="text-lg" style={{ color: '#b45309' }}>₹{receiptData.amount.toLocaleString()}</strong>
-                </div>
-                <div className="receipt-row">
-                  <span>Supported Cause:</span>
-                  <span>{receiptData.cause}</span>
-                </div>
-                <div className="receipt-row">
-                  <span>PAN (80G Tax Benefit):</span>
-                  <span>{receiptData.pan || 'N/A'}</span>
-                </div>
-                <div className="receipt-row">
-                  <span>Date & Time:</span>
-                  <span>{new Date(receiptData.timestamp).toLocaleDateString()}</span>
-                </div>
-                <div className="receipt-row">
-                  <span>Tax Exemption Status:</span>
-                  <span className="text-emerald-700 font-bold">100% Valid u/s 80G</span>
-                </div>
-              </div>
-
-              <div className="receipt-actions">
-                <button
-                  type="button"
-                  onClick={() => window.print()}
-                  className="btn-outline flex-1"
-                >
-                  <Printer size={16} />
-                  <span>Print Receipt</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={resetAndClose}
-                  className="btn-primary flex-1"
-                >
-                  <span>Close</span>
-                </button>
-              </div>
-            </div>
+            <DonationReceipt
+              receipt={receiptData}
+              onClose={resetAndClose}
+              showCloseBtn={true}
+            />
           ) : (
             <form onSubmit={handleSubmit} className="donate-form">
               {/* Select Cause */}

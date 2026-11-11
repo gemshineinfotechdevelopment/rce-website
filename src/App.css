@@ -6146,141 +6146,694 @@
   border-color: #d97706;
 }
 
-/* Printable 80G Tax Exemption Certificate */
+/* ==============================================================
+   OFFICIAL 80G DONATION RECEIPT & TAX CERTIFICATE BILL
+   ============================================================== */
+.modal-receipt-active,
 .modal-receipt-preview {
-  max-width: 720px;
+  max-width: 840px !important;
+  width: 95vw !important;
+  background: #fbf8f3 !important;
+  border-radius: var(--radius-xl) !important;
+  overflow: hidden !important;
+  box-shadow: 0 25px 70px rgba(28, 14, 6, 0.4) !important;
+}
+
+.donation-receipt-wrapper {
+  display: flex;
+  flex-direction: column;
   width: 100%;
 }
 
-.receipt-certificate-printable {
-  background: #ffffff;
-  border: 3px double #d97706;
-  padding: 32px 36px;
-  border-radius: 8px;
-  color: #1c1917;
-  font-family: Georgia, serif;
+/* Screen action toolbar */
+.receipt-screen-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: #f7f0e4;
+  border-bottom: 1.5px solid #e8dac9;
+  gap: 12px;
 }
 
+.receipt-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.receipt-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-receipt-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-print-primary {
+  background: #b45309;
+  color: #ffffff;
+  border: 1px solid #92400e;
+  box-shadow: 0 2px 8px rgba(180, 83, 9, 0.25);
+}
+
+.btn-print-primary:hover {
+  background: #92400e;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(180, 83, 9, 0.35);
+}
+
+.btn-receipt-close {
+  background: #ffffff;
+  color: #57534e;
+  border: 1px solid #d6d3d1;
+}
+
+.btn-receipt-close:hover {
+  background: #f5f5f4;
+  color: #1c1917;
+}
+
+/* Certificate Body */
+.receipt-certificate-printable {
+  background: #ffffff;
+  padding: 24px;
+  color: #1c1917;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+}
+
+.receipt-inner-frame {
+  border: 2px solid #b45309;
+  outline: 1px solid #e6d3c0;
+  outline-offset: -5px;
+  border-radius: 8px;
+  padding: 24px 28px;
+  background: radial-gradient(circle at 50% 30%, #ffffff 50%, #fdfbf7 100%);
+  position: relative;
+}
+
+/* Watermark background */
+.receipt-inner-frame::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 260px;
+  height: 260px;
+  background-image: url('/Rce.logo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.045;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.receipt-inner-frame > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Header */
 .receipt-cert-header {
   display: flex;
   align-items: center;
-  gap: 18px;
-  padding-bottom: 18px;
-  border-bottom: 2px solid #b45309;
+  gap: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #d97706;
 }
 
 .receipt-trust-logo {
-  font-size: 2.5rem;
+  flex-shrink: 0;
 }
 
-.receipt-trust-info h2 {
-  font-size: 1.35rem;
+.receipt-logo-img {
+  width: 76px;
+  height: 76px;
+  object-fit: contain;
+  border-radius: 50%;
+  border: 2px solid #b45309;
+  padding: 2px;
+  background: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.receipt-trust-info {
+  flex: 1;
+}
+
+.receipt-org-badge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #b45309;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.receipt-trust-title {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1.45rem;
   font-weight: 900;
-  color: #78350f;
+  color: #451a03;
   margin: 0;
-  letter-spacing: 0.04em;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
 }
 
-.receipt-trust-info p {
-  font-size: 0.82rem;
-  margin: 2px 0;
-  font-family: sans-serif;
+.receipt-trust-subtitle {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #78350f;
+  letter-spacing: 0.06em;
+  margin-top: 2px;
 }
 
-.receipt-80g-badge {
-  background: #fef9c3;
-  border: 1px solid #fde047;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  color: #854d0e;
-  display: inline-block;
-  margin-top: 4px;
-  font-family: sans-serif;
+.receipt-trust-address {
+  font-size: 0.74rem;
+  color: #57534e;
+  margin: 3px 0 6px;
 }
 
-.receipt-serial-strip {
+.receipt-trust-reg-chips {
   display: flex;
-  justify-content: space-between;
-  padding: 12px 0;
-  border-bottom: 1px solid #dfcebc;
-  font-family: sans-serif;
+  flex-wrap: wrap;
+  gap: 5px;
 }
 
-.receipt-body-content {
-  padding-top: 18px;
-  line-height: 1.65;
+.reg-chip {
+  background: #f7f2ea;
+  border: 1px solid #dfcebc;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  color: #44403c;
 }
 
-.receipt-amount-display {
+.reg-chip.gold-chip {
+  background: #fef3c7;
+  border-color: #f59e0b;
+  color: #92400e;
+  font-weight: 800;
+}
+
+/* Certificate Title Banner */
+.receipt-title-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 14px 0 12px;
+}
+
+.title-banner-line {
+  flex: 1;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, #b45309, transparent);
+}
+
+.title-banner-text {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.84rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: #78350f;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  padding: 4px 14px;
+  border-radius: 9999px;
   text-align: center;
-  margin: 20px 0;
-  padding: 14px;
-  background: #fdf5eb;
+  white-space: nowrap;
+}
+
+/* Serial Strip */
+.receipt-serial-strip {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1.2fr;
+  gap: 10px;
+  background: #faf5ee;
+  border: 1px solid #ebdccb;
+  border-radius: 6px;
+  padding: 8px 14px;
+  margin-bottom: 14px;
+  font-size: 0.8rem;
+}
+
+.serial-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.serial-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #78716c;
+  font-weight: 700;
+}
+
+.serial-value {
+  font-weight: 800;
+  color: #1c1917;
+}
+
+.serial-col:first-child .serial-value {
+  font-family: monospace;
+  color: #9a3412;
+  font-size: 0.95rem;
+}
+
+/* Body Content */
+.receipt-body-content {
+  line-height: 1.5;
+}
+
+.receipt-acknowledgement {
+  font-size: 0.82rem;
+  color: #44403c;
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+/* Details Table */
+.receipt-details-table {
+  border: 1px solid #e7d8c9;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  background: #ffffff;
+}
+
+.receipt-table-row {
+  display: grid;
+  grid-template-columns: 130px 1fr 110px 1fr;
+  border-bottom: 1px solid #f2e8dc;
+}
+
+.receipt-table-row:last-child {
+  border-bottom: none;
+}
+
+.receipt-col {
+  padding: 8px 10px;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+}
+
+.receipt-col.label-col {
+  background: #faf6f0;
+  color: #78350f;
+  font-weight: 700;
+  border-right: 1px solid #f2e8dc;
+}
+
+.receipt-col.value-col {
+  color: #1c1917;
+  border-right: 1px solid #f2e8dc;
+}
+
+.receipt-col.value-col:last-child {
+  border-right: none;
+}
+
+/* Amount Showcase Box */
+.receipt-amount-box {
+  background: linear-gradient(135deg, #fdf8ef 0%, #faeee0 100%);
   border: 2px dashed #b45309;
   border-radius: 8px;
-  font-size: 1.5rem;
-  font-weight: 900;
+  padding: 12px 18px;
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.amount-digit-section {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid rgba(180, 83, 9, 0.2);
+  padding-bottom: 6px;
+}
+
+.amount-currency-label {
+  font-size: 0.8rem;
+  font-weight: 800;
   color: #78350f;
-  font-family: sans-serif;
+  text-transform: uppercase;
 }
 
-.receipt-particulars-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+.amount-number {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #9a3412;
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.amount-words-section {
+  display: flex;
+  align-items: baseline;
   gap: 8px;
-  font-family: sans-serif;
-  font-size: 0.85rem;
-  background: #fafaf9;
-  padding: 12px 16px;
-  border-radius: 6px;
-  border: 1px solid #e7e5e4;
-  margin-bottom: 16px;
+  font-size: 0.82rem;
 }
 
+.words-label {
+  font-weight: 700;
+  color: #78350f;
+  flex-shrink: 0;
+}
+
+.words-value {
+  font-weight: 800;
+  color: #1c1917;
+  font-style: italic;
+}
+
+/* Statutory Tax Clause */
 .receipt-tax-clause {
-  font-size: 0.75rem;
-  font-family: sans-serif;
-  color: #78716c;
-  background: #f5f5f4;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
   padding: 8px 12px;
-  border-radius: 4px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: #166534;
 }
 
+.tax-clause-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.tax-clause-text strong {
+  color: #14532d;
+  display: block;
+  margin-bottom: 2px;
+  font-size: 0.74rem;
+}
+
+.tax-clause-text code {
+  background: #dcfce7;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-family: monospace;
+  font-weight: 700;
+}
+
+/* Signatures & Seal Row */
 .receipt-sign-row {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  margin-top: 24px;
+  gap: 16px;
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 1.5px solid #ebdccb;
 }
 
-.seal-circle {
+/* Circular Seal Stamp */
+.receipt-seal-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.seal-round-stamp {
   width: 90px;
   height: 90px;
-  border-radius: 50%;
   border: 2px dashed #b45309;
+  border-radius: 50%;
   color: #b45309;
-  font-size: 0.65rem;
-  font-weight: 900;
-  display: grid;
-  place-items: center;
-  text-align: center;
-  transform: rotate(-10deg);
-  font-family: sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-7deg);
+  padding: 4px;
+  background: rgba(254, 243, 199, 0.25);
+  box-shadow: 0 2px 8px rgba(180, 83, 9, 0.1);
 }
 
+.seal-outer-ring {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #b45309;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 2px;
+  text-align: center;
+}
+
+.seal-top-text {
+  font-size: 0.44rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #b45309;
+}
+
+.seal-center-crest {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+
+.seal-star {
+  font-size: 0.6rem;
+  color: #d97706;
+}
+
+.seal-name {
+  font-family: 'Cinzel', serif;
+  font-weight: 900;
+  font-size: 0.85rem;
+  color: #78350f;
+  letter-spacing: 0.08em;
+}
+
+.seal-year {
+  font-size: 0.5rem;
+  font-weight: 800;
+  color: #92400e;
+}
+
+.seal-bottom-text {
+  font-size: 0.42rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #b45309;
+}
+
+.seal-caption {
+  font-size: 0.62rem;
+  color: #78716c;
+  font-style: italic;
+}
+
+/* Digital Verification */
+.receipt-verification-box {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.verification-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #fdf6ec;
+  border: 1px solid #ebdccb;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #78350f;
+}
+
+.verification-text {
+  font-size: 0.64rem;
+  color: #78716c;
+  line-height: 1.35;
+  margin: 0;
+}
+
+/* Authorized Signatory */
 .receipt-signature-box {
   text-align: center;
-  font-family: sans-serif;
+  min-width: 170px;
+}
+
+.signature-stylized {
+  font-family: 'Brush Script MT', 'Segoe Script', cursive, sans-serif;
+  font-size: 1.3rem;
+  color: #1e3a8a;
+  margin-bottom: -4px;
+  user-select: none;
 }
 
 .sig-line {
   font-weight: 800;
-  font-size: 0.95rem;
+  font-size: 0.82rem;
   border-top: 1.5px solid #292524;
-  padding-top: 6px;
-  min-width: 200px;
+  padding-top: 4px;
+  color: #1c1917;
+}
+
+.sig-role {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #78350f;
+}
+
+.sig-org {
+  font-size: 0.62rem;
+  color: #78716c;
+}
+
+.receipt-cert-footer {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 0.65rem;
+  color: #a8a29e;
+  border-top: 1px solid #f2e8dc;
+  padding-top: 8px;
+  letter-spacing: 0.02em;
+}
+
+/* Responsive adjustment for Mobile view */
+@media (max-width: 640px) {
+  .receipt-certificate-printable {
+    padding: 12px;
+  }
+
+  .receipt-inner-frame {
+    padding: 14px 12px;
+  }
+
+  .receipt-cert-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .receipt-trust-reg-chips {
+    justify-content: center;
+  }
+
+  .receipt-serial-strip {
+    grid-template-columns: 1fr;
+    text-align: left;
+    gap: 6px;
+  }
+
+  .serial-col.text-center,
+  .serial-col.text-right {
+    text-align: left !important;
+  }
+
+  .receipt-table-row {
+    grid-template-columns: 1fr;
+    border-bottom: 1px solid #ebdccb;
+  }
+
+  .receipt-col.label-col {
+    border-right: none;
+    border-bottom: 1px dashed #f2e8dc;
+    padding-bottom: 2px;
+  }
+
+  .receipt-col.value-col {
+    border-right: none;
+    padding-top: 2px;
+  }
+
+  .receipt-sign-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    text-align: center;
+  }
+}
+
+/* ==============================================================
+   PRINT-ONLY STYLES FOR CRISP A4 TAX RECEIPT
+   ============================================================== */
+@media print {
+  body, html {
+    background: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body * {
+    visibility: hidden !important;
+  }
+
+  #printable-receipt,
+  #printable-receipt * {
+    visibility: visible !important;
+  }
+
+  #printable-receipt {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 12mm 15mm !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    page-break-inside: avoid !important;
+  }
+
+  .receipt-inner-frame {
+    border: 2px solid #b45309 !important;
+    background: #ffffff !important;
+    padding: 20px 24px !important;
+  }
+
+  .no-print,
+  .receipt-screen-toolbar,
+  .modal-header,
+  .modal-close-btn,
+  .modal-overlay {
+    display: none !important;
+  }
 }
 
 /* Admin Mobile Navigation Controls - Desktop Defaults */
@@ -6306,55 +6859,7 @@
   gap: 14px;
 }
 
-/* 80G Printable Receipt & Certificate */
-.receipt-certificate-printable {
-  background: #ffffff;
-  border: 2px solid #dfcebc;
-  border-radius: var(--radius-lg);
-  padding: 32px 28px;
-  position: relative;
-}
 
-.receipt-cert-header {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  border-bottom: 2px solid #f3e8dd;
-  padding-bottom: 20px;
-  margin-bottom: 24px;
-}
-
-.receipt-trust-logo {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.receipt-logo-img {
-  width: 68px;
-  height: 68px;
-  object-fit: contain;
-  border-radius: 50%;
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.15));
-}
-
-@media print {
-  body * {
-    visibility: hidden;
-  }
-  #printable-receipt, #printable-receipt * {
-    visibility: visible;
-  }
-  #printable-receipt {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    border: none;
-    padding: 0;
-  }
-}
 
 /* ==============================================================
    CMS & WEBSITE CONTENT MANAGER STYLES
