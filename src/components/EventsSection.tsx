@@ -179,6 +179,8 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
                     className="event-card-img"
                     loading={index < 3 ? 'eager' : 'lazy'}
                     decoding="async"
+                    crossOrigin="anonymous"
+                    referrerPolicy="no-referrer"
                     onError={(e) => {
                       (e.currentTarget as HTMLImageElement).src =
                         'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80';
@@ -380,6 +382,8 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
                       )}
                       alt={selectedEvent.title}
                       className="event-modal-img cursor-pointer"
+                      crossOrigin="anonymous"
+                      referrerPolicy="no-referrer"
                       onClick={() => setLightboxPhoto(selectedEventPhotos[modalPhotoIndex] || selectedEvent.image || '')}
                       title="Click to view full screen"
                       onError={(e) => {
@@ -676,6 +680,8 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                             loading={pIdx < 8 ? 'eager' : 'lazy'}
                             decoding="async"
+                            crossOrigin="anonymous"
+                            referrerPolicy="no-referrer"
                           />
                           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
                             <ZoomIn size={20} />
@@ -756,6 +762,8 @@ export const EventsSection: React.FC<EventsSectionProps> = ({ events, onOpenJoin
               src={getSafeImageUrl(lightboxPhoto)}
               alt="Enlarged event moment"
               className="lightbox-img"
+              crossOrigin="anonymous"
+              referrerPolicy="no-referrer"
             />
           </div>
         </div>
