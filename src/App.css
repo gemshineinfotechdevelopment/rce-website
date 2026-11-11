@@ -6265,379 +6265,390 @@
   color: #1c1917;
 }
 
-/* Certificate Body */
+/* Certificate Body - Traditional Indian Trust Donation Voucher */
 .receipt-certificate-printable {
   background: #ffffff;
   padding: 24px;
   color: #1c1917;
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-family: 'Georgia', 'Times New Roman', serif;
   line-height: 1.5;
 }
 
-.receipt-inner-frame {
-  border: 2px solid #b45309;
-  outline: 1px solid #e6d3c0;
+/* Traditional Outer Ornamental Border */
+.traditional-bill-container {
+  background: #fffdf9;
+  border: 3.5px solid #6b2d07;
+  outline: 1.5px solid #9a3412;
   outline-offset: -5px;
-  border-radius: 8px;
-  padding: 24px 28px;
-  background: radial-gradient(circle at 50% 30%, #ffffff 50%, #fdfbf7 100%);
+  padding: 20px 24px;
   position: relative;
+  box-sizing: border-box;
+  box-shadow: inset 0 0 30px rgba(180, 83, 9, 0.03);
 }
 
-/* Watermark background */
-.receipt-inner-frame::before {
-  content: '';
+/* Corner Ornaments */
+.corner-ornament {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 260px;
-  height: 260px;
-  background-image: url('/Rce.logo.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  opacity: 0.045;
-  pointer-events: none;
-  z-index: 0;
+  color: #9a3412;
+  font-size: 17px;
+  line-height: 1;
+  z-index: 2;
+  user-select: none;
 }
+.corner-tl { top: 7px; left: 9px; }
+.corner-tr { top: 7px; right: 9px; }
+.corner-bl { bottom: 7px; left: 9px; }
+.corner-br { bottom: 7px; right: 9px; }
 
-.receipt-inner-frame > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* Header */
-.receipt-cert-header {
+/* Top Invocational Motto Strip */
+.traditional-motto-strip {
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding-bottom: 16px;
-  border-bottom: 2px solid #d97706;
+  justify-content: space-between;
+  border-bottom: 1.5px solid #b45309;
+  padding-bottom: 6px;
+  margin-bottom: 14px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #78350f;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
-.receipt-trust-logo {
+.motto-english {
+  color: #92400e;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+/* Header Section */
+.traditional-header-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid #78350f;
+}
+
+.traditional-logo-box {
   flex-shrink: 0;
 }
 
-.receipt-logo-img {
-  width: 76px;
-  height: 76px;
+.traditional-logo-img {
+  width: 82px;
+  height: 82px;
   object-fit: contain;
+  border: 2px solid #78350f;
   border-radius: 50%;
-  border: 2px solid #b45309;
-  padding: 2px;
+  padding: 3px;
   background: #ffffff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
-.receipt-trust-info {
+.traditional-trust-meta {
   flex: 1;
+  text-align: center;
 }
 
-.receipt-org-badge {
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  color: #b45309;
-  text-transform: uppercase;
-  margin-bottom: 2px;
-}
-
-.receipt-trust-title {
-  font-family: 'Cinzel', Georgia, serif;
+.trust-name-english {
+  font-family: 'Cinzel', 'Playfair Display', Georgia, serif;
   font-size: 1.45rem;
   font-weight: 900;
-  color: #451a03;
-  margin: 0;
-  line-height: 1.15;
-  letter-spacing: 0.01em;
-}
-
-.receipt-trust-subtitle {
-  font-size: 0.8rem;
-  font-weight: 800;
   color: #78350f;
-  letter-spacing: 0.06em;
-  margin-top: 2px;
+  letter-spacing: 0.03em;
+  line-height: 1.15;
 }
 
-.receipt-trust-address {
-  font-size: 0.74rem;
+.trust-statutory-sub {
+  font-size: 0.76rem;
+  font-weight: 600;
   color: #57534e;
-  margin: 3px 0 6px;
+  margin-top: 3px;
 }
 
-.receipt-trust-reg-chips {
+.trust-address-line {
+  font-size: 0.73rem;
+  color: #44403c;
+  margin: 4px 0 6px;
+}
+
+.traditional-tax-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 4px;
 }
 
-.reg-chip {
-  background: #f7f2ea;
-  border: 1px solid #dfcebc;
-  padding: 2px 7px;
-  border-radius: 4px;
+.tax-chip {
+  background: #faf3e8;
+  border: 1px solid #d4bda8;
+  padding: 2px 8px;
+  border-radius: 3px;
   font-size: 0.68rem;
-  color: #44403c;
+  color: #382513;
+  font-family: 'Plus Jakarta Sans', monospace;
 }
 
-.reg-chip.gold-chip {
+.tax-chip.highlight-80g {
   background: #fef3c7;
-  border-color: #f59e0b;
+  border-color: #d97706;
   color: #92400e;
   font-weight: 800;
 }
 
-/* Certificate Title Banner */
-.receipt-title-banner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
+/* Traditional Ribbon Banner */
+.traditional-banner-wrap {
+  text-align: center;
   margin: 14px 0 12px;
 }
 
-.title-banner-line {
-  flex: 1;
-  height: 1.5px;
-  background: linear-gradient(90deg, transparent, #b45309, transparent);
+.traditional-banner-double-rule {
+  border-top: 1.5px solid #78350f;
+  border-bottom: 1.5px solid #78350f;
+  padding: 7px 0;
+  background: #faeedb;
 }
 
-.title-banner-text {
+.banner-main-title {
   font-family: 'Cinzel', Georgia, serif;
-  font-size: 0.84rem;
+  font-size: 0.98rem;
   font-weight: 900;
   letter-spacing: 0.08em;
-  color: #78350f;
-  background: #fef3c7;
-  border: 1px solid #fde68a;
-  padding: 4px 14px;
-  border-radius: 9999px;
-  text-align: center;
-  white-space: nowrap;
+  color: #451a03;
 }
 
-/* Serial Strip */
-.receipt-serial-strip {
+.banner-sub-legal {
+  font-size: 0.7rem;
+  color: #78350f;
+  font-weight: 700;
+  margin-top: 2px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Voucher Metadata Strip */
+.traditional-meta-strip {
   display: grid;
   grid-template-columns: 1.2fr 1fr 1.2fr;
-  gap: 10px;
-  background: #faf5ee;
-  border: 1px solid #ebdccb;
-  border-radius: 6px;
+  gap: 12px;
+  background: #f9f4ec;
+  border: 1px solid #dfcebc;
   padding: 8px 14px;
   margin-bottom: 14px;
   font-size: 0.8rem;
+  border-radius: 3px;
 }
 
-.serial-col {
+.meta-item {
   display: flex;
   flex-direction: column;
 }
 
-.serial-label {
-  font-size: 0.68rem;
+.meta-label {
+  font-size: 0.66rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #78716c;
+  color: #78350f;
   font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-.serial-value {
+.meta-val {
+  font-size: 0.82rem;
   font-weight: 800;
   color: #1c1917;
 }
 
-.serial-col:first-child .serial-value {
-  font-family: monospace;
-  color: #9a3412;
-  font-size: 0.95rem;
+.traditional-red-serial {
+  color: #b91c1c !important;
+  font-family: 'Georgia', monospace !important;
+  font-size: 0.98rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.04em;
 }
 
-/* Body Content */
-.receipt-body-content {
-  line-height: 1.5;
-}
-
-.receipt-acknowledgement {
-  font-size: 0.82rem;
-  color: #44403c;
-  font-style: italic;
-  margin-bottom: 8px;
-}
-
-/* Details Table */
-.receipt-details-table {
-  border: 1px solid #e7d8c9;
-  border-radius: 6px;
-  overflow: hidden;
+/* Traditional Receipt Fill-in Ledger Lines */
+.traditional-fill-section {
   margin-bottom: 14px;
-  background: #ffffff;
+  font-size: 0.88rem;
+  line-height: 1.95;
 }
 
-.receipt-table-row {
+.fill-row {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 7px;
+}
+
+.fill-label {
+  color: #451a03;
+  font-weight: 700;
+  white-space: nowrap;
+  margin-right: 8px;
+}
+
+.fill-line {
+  flex: 1;
+  border-bottom: 1.5px dotted #92400e;
+  padding: 0 8px;
+  color: #1c1917;
+  font-weight: 700;
+}
+
+.donor-full-title {
+  color: #3b1704 !important;
+  font-size: 0.94rem;
+}
+
+.fill-line.font-italic {
+  font-style: italic;
+  font-weight: 800;
+  color: #431407;
+}
+
+.fill-grid-2 {
   display: grid;
-  grid-template-columns: 130px 1fr 110px 1fr;
-  border-bottom: 1px solid #f2e8dc;
-}
-
-.receipt-table-row:last-child {
-  border-bottom: none;
-}
-
-.receipt-col {
-  padding: 8px 10px;
-  font-size: 0.8rem;
-  display: flex;
-  align-items: center;
-}
-
-.receipt-col.label-col {
-  background: #faf6f0;
-  color: #78350f;
-  font-weight: 700;
-  border-right: 1px solid #f2e8dc;
-}
-
-.receipt-col.value-col {
-  color: #1c1917;
-  border-right: 1px solid #f2e8dc;
-}
-
-.receipt-col.value-col:last-child {
-  border-right: none;
-}
-
-/* Amount Showcase Box */
-.receipt-amount-box {
-  background: linear-gradient(135deg, #fdf8ef 0%, #faeee0 100%);
-  border: 2px dashed #b45309;
-  border-radius: 8px;
-  padding: 12px 18px;
-  margin-bottom: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.amount-digit-section {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  border-bottom: 1px solid rgba(180, 83, 9, 0.2);
-  padding-bottom: 6px;
-}
-
-.amount-currency-label {
-  font-size: 0.8rem;
-  font-weight: 800;
-  color: #78350f;
-  text-transform: uppercase;
-}
-
-.amount-number {
-  font-size: 1.6rem;
-  font-weight: 900;
-  color: #9a3412;
-  font-family: 'Outfit', sans-serif;
-  letter-spacing: -0.02em;
-}
-
-.amount-words-section {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  font-size: 0.82rem;
-}
-
-.words-label {
-  font-weight: 700;
-  color: #78350f;
-  flex-shrink: 0;
-}
-
-.words-value {
-  font-weight: 800;
-  color: #1c1917;
-  font-style: italic;
-}
-
-/* Statutory Tax Clause */
-.receipt-tax-clause {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  border-radius: 6px;
-  padding: 8px 12px;
-  margin-bottom: 16px;
-  font-size: 0.72rem;
-  line-height: 1.45;
-  color: #166534;
-}
-
-.tax-clause-icon {
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-
-.tax-clause-text strong {
-  color: #14532d;
-  display: block;
-  margin-bottom: 2px;
-  font-size: 0.74rem;
-}
-
-.tax-clause-text code {
-  background: #dcfce7;
-  padding: 1px 4px;
-  border-radius: 3px;
-  font-family: monospace;
-  font-weight: 700;
-}
-
-/* Signatures & Seal Row */
-.receipt-sign-row {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
+  grid-template-columns: 1fr 1fr;
   gap: 16px;
-  margin-top: 18px;
-  padding-top: 12px;
-  border-top: 1.5px solid #ebdccb;
+  margin-bottom: 7px;
 }
 
-/* Circular Seal Stamp */
-.receipt-seal-box {
+.fill-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 7px;
+}
+
+/* Rupee Box & 80G Tax Exemption Row */
+.traditional-amount-clause-row {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 16px;
+  margin: 14px 0 16px;
+  align-items: stretch;
+}
+
+/* Classic Rupee Box */
+.traditional-rupee-box {
+  border: 2.5px solid #78350f;
+  outline: 1px solid #b45309;
+  outline-offset: -3px;
+  background: #faf2e3;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 4px;
+  justify-content: center;
+  text-align: center;
 }
 
-.seal-round-stamp {
-  width: 90px;
-  height: 90px;
-  border: 2px dashed #b45309;
-  border-radius: 50%;
-  color: #b45309;
+.rupee-symbol-row {
   display: flex;
   align-items: center;
   justify-content: center;
-  transform: rotate(-7deg);
-  padding: 4px;
-  background: rgba(254, 243, 199, 0.25);
-  box-shadow: 0 2px 8px rgba(180, 83, 9, 0.1);
+  gap: 6px;
+  border-bottom: 1.5px solid #78350f;
+  padding-bottom: 4px;
+  margin-bottom: 4px;
 }
 
-.seal-outer-ring {
+.rupee-sign {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #78350f;
+}
+
+.rupee-figures {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #9a3412;
+  font-family: 'Plus Jakarta Sans', monospace;
+  letter-spacing: -0.02em;
+}
+
+.rupee-subject-note {
+  font-size: 0.62rem;
+  font-style: italic;
+  color: #78716c;
+  margin-top: 2px;
+}
+
+/* Statutory 80G Declaration */
+.traditional-80g-declaration {
+  border: 1.5px solid #15803d;
+  background: #f0fdf4;
+  padding: 10px 14px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  line-height: 1.48;
+  color: #166534;
+}
+
+.declaration-heading {
+  font-weight: 800;
+  font-size: 0.76rem;
+  color: #14532d;
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Traditional Signatures & Official Stamp Row */
+.traditional-signatures-row {
+  display: grid;
+  grid-template-columns: 1fr 140px 1.4fr;
+  gap: 16px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1.5px solid #78350f;
+  align-items: flex-end;
+}
+
+.sig-col {
+  text-align: center;
+}
+
+.sig-dotted-line {
+  border-bottom: 1.5px dotted #78716c;
+  height: 42px;
+  margin-bottom: 6px;
+}
+
+.sig-caption-en {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #451a03;
+}
+
+.sig-sub-en {
+  font-size: 0.64rem;
+  color: #78716c;
+  font-style: italic;
+}
+
+/* Classical Violet Rubber Stamp */
+.traditional-rubber-stamp {
+  width: 98px;
+  height: 98px;
+  margin: 0 auto;
+  border: 2px dashed #312e81;
+  border-radius: 50%;
+  padding: 4px;
+  transform: rotate(-6deg);
+  background: rgba(238, 242, 255, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(49, 46, 129, 0.12);
+}
+
+.stamp-inner-ring {
   width: 100%;
   height: 100%;
-  border: 1px solid #b45309;
+  border: 1px solid #312e81;
   border-radius: 50%;
   display: flex;
   flex-direction: column;
@@ -6645,124 +6656,103 @@
   justify-content: space-between;
   padding: 4px 2px;
   text-align: center;
+  color: #312e81;
 }
 
-.seal-top-text {
+.stamp-arc-top {
   font-size: 0.44rem;
   font-weight: 900;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #b45309;
 }
 
-.seal-center-crest {
+.stamp-center-crest {
   display: flex;
   flex-direction: column;
   align-items: center;
-  line-height: 1;
+  line-height: 1.1;
 }
 
-.seal-star {
+.stamp-star {
   font-size: 0.6rem;
-  color: #d97706;
+  color: #4338ca;
 }
 
-.seal-name {
+.stamp-brand-name {
   font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
   font-weight: 900;
-  font-size: 0.85rem;
-  color: #78350f;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
 }
 
-.seal-year {
-  font-size: 0.5rem;
+.stamp-reg-code {
+  font-size: 0.44rem;
   font-weight: 800;
-  color: #92400e;
 }
 
-.seal-bottom-text {
+.stamp-arc-bottom {
   font-size: 0.42rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  color: #b45309;
+  font-weight: 900;
+  text-transform: uppercase;
 }
 
-.seal-caption {
-  font-size: 0.62rem;
-  color: #78716c;
+.stamp-seal-caption {
+  font-size: 0.58rem;
   font-style: italic;
+  color: #4338ca;
+  margin-top: 4px;
 }
 
-/* Digital Verification */
-.receipt-verification-box {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
+/* Managing Trustee Signatory Box */
+.trustee-sig-box {
+  text-align: right;
 }
 
-.verification-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: #fdf6ec;
-  border: 1px solid #ebdccb;
-  padding: 3px 10px;
-  border-radius: 9999px;
-  font-size: 0.68rem;
+.for-trust-label {
+  font-size: 0.78rem;
   font-weight: 800;
+  color: #451a03;
+}
+
+.for-trust-sub {
+  font-size: 0.68rem;
   color: #78350f;
+  font-style: italic;
+  margin-bottom: 2px;
 }
 
-.verification-text {
-  font-size: 0.64rem;
-  color: #78716c;
-  line-height: 1.35;
-  margin: 0;
-}
-
-/* Authorized Signatory */
-.receipt-signature-box {
-  text-align: center;
-  min-width: 170px;
-}
-
-.signature-stylized {
+.fountain-signature {
   font-family: 'Brush Script MT', 'Segoe Script', cursive, sans-serif;
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   color: #1e3a8a;
-  margin-bottom: -4px;
+  margin: 6px 0 -6px 0;
   user-select: none;
 }
 
-.sig-line {
+.trustee-line {
+  border-top: 1.5px solid #292524;
+  margin-top: 6px;
+  padding-top: 4px;
   font-weight: 800;
   font-size: 0.82rem;
-  border-top: 1.5px solid #292524;
-  padding-top: 4px;
   color: #1c1917;
 }
 
-.sig-role {
-  font-size: 0.7rem;
-  font-weight: 700;
+.trustee-title-text {
+  font-size: 0.72rem;
   color: #78350f;
+  font-weight: 700;
 }
 
-.sig-org {
-  font-size: 0.62rem;
-  color: #78716c;
-}
-
-.receipt-cert-footer {
+/* Traditional Footnote */
+.traditional-footnote {
   margin-top: 14px;
   text-align: center;
-  font-size: 0.65rem;
-  color: #a8a29e;
-  border-top: 1px solid #f2e8dc;
+  font-size: 0.66rem;
+  color: #78716c;
+  border-top: 1px solid #dfcebc;
   padding-top: 8px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   letter-spacing: 0.02em;
 }
 
@@ -6791,54 +6781,59 @@
   }
 
   .receipt-certificate-printable {
-    padding: 12px;
+    padding: 10px;
   }
 
-  .receipt-inner-frame {
-    padding: 14px 12px;
+  .traditional-bill-container {
+    padding: 14px 10px;
   }
 
-  .receipt-cert-header {
+  .traditional-header-row {
     flex-direction: column;
     text-align: center;
-    gap: 12px;
+    gap: 10px;
   }
 
-  .receipt-trust-reg-chips {
-    justify-content: center;
-  }
-
-  .receipt-serial-strip {
+  .traditional-meta-strip {
     grid-template-columns: 1fr;
     text-align: left;
     gap: 6px;
   }
 
-  .serial-col.text-center,
-  .serial-col.text-right {
+  .traditional-meta-strip .text-center,
+  .traditional-meta-strip .text-right {
     text-align: left !important;
   }
 
-  .receipt-table-row {
+  .fill-grid-2,
+  .fill-grid-3 {
     grid-template-columns: 1fr;
-    border-bottom: 1px solid #ebdccb;
+    gap: 0;
   }
 
-  .receipt-col.label-col {
-    border-right: none;
-    border-bottom: 1px dashed #f2e8dc;
-    padding-bottom: 2px;
-  }
-
-  .receipt-col.value-col {
-    border-right: none;
-    padding-top: 2px;
-  }
-
-  .receipt-sign-row {
+  .fill-row {
     flex-direction: column;
-    align-items: center;
-    gap: 14px;
+    align-items: stretch;
+    margin-bottom: 6px;
+  }
+
+  .fill-line {
+    border-bottom: 1px dotted #92400e;
+    padding: 2px 0;
+  }
+
+  .traditional-amount-clause-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .traditional-signatures-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .trustee-sig-box {
     text-align: center;
   }
 }
@@ -6917,10 +6912,11 @@
     page-break-inside: avoid !important;
   }
 
+  .traditional-bill-container,
   .receipt-inner-frame {
-    border: 2px solid #b45309 !important;
+    border: 3px solid #6b2d07 !important;
     background: #ffffff !important;
-    padding: 18px 22px !important;
+    padding: 16px 20px !important;
   }
 
   .no-print,
