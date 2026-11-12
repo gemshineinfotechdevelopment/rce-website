@@ -349,7 +349,7 @@ function App() {
         onSuccessRegistered={handleRefreshStats}
       />
 
-      {/* Donate / Support Modal with 80G tax receipt */}
+      {/* Donate / Support Modal with official donation receipt */}
       <DonateModal
         isOpen={isDonateOpen}
         onClose={() => setIsDonateOpen(false)}

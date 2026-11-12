@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { Heart, Send, ShieldCheck, Mail, SlidersHorizontal } from 'lucide-react';
-import { submitNewsletter } from '../services/api';
+import React from 'react';
+import { Heart, ShieldCheck, SlidersHorizontal } from 'lucide-react';
 
 import type { BrandContent } from '../services/api';
 
@@ -10,62 +9,8 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ brand, onOpenAdmin }) => {
-  const [email, setEmail] = useState('');
-  const [subMsg, setSubMsg] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim() || !email.includes('@')) {
-      setSubMsg('Please enter a valid email address.');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const res = await submitNewsletter(email);
-      setSubMsg(res.message || 'Subscribed successfully!');
-      setEmail('');
-    } catch {
-      setSubMsg('Subscribed! You will receive our monthly impact report.');
-      setEmail('');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <footer className="site-footer">
-      {/* Top Pre-Footer Callout */}
-      <div className="footer-callout-wrap">
-        <div className="container">
-          <div className="footer-callout-box">
-            <div className="footer-callout-text">
-              <h3>Join Our Monthly Impact Newsletter</h3>
-              <p>Receive updates on upcoming drives, sapling survival rates, and student stories.</p>
-            </div>
-            <form onSubmit={handleSubscribe} className="footer-newsletter-form">
-              <div className="newsletter-input-group">
-                <Mail size={18} className="newsletter-icon" />
-                <input
-                  type="email"
-                  required
-                  placeholder="Enter your email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="newsletter-input"
-                />
-                <button type="submit" disabled={loading} className="btn-primary btn-newsletter">
-                  <Send size={16} />
-                  <span>{loading ? 'Subscribing...' : 'Subscribe'}</span>
-                </button>
-              </div>
-              {subMsg && <div className="newsletter-feedback">{subMsg}</div>}
-            </form>
-          </div>
-        </div>
-      </div>
-
       {/* Main Footer Links */}
       <div className="container footer-main-content">
         <div className="footer-grid">
@@ -85,7 +30,7 @@ export const Footer: React.FC<FooterProps> = ({ brand, onOpenAdmin }) => {
             </p>
             <div className="footer-tax-badge">
               <ShieldCheck size={18} color="#fde047" className="flex-shrink-0" />
-              <span>Registered Public Charitable Trust. Contributions eligible for 80G Tax Exemption.</span>
+              <span>Registered Public Charitable Trust. Dedicated to Education & Social Service.</span>
             </div>
           </div>
 
@@ -99,7 +44,7 @@ export const Footer: React.FC<FooterProps> = ({ brand, onOpenAdmin }) => {
               <li><a href="#events">Upcoming Drives</a></li>
               <li><a href="#stories">Voices of Change</a></li>
               <li><a href="#gallery">Impact Gallery</a></li>
-              <li><a href="#contact">Contact & Helpline</a></li>
+              <li><a href="#contact">Contact Us</a></li>
               {onOpenAdmin && (
                 <li style={{ marginTop: '8px' }}>
                   <button
@@ -144,8 +89,6 @@ export const Footer: React.FC<FooterProps> = ({ brand, onOpenAdmin }) => {
             <h4 className="footer-heading">Trust & Legal</h4>
             <div className="footer-legal-box">
               <p><strong>Trust Reg No:</strong> {brand?.trustReg || 'TN/CH/2021/84920'}</p>
-              <p><strong>80G Exemption:</strong> {brand?.taxExemption80G || 'CIT(E)/CHN/80G/2021-22/A-412'}</p>
-              <p><strong>12A Registration:</strong> {brand?.reg12A || 'AAATR8492GE20210'}</p>
               <p><strong>PAN:</strong> {brand?.pan || 'AAATR8492G'}</p>
               <p className="mt-2 text-xs text-stone-400">
                 Audited statements are published annually for complete public scrutiny.

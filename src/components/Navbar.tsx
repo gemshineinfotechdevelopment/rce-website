@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Heart, Users, Menu, X, Home, Video, Info, Layers, Calendar, Sparkles, Image as ImageIcon, Phone } from 'lucide-react';
+import { Heart, Users, Menu, X, Home, Video, Info, Layers, Calendar, Sparkles, Image as ImageIcon, Mail } from 'lucide-react';
 import type { BrandContent } from '../services/api';
 import { checkBackendHealth } from '../services/api';
 
@@ -393,7 +393,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={(e) => handleLinkClick(e, 'home', '#contact')}
             className={`mobile-nav-link ${activeSegment === 'contact' ? 'active' : ''}`}
           >
-            <Phone size={18} className="text-amber-700 flex-shrink-0" />
+            <Mail size={18} className="text-amber-700 flex-shrink-0" />
             <span>Contact</span>
           </a>
         </div>

@@ -21,11 +21,9 @@ import {
   ArrowLeft,
   Phone,
   Eye,
-  Sliders,
   Edit3,
   Image as ImageIcon,
   Quote,
-  Globe,
   ExternalLink,
   Save,
   RotateCcw,
@@ -38,7 +36,8 @@ import {
   Award,
   Tv,
   Play,
-  Video
+  Video,
+  Settings
 } from 'lucide-react';
 import {
   fetchAdminData,
@@ -98,12 +97,10 @@ type AdminTab =
   | 'events'
   | 'projects'
   | 'inquiries'
-  | 'cms'
-  | 'counters'
+  | 'settings'
   | 'videos'
   | 'gallery'
-  | 'stories'
-  | 'newsletters';
+  | 'stories';
 
 export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDataUpdated }) => {
   // Authentication State
@@ -120,8 +117,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
   // Mobile sidebar drawer state
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
-  // Sub-navigation for Website CMS
-  const [cmsSubTab, setCmsSubTab] = useState<'hero' | 'about' | 'pillars' | 'contact' | 'brand'>('hero');
+  // Sub-navigation for Settings (Website Content CMS + Live Counters)
+  const [cmsSubTab, setCmsSubTab] = useState<'hero' | 'about' | 'pillars' | 'contact' | 'brand' | 'counters'>('hero');
 
   // Core Data
   const [adminData, setAdminData] = useState<AdminData | null>(null);
@@ -256,18 +253,14 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
   const [contactTitleGradient, setContactTitleGradient] = useState(DEFAULT_SITE_CONTENT.contact.titleGradient || 'Cause to Champion?');
   const [contactSubtitle, setContactSubtitle] = useState(DEFAULT_SITE_CONTENT.contact.subtitle || '');
   const [contactAddress, setContactAddress] = useState(DEFAULT_SITE_CONTENT.contact.officeAddress);
-  const [contactPhone, setContactPhone] = useState(DEFAULT_SITE_CONTENT.contact.phone);
   const [contactEmail, setContactEmail] = useState(DEFAULT_SITE_CONTENT.contact.email);
   const [contactHours, setContactHours] = useState(DEFAULT_SITE_CONTENT.contact.hours);
-  const [contactEmergency, setContactEmergency] = useState(DEFAULT_SITE_CONTENT.contact.emergencyHotline);
 
   // Brand CMS
   const [brandName, setBrandName] = useState(DEFAULT_SITE_CONTENT.brand.name);
   const [brandSubtitle, setBrandSubtitle] = useState(DEFAULT_SITE_CONTENT.brand.subtitle);
   const [brandMission, setBrandMission] = useState(DEFAULT_SITE_CONTENT.brand.mission);
   const [brandTrustReg, setBrandTrustReg] = useState(DEFAULT_SITE_CONTENT.brand.trustReg);
-  const [brand80G, setBrand80G] = useState(DEFAULT_SITE_CONTENT.brand.taxExemption80G);
-  const [brand12A, setBrand12A] = useState(DEFAULT_SITE_CONTENT.brand.reg12A);
   const [brandPAN, setBrandPAN] = useState(DEFAULT_SITE_CONTENT.brand.pan);
 
   // Load Admin Data on mount if authenticated
@@ -349,18 +342,14 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       setContactTitleGradient(content.contact.titleGradient || 'Cause to Champion?');
       setContactSubtitle(content.contact.subtitle || '');
       setContactAddress(content.contact.officeAddress || '');
-      setContactPhone(content.contact.phone || '');
       setContactEmail(content.contact.email || '');
       setContactHours(content.contact.hours || '');
-      setContactEmergency(content.contact.emergencyHotline || '');
     }
     if (content.brand) {
       setBrandName(content.brand.name || '');
       setBrandSubtitle(content.brand.subtitle || '');
       setBrandMission(content.brand.mission || '');
       setBrandTrustReg(content.brand.trustReg || '');
-      setBrand80G(content.brand.taxExemption80G || '');
-      setBrand12A(content.brand.reg12A || '');
       setBrandPAN(content.brand.pan || '');
     }
   };
@@ -410,8 +399,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           subtitle: brandSubtitle,
           mission: brandMission,
           trustReg: brandTrustReg,
-          taxExemption80G: brand80G,
-          reg12A: brand12A,
+          taxExemption80G: '',
+          reg12A: '',
           pan: brandPAN,
         },
         hero: {
@@ -452,10 +441,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           titleGradient: contactTitleGradient,
           subtitle: contactSubtitle,
           officeAddress: contactAddress,
-          phone: contactPhone,
+          phone: '',
           email: contactEmail,
           hours: contactHours,
-          emergencyHotline: contactEmergency,
+          emergencyHotline: '',
         },
       };
 
@@ -943,7 +932,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `RCE_Donations_Ledger_80G_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute('download', `RCE_Donations_Ledger_${new Date().toISOString().slice(0, 10)}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -1181,7 +1170,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           >
             <div className="flex items-center gap-3">
               <Heart size={18} />
-              <span>Donations & 80G</span>
+              <span>Donations</span>
             </div>
             <span className="admin-badge-count">{adminData?.donationRecords?.length || 0}</span>
           </button>
@@ -1227,23 +1216,12 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           <div className="admin-nav-group-label">SITE & CONTENT</div>
           <button
             type="button"
-            className={`admin-nav-item ${activeTab === 'cms' ? 'active' : ''}`}
-            onClick={() => { setActiveTab('cms'); setMobileSidebarOpen(false); }}
+            className={`admin-nav-item ${activeTab === 'settings' ? 'active' : ''}`}
+            onClick={() => { setActiveTab('settings'); setMobileSidebarOpen(false); }}
           >
             <div className="flex items-center gap-3">
-              <Globe size={18} />
-              <span>Website Content</span>
-            </div>
-          </button>
-
-          <button
-            type="button"
-            className={`admin-nav-item ${activeTab === 'counters' ? 'active' : ''}`}
-            onClick={() => { setActiveTab('counters'); setMobileSidebarOpen(false); }}
-          >
-            <div className="flex items-center gap-3">
-              <Sliders size={18} />
-              <span>Live Counters</span>
+              <Settings size={18} />
+              <span>Settings</span>
             </div>
           </button>
 
@@ -1281,18 +1259,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               <span>Testimonials</span>
             </div>
             <span className="admin-badge-count">{adminData?.stories?.length || 0}</span>
-          </button>
-
-          <button
-            type="button"
-            className={`admin-nav-item ${activeTab === 'newsletters' ? 'active' : ''}`}
-            onClick={() => { setActiveTab('newsletters'); setMobileSidebarOpen(false); }}
-          >
-            <div className="flex items-center gap-3">
-              <Mail size={18} />
-              <span>Subscribers</span>
-            </div>
-            <span className="admin-badge-count">{adminData?.newsletterSubscribers?.length || 0}</span>
           </button>
         </nav>
 
@@ -1334,18 +1300,15 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             <div className="admin-topbar-title">
               <h2>
                 {activeTab === 'overview' && 'Executive Performance Overview'}
-                {activeTab === 'cms' && 'Website Content & CMS'}
-                {activeTab === 'counters' && 'Home Page Live Counters'}
+                {activeTab === 'settings' && 'Website Settings & Live Counters'}
                 {activeTab === 'videos' && 'YouTube Videos & Impact Media Showcase'}
                 {activeTab === 'gallery' && 'Public Photo Gallery'}
                 {activeTab === 'stories' && 'Voices of Change & Stories'}
                 {activeTab === 'events' && 'Events'}
                 {activeTab === 'projects' && 'Flagship Causes & Projects'}
-                {activeTab === 'counters' && 'Home Page Live Counters'}
                 {activeTab === 'volunteers' && 'Volunteer & Member Registry'}
-                {activeTab === 'donations' && 'Donations & 80G Receipts'}
-                {activeTab === 'inquiries' && 'Helpline & Citizen Messages'}
-                {activeTab === 'newsletters' && 'Newsletter Audience'}
+                {activeTab === 'donations' && 'Donations & Official Receipts'}
+                {activeTab === 'inquiries' && 'Citizen Messages & Inquiries'}
               </h2>
             </div>
           </div>
@@ -1462,13 +1425,13 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
 
                   <button
                     type="button"
-                    onClick={() => setActiveTab('cms')}
+                    onClick={() => setActiveTab('settings')}
                     className="admin-action-tile"
                   >
-                    <Globe size={20} className="text-blue-700" />
+                    <Settings size={20} className="text-blue-700" />
                     <div>
-                      <strong>Update Website CMS</strong>
-                      <p>Edit hero texts, about story, contact helpline, and pillars</p>
+                      <strong>Website Settings & Counters</strong>
+                      <p>Edit hero texts, about story, contact info, and live counters</p>
                     </div>
                   </button>
 
@@ -1518,7 +1481,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                           <strong>{d.donorName}</strong>
                           <span className="activity-time">₹{d.amount.toLocaleString('en-IN')}</span>
                         </div>
-                        <p>Contributed to <i>{d.cause}</i> • 80G #{d.receiptNo}</p>
+                        <p>Contributed to <i>{d.cause}</i> • #{d.receiptNo}</p>
                       </div>
                     </div>
                   ))}
@@ -1698,7 +1661,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
         )}
 
         {/* ==============================================================
-            TAB: DONATIONS & 80G
+            TAB: DONATIONS & RECEIPTS
            ============================================================== */}
         {activeTab === 'donations' && (
           <div className="admin-content-view">
@@ -1726,7 +1689,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   className="btn-outline btn-admin-top"
                 >
                   <Download size={15} />
-                  <span>Export 80G CSV</span>
+                  <span>Export CSV</span>
                 </button>
               </div>
             </div>
@@ -1758,7 +1721,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                       <tr key={d.receiptNo}>
                         <td className="whitespace-nowrap">
                           <span className="admin-code-badge">{d.receiptNo}</span>
-                          <span className="text-[10px] text-emerald-700 font-semibold block whitespace-nowrap">80G Eligible</span>
+                          <span className="text-[10px] text-emerald-700 font-semibold block whitespace-nowrap">Verified Receipt</span>
                         </td>
                         <td className="whitespace-nowrap">
                           <div className="font-bold text-stone-900 text-xs whitespace-nowrap">{d.donorName}</div>
@@ -1803,7 +1766,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                               type="button"
                               onClick={() => setSelectedDonation(d)}
                               className="admin-icon-btn blue"
-                              title="Print 80G Certificate"
+                              title="Print Donation Receipt"
                             >
                               <Printer size={15} />
                             </button>
@@ -2527,9 +2490,9 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
         )}
 
         {/* ==============================================================
-            TAB: WEBSITE CONTENT (CMS)
+            TAB: SETTINGS (WEBSITE CONTENT CMS & LIVE COUNTERS)
            ============================================================== */}
-        {activeTab === 'cms' && (
+        {activeTab === 'settings' && (
           <div className="admin-content-view">
             {/* Sub-Nav Pills */}
             <div className="admin-cms-subnav">
@@ -2568,9 +2531,53 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               >
                 <span>🛡️ Brand & Legal</span>
               </button>
+              <button
+                type="button"
+                className={`cms-subnav-btn ${cmsSubTab === 'counters' ? 'active' : ''}`}
+                onClick={() => setCmsSubTab('counters')}
+              >
+                <span>📊 Live Counters</span>
+              </button>
             </div>
 
-            {/* CMS Form Card */}
+            {cmsSubTab === 'counters' ? (
+              <div className="admin-box">
+                <div className="admin-section-header-bar mb-4">
+                  <div>
+                    <h3 className="admin-section-title">Home Page Live Counters</h3>
+                    <p className="admin-section-subtitle">Real-time stats displayed on the public landing page ribbon</p>
+                  </div>
+                </div>
+
+                <form onSubmit={handleSaveCounters}>
+                  <div className="admin-counters-grid">
+                    {counterFields.map((field, idx) => (
+                      <div key={idx} className="admin-counter-tile">
+                        <div className="counter-tile-header">
+                          {field.icon}
+                          <span className="counter-tile-label">{field.label}</span>
+                        </div>
+                        <input
+                          type="number"
+                          required
+                          value={field.val}
+                          onChange={(e) => field.setVal(e.target.value)}
+                          className="form-input counter-tile-input"
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-stone-200 flex justify-end">
+                    <button type="submit" className="btn-primary btn-large">
+                      <CheckCircle2 size={18} />
+                      <span>Update Live Counters On Website</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            ) : (
+            /* CMS Form Card */
             <div className="admin-cms-card">
               <form onSubmit={handleSaveCmsContent}>
                 {/* 1. HERO SUBTAB */}
@@ -3020,27 +3027,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                         />
                       </div>
                       <div>
-                        <label className="input-sublabel">80G Income Tax Order</label>
-                        <input
-                          type="text"
-                          value={brand80G}
-                          onChange={(e) => setBrand80G(e.target.value)}
-                          className="form-input"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-row-2 mb-3">
-                      <div>
-                        <label className="input-sublabel">12A Registration</label>
-                        <input
-                          type="text"
-                          value={brand12A}
-                          onChange={(e) => setBrand12A(e.target.value)}
-                          className="form-input"
-                        />
-                      </div>
-                      <div>
                         <label className="input-sublabel">Trust PAN</label>
                         <input
                           type="text"
@@ -3065,47 +3051,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 </div>
               </form>
             </div>
-          </div>
-        )}
-
-        {/* ==============================================================
-            TAB: LIVE COUNTERS
-           ============================================================== */}
-        {activeTab === 'counters' && (
-          <div className="admin-content-view">
-            <div className="admin-section-header-bar mb-4">
-              <div>
-                <h3 className="admin-section-title">Home Page Live Counters</h3>
-                <p className="admin-section-subtitle">Real-time stats displayed on the public landing page ribbon</p>
-              </div>
-            </div>
-
-            <form onSubmit={handleSaveCounters} className="admin-box">
-              <div className="admin-counters-grid">
-                {counterFields.map((field, idx) => (
-                  <div key={idx} className="admin-counter-tile">
-                    <div className="counter-tile-header">
-                      {field.icon}
-                      <span className="counter-tile-label">{field.label}</span>
-                    </div>
-                    <input
-                      type="number"
-                      required
-                      value={field.val}
-                      onChange={(e) => field.setVal(e.target.value)}
-                      className="form-input counter-tile-input"
-                    />
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-stone-200 flex justify-end">
-                <button type="submit" className="btn-primary btn-large">
-                  <CheckCircle2 size={18} />
-                  <span>Update Live Counters On Website</span>
-                </button>
-              </div>
-            </form>
+            )}
           </div>
         )}
 
@@ -3646,40 +3592,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
-        )}
-
-        {/* ==============================================================
-            TAB: NEWSLETTERS
-           ============================================================== */}
-        {activeTab === 'newsletters' && (
-          <div className="admin-content-view">
-            <div className="admin-box max-w-3xl">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="admin-box-title">Newsletter Email Audience</h3>
-                  <p className="text-xs text-stone-500">Subscribers receiving monthly newsletters and campaign notices</p>
-                </div>
-                <div className="text-sm font-bold text-amber-900 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
-                  {adminData?.newsletterSubscribers?.length || 0} Subscribers
-                </div>
-              </div>
-
-              <div className="admin-newsletter-list-box">
-                {(adminData?.newsletterSubscribers || []).length === 0 ? (
-                  <p className="text-sm text-stone-500 py-4 text-center">No email subscribers yet.</p>
-                ) : (
-                  (adminData?.newsletterSubscribers || []).map((email, idx) => (
-                    <div key={idx} className="admin-newsletter-row">
-                      <span className="font-mono text-sm text-stone-800">{email}</span>
-                      <span className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
-                        <CheckCircle2 size={13} /> Active Subscriber
-                      </span>
-                    </div>
-                  ))
-                )}
-              </div>
             </div>
           </div>
         )}
@@ -4476,7 +4388,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       )}
 
       {/* ==============================================================
-          MODAL: 80G PRINTABLE TAX RECEIPT
+          MODAL: PRINTABLE DONATION RECEIPT
          ============================================================== */}
       {selectedDonation && (
         <div className="modal-overlay" onClick={() => setSelectedDonation(null)}>

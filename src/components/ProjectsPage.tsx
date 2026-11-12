@@ -116,7 +116,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
               <div className="page-metric-pill">
                 <ShieldCheck size={16} className="text-emerald-700" />
                 <span>
-                  <strong>80G</strong> Tax Exemption Verified
+                  <strong>100%</strong> Direct Community Impact
                 </span>
               </div>
             </div>

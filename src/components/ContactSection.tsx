@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Clock, Send, CheckCircle2, MessageSquare } from 'lucide-react';
+import { Mail, MapPin, Clock, Send, CheckCircle2, MessageSquare } from 'lucide-react';
 import { submitContactForm } from '../services/api';
 import type { ContactContent } from '../services/api';
 
@@ -21,10 +21,8 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ content }) => {
   const titleGradient = content?.titleGradient || 'Cause to Champion?';
   const subtitle = content?.subtitle || 'Every great initiative begins with a conversation. Let us know how we can collaborate.';
   const officeAddress = content?.officeAddress || 'RCE Youth Movement Hub, 42 Community Avenue, Anna Nagar, Chennai, Tamil Nadu - 600040';
-  const phone = content?.phone || '+91 (044) 2894-8800 / +91 98401 22334';
   const emailDesk = content?.email || 'contact@rceclub.org / volunteer@rceclub.org';
   const hours = content?.hours || 'Monday - Saturday: 9:00 AM - 7:00 PM\nSunday: On-Ground Field Drives';
-  const emergencyHotline = content?.emergencyHotline || '+91 99400 99999';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,16 +89,6 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ content }) => {
               </div>
 
               <div className="contact-item">
-                <div className="contact-icon-box green">
-                  <Phone size={20} />
-                </div>
-                <div>
-                  <strong>Helpline & WhatsApp</strong>
-                  <p>{phone}</p>
-                </div>
-              </div>
-
-              <div className="contact-item">
                 <div className="contact-icon-box amber">
                   <Mail size={20} />
                 </div>
@@ -120,12 +108,6 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ content }) => {
                 </div>
               </div>
             </div>
-
-            {emergencyHotline && (
-              <div className="contact-emergency-strip">
-                <span>🚨 <strong>Need Emergency Blood or Food Aid?</strong> Call our 24/7 Hotline: <code>{emergencyHotline}</code></span>
-              </div>
-            )}
           </div>
 
           {/* Contact Form Card */}
@@ -171,7 +153,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ content }) => {
                   <option value="Corporate CSR Partnership">Corporate CSR Partnership</option>
                   <option value="Hospital / Medical Camp Collaboration">Hospital / Medical Camp Collaboration</option>
                   <option value="Volunteer Grievance / Query">Volunteer Grievance / Query</option>
-                  <option value="Donation & 80G Receipt Assistance">Donation & 80G Receipt Assistance</option>
+                  <option value="Donation & Receipt Assistance">Donation & Receipt Assistance</option>
                 </select>
               </div>
 

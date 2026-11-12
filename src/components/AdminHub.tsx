@@ -33,7 +33,7 @@ interface AdminHubProps {
 
 export const AdminHub: React.FC<AdminHubProps> = ({ isOpen, onClose, onDataUpdated }) => {
   const [activeTab, setActiveTab] = useState<'submissions' | 'events' | 'projects' | 'stats'>('submissions');
-  const [submissionType, setSubmissionType] = useState<'volunteers' | 'donations' | 'messages' | 'newsletters'>('volunteers');
+  const [submissionType, setSubmissionType] = useState<'volunteers' | 'donations' | 'messages'>('volunteers');
   const [adminData, setAdminData] = useState<AdminData | null>(null);
   const [loading, setLoading] = useState(false);
   const [actionMsg, setActionMsg] = useState<{ text: string; isError: boolean } | null>(null);
@@ -266,7 +266,7 @@ export const AdminHub: React.FC<AdminHubProps> = ({ isOpen, onClose, onDataUpdat
             onClick={() => setActiveTab('stats')}
           >
             <BarChart3 size={16} />
-            <span>Live Counters</span>
+            <span>Settings</span>
           </button>
         </div>
 
@@ -307,13 +307,6 @@ export const AdminHub: React.FC<AdminHubProps> = ({ isOpen, onClose, onDataUpdat
                 >
                   <Mail size={14} />
                   <span>Contact Inquiries ({adminData?.contactMessages?.length || 0})</span>
-                </button>
-                <button
-                  type="button"
-                  className={`subnav-pill ${submissionType === 'newsletters' ? 'active' : ''}`}
-                  onClick={() => setSubmissionType('newsletters')}
-                >
-                  <span>Newsletter Subscribers ({adminData?.newsletterSubscribers?.length || 0})</span>
                 </button>
               </div>
 
@@ -395,7 +388,7 @@ export const AdminHub: React.FC<AdminHubProps> = ({ isOpen, onClose, onDataUpdat
                             <th>Donor Name</th>
                             <th>Amount</th>
                             <th>Cause</th>
-                            <th>PAN (80G)</th>
+                            <th>PAN Number</th>
                             <th>Method</th>
                             <th>Date</th>
                           </tr>
@@ -453,26 +446,6 @@ export const AdminHub: React.FC<AdminHubProps> = ({ isOpen, onClose, onDataUpdat
                         </tbody>
                       </table>
                     </div>
-                  )}
-                </div>
-              )}
-
-              {/* Newsletter Table */}
-              {submissionType === 'newsletters' && (
-                <div className="admin-table-wrap">
-                  {(!adminData?.newsletterSubscribers || adminData.newsletterSubscribers.length === 0) ? (
-                    <div className="admin-empty-state">
-                      <p>No newsletter subscribers yet.</p>
-                    </div>
-                  ) : (
-                    <ul className="admin-newsletter-list">
-                      {adminData.newsletterSubscribers.map((email, idx) => (
-                        <li key={idx} className="admin-newsletter-item">
-                          <span>✉️ {email}</span>
-                          <span className="text-xs text-stone-400">Subscribed</span>
-                        </li>
-                      ))}
-                    </ul>
                   )}
                 </div>
               )}

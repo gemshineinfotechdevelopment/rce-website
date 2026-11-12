@@ -23,7 +23,8 @@ export const Hero: React.FC<HeroProps> = ({ content, onOpenJoin, onOpenDonate })
   const primaryCta = content?.primaryCta || 'Join As Volunteer';
   const secondaryCta = content?.secondaryCta || 'Support A Cause';
   const tertiaryCta = content?.tertiaryCta || 'Active Drives';
-  const trustBadge1 = content?.trustBadge1 || '80G Tax Exemption';
+  const rawTrustBadge1 = content?.trustBadge1 || '100% Transparent Impact';
+  const trustBadge1 = /80g|tax/i.test(rawTrustBadge1) ? '100% Transparent Impact' : rawTrustBadge1;
   const trustBadge2 = content?.trustBadge2 || 'Govt. Registered NGO';
   const trustBadge3 = content?.trustBadge3 || '100% Volunteer Driven';
 

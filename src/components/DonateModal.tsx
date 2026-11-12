@@ -77,7 +77,7 @@ export const DonateModal: React.FC<DonateModalProps> = ({
       return;
     }
     if (!donorName.trim() || !email.trim()) {
-      setErrorMsg('Please provide your name and email to receive the 80G tax receipt.');
+      setErrorMsg('Please provide your name and email to receive the donation receipt.');
       return;
     }
 
@@ -130,7 +130,7 @@ export const DonateModal: React.FC<DonateModalProps> = ({
                   Empower Lives Through Giving
                 </span>
                 <h2 className="modal-title">
-                  Make a Tax-Deductible Contribution
+                  Make a Voluntary Contribution
                 </h2>
               </div>
               <button
@@ -214,7 +214,7 @@ export const DonateModal: React.FC<DonateModalProps> = ({
 
               {/* Donor Details */}
               <div className="form-group">
-                <label className="form-label">3. Donor Information (For 80G Tax Exemption Receipt)</label>
+                <label className="form-label">3. Donor Information (For Donation Receipt)</label>
                 <div className="form-row-2">
                   <div>
                     <label className="input-sublabel">Your Full Name *</label>
@@ -252,7 +252,7 @@ export const DonateModal: React.FC<DonateModalProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="input-sublabel">PAN Number (Optional, for 80G)</label>
+                    <label className="input-sublabel">PAN Number (Optional)</label>
                     <input
                       type="text"
                       maxLength={10}
@@ -299,7 +299,7 @@ export const DonateModal: React.FC<DonateModalProps> = ({
                       <p className="text-xs text-stone-500">Supports Google Pay, PhonePe, Paytm, BHIM & all banking apps.</p>
                       <p className="tax-notice">
                         <ShieldCheck size={14} color="#b45309" className="inline mr-1" />
-                        All donations are exempt under Section 80G of the Indian Income Tax Act.
+                        100% of contributions directly support education & community welfare.
                       </p>
                     </div>
                   </div>
@@ -326,7 +326,7 @@ export const DonateModal: React.FC<DonateModalProps> = ({
                   <span>
                     {loading
                       ? 'Generating Receipt...'
-                      : `Donate ₹${amount.toLocaleString()} & Get 80G Receipt`}
+                      : `Donate ₹${amount.toLocaleString()} & Get Receipt`}
                   </span>
                 </button>
               </div>

@@ -12,8 +12,8 @@ const defaultSiteContent = {
     subtitle: "SERVICE • CULTURE • YOUTH",
     mission: "A people-driven social movement inspired by compassion and collective civic action. Bridging resources to the vulnerable and fostering responsible young leaders.",
     trustReg: "TN/CH/2021/84920",
-    taxExemption80G: "CIT(E)/CHN/80G/2021-22/A-412",
-    reg12A: "AAATR8492GE20210",
+    taxExemption80G: "",
+    reg12A: "",
     pan: "AAATR8492G"
   },
   hero: {
@@ -25,7 +25,7 @@ const defaultSiteContent = {
     primaryCta: "Join As Volunteer",
     secondaryCta: "Support A Cause",
     tertiaryCta: "Active Drives",
-    trustBadge1: "80G Tax Exemption",
+    trustBadge1: "100% Transparent Impact",
     trustBadge2: "Govt. Registered NGO",
     trustBadge3: "100% Volunteer Driven",
     imageUrl: "/hero-banner.jpeg",
@@ -152,7 +152,7 @@ let volunteerApplications = [
 
 let donationRecords = [
   {
-    receiptNo: "80G-2026-00412",
+    receiptNo: "RCE-REC-2026-00412",
     donorName: "Dr. Sundararajan Ramanathan",
     email: "dr.sundar@medicare.in",
     phone: "+91 98410 88776",
@@ -162,12 +162,12 @@ let donationRecords = [
     cause: "Child Education & Vidhya Connect",
     paymentMethod: "UPI / Net Banking",
     transactionId: "UPI/329481928410",
-    taxBenefit: "Eligible for 80G Indian Income Tax Exemption (50% Deduction)",
+    taxBenefit: "Official Charitable Contribution Receipt",
     timestamp: "2026-10-15T11:20:00.000Z",
     status: "Verified & Received"
   },
   {
-    receiptNo: "80G-2026-00413",
+    receiptNo: "RCE-REC-2026-00413",
     donorName: "Ananya Narayanan",
     email: "ananya.n@gmail.com",
     phone: "+91 99620 44332",
@@ -177,12 +177,12 @@ let donationRecords = [
     cause: "Green Earth: Miyawaki Groves",
     paymentMethod: "Credit Card / Razorpay",
     transactionId: "TXN_774910294",
-    taxBenefit: "Eligible for 80G Indian Income Tax Exemption (50% Deduction)",
+    taxBenefit: "Official Charitable Contribution Receipt",
     timestamp: "2026-10-18T16:45:00.000Z",
     status: "Verified & Received"
   },
   {
-    receiptNo: "80G-2026-00414",
+    receiptNo: "RCE-REC-2026-00414",
     donorName: "RCE Alumni Batch 2018",
     email: "alumni.rce18@gmail.com",
     phone: "+91 94440 12890",
@@ -192,7 +192,7 @@ let donationRecords = [
     cause: "Annapoorna Hospital Food Drive",
     paymentMethod: "Direct Bank Transfer / NEFT",
     transactionId: "NEFT/SBIN8492019",
-    taxBenefit: "Eligible for 80G Indian Income Tax Exemption (50% Deduction)",
+    taxBenefit: "Official Charitable Contribution Receipt",
     timestamp: "2026-10-20T08:10:00.000Z",
     status: "Verified & Received"
   }
@@ -1426,7 +1426,7 @@ const makeDonation = (req, res) => {
     amount: donationAmount,
     cause: cause || "General Community Welfare",
     paymentMethod: paymentMethod || "UPI",
-    taxBenefit: "Eligible for 80G Indian Income Tax Exemption (50% Deduction)",
+    taxBenefit: "Official Charitable Contribution Receipt",
     timestamp: new Date().toISOString(),
     status: "Verified & Received"
   };
