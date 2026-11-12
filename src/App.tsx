@@ -224,6 +224,7 @@ function App() {
         </main>
         <Footer
           brand={siteContent.brand}
+          projects={projects}
           onOpenAdmin={handleNavigateToAdmin}
         />
         <JoinModal
@@ -238,6 +239,8 @@ function App() {
           onClose={() => setIsDonateOpen(false)}
           defaultCause={defaultDonateCause}
           projects={projects}
+          brand={siteContent.brand}
+          contact={siteContent.contact}
           onSuccessDonated={handleRefreshStats}
         />
       </div>
@@ -266,6 +269,7 @@ function App() {
         </main>
         <Footer
           brand={siteContent.brand}
+          projects={projects}
           onOpenAdmin={handleNavigateToAdmin}
         />
         <JoinModal
@@ -280,6 +284,8 @@ function App() {
           onClose={() => setIsDonateOpen(false)}
           defaultCause={defaultDonateCause}
           projects={projects}
+          brand={siteContent.brand}
+          contact={siteContent.contact}
           onSuccessDonated={handleRefreshStats}
         />
       </div>
@@ -337,6 +343,7 @@ function App() {
 
       <Footer
         brand={siteContent.brand}
+        projects={projects}
         onOpenAdmin={handleNavigateToAdmin}
       />
 
@@ -355,6 +362,8 @@ function App() {
         onClose={() => setIsDonateOpen(false)}
         defaultCause={defaultDonateCause}
         projects={projects}
+        brand={siteContent.brand}
+        contact={siteContent.contact}
         onSuccessDonated={handleRefreshStats}
       />
     </div>

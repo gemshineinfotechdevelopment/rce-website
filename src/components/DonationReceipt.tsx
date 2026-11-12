@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Printer, CheckCircle, Heart, X, UserCheck } from 'lucide-react';
+import type { BrandContent, ContactContent } from '../services/api';
 
 export interface DonationReceiptData {
   receiptNo: string;
@@ -17,6 +18,8 @@ export interface DonationReceiptData {
 
 interface DonationReceiptProps {
   receipt: DonationReceiptData;
+  brand?: BrandContent;
+  contact?: ContactContent;
   onClose?: () => void;
   showCloseBtn?: boolean;
 }
@@ -61,10 +64,21 @@ export function numberToWordsINR(num: number): string {
 
 export const DonationReceipt: React.FC<DonationReceiptProps> = ({
   receipt,
+  brand,
+  contact,
   onClose,
   showCloseBtn = true,
 }) => {
   const [isPrinting, setIsPrinting] = useState(false);
+
+  const trustTitle = brand?.subtitle?.toUpperCase().includes('RIGHT CLUB')
+    ? `${brand.subtitle.toUpperCase()} TRUST`
+    : brand?.name
+    ? `${brand.name.toUpperCase()} TRUST`
+    : 'RIGHT CLUB FOR EDUCATION TRUST';
+  const trustReg = brand?.trustReg || 'TN/CH/2021/84920';
+  const trustPan = brand?.pan || 'AAATR8492G';
+  const orgEmail = (contact?.email ? contact.email.split('/')[0].trim() : '') || 'contact@rceindia.org';
 
   const receiptDate = new Date(receipt.timestamp || Date.now());
   const formattedDate = receiptDate.toLocaleDateString('en-IN', {
@@ -607,7 +621,7 @@ export const DonationReceipt: React.FC<DonationReceiptProps> = ({
                   className="simple-logo-img"
                 />
                 <div className="simple-org-meta">
-                  <h1 className="simple-trust-title">RIGHT CLUB FOR EDUCATION TRUST</h1>
+                  <h1 className="simple-trust-title">{trustTitle}</h1>
                   <span className="simple-address-text">
                     Reg. Public Charitable Trust • Sivakasi & Chennai, Tamil Nadu • www.rceindia.org
                   </span>
@@ -622,9 +636,9 @@ export const DonationReceipt: React.FC<DonationReceiptProps> = ({
 
             {/* Compact Single-Line Reg & Contact Bar */}
             <div className="simple-org-grid">
-              <div className="org-grid-item"><strong>Reg No:</strong> TN/CH/2021/84920</div>
-              <div className="org-grid-item"><strong>PAN:</strong> AAATR8492G</div>
-              <div className="org-grid-item"><strong>Email:</strong> contact@rceindia.org</div>
+              <div className="org-grid-item"><strong>Reg No:</strong> {trustReg}</div>
+              <div className="org-grid-item"><strong>PAN:</strong> {trustPan}</div>
+              <div className="org-grid-item"><strong>Email:</strong> {orgEmail}</div>
               <div className="org-grid-item"><strong>Web:</strong> www.rceindia.org</div>
             </div>
 

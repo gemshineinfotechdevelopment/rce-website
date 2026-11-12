@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import {
   Users,
+  UserPlus,
   Heart,
   Calendar,
   Layers,
   Mail,
   BarChart3,
   RefreshCw,
-  PlusCircle,
   Trash2,
   CheckCircle2,
   XCircle,
   AlertCircle,
+  AlertTriangle,
   Search,
   Download,
   Printer,
@@ -19,7 +20,6 @@ import {
   Lock,
   LogOut,
   ArrowLeft,
-  Phone,
   Eye,
   Edit3,
   Image as ImageIcon,
@@ -53,6 +53,8 @@ import {
   updateInquiryStatusApi,
   deleteInquiryApi,
   deleteDonationApi,
+  submitJoinApplication,
+  submitDonation,
   adminLoginApi,
   updateSiteContentApi,
   createGalleryItemApi,
@@ -132,6 +134,47 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
   const [showAddGallery, setShowAddGallery] = useState(false);
   const [showAddStory, setShowAddStory] = useState(false);
   const [showAddVideo, setShowAddVideo] = useState(false);
+  const [showAddVolunteer, setShowAddVolunteer] = useState(false);
+  const [showAddDonation, setShowAddDonation] = useState(false);
+
+  // In-app Confirmation Dialog State (replaces browser window.confirm)
+  const [confirmDialog, setConfirmDialog] = useState<{
+    title: string;
+    message: string;
+    confirmLabel?: string;
+    isDanger?: boolean;
+    onConfirm: () => Promise<void> | void;
+  } | null>(null);
+  const [isConfirmLoading, setIsConfirmLoading] = useState(false);
+
+  // Add Volunteer Modal Form State
+  const [volFullName, setVolFullName] = useState('');
+  const [volEmail, setVolEmail] = useState('');
+  const [volPhone, setVolPhone] = useState('');
+  const [volRoleType, setVolRoleType] = useState('Volunteer');
+  const [volOccupation, setVolOccupation] = useState('Student');
+  const [volDepartment, setVolDepartment] = useState('');
+  const [volCollegeId, setVolCollegeId] = useState('');
+  const [volYear, setVolYear] = useState('');
+  const [volCity, setVolCity] = useState('');
+  const [volBloodGroup, setVolBloodGroup] = useState('O+ Positive');
+  const [volDomain, setVolDomain] = useState('Child Education & Vidhya Connect');
+  const [volAvailability, setVolAvailability] = useState('Weekends (Saturday/Sunday)');
+  const [volSkills, setVolSkills] = useState('');
+  const [volStatus, setVolStatus] = useState('Approved');
+  const [volMessage, setVolMessage] = useState('');
+  const [isSubmittingVolunteer, setIsSubmittingVolunteer] = useState(false);
+
+  // Add Donation Modal Form State
+  const [donName, setDonName] = useState('');
+  const [donEmail, setDonEmail] = useState('');
+  const [donPhone, setDonPhone] = useState('');
+  const [donPan, setDonPan] = useState('');
+  const [donAmount, setDonAmount] = useState('1000');
+  const [donCause, setDonCause] = useState('Child Education & Vidhya Connect');
+  const [donPaymentMethod, setDonPaymentMethod] = useState('UPI');
+  const [donTxnId, setDonTxnId] = useState('');
+  const [isSubmittingDonation, setIsSubmittingDonation] = useState(false);
 
   // Videos List
   const [videosList, setVideosList] = useState<VideoItem[]>([]);
@@ -370,7 +413,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       setIsAuthenticated(true);
       showNotice('Welcome to RCE Club Admin Portal!');
     } catch (err: any) {
-      setLoginError(err.message || 'Invalid passcode. Default key is: rce@admin');
+      setLoginError(err.message || 'Invalid passcode. Please check your credentials.');
     } finally {
       setLoginLoading(false);
     }
@@ -460,9 +503,16 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
   };
 
   const handleResetCmsToDefaults = () => {
-    if (!window.confirm('Reset all website content fields to template defaults?')) return;
-    populateCmsFields(DEFAULT_SITE_CONTENT);
-    showNotice('Loaded default template values. Click "Save Website Details" to apply.');
+    setConfirmDialog({
+      title: 'Reset Website Content',
+      message: 'Reset all website content fields to template defaults?',
+      confirmLabel: 'Reset Defaults',
+      isDanger: true,
+      onConfirm: () => {
+        populateCmsFields(DEFAULT_SITE_CONTENT);
+        showNotice('Loaded default template values. Click "Save Website Details" to apply.');
+      },
+    });
   };
 
   const handlePillarChange = (index: number, field: 'title' | 'description', value: string) => {
@@ -511,16 +561,23 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
     }
   };
 
-  const handleDeleteGalleryItem = async (id: string) => {
-    if (!window.confirm('Remove this photo from public gallery?')) return;
-    try {
-      await deleteGalleryItemApi(id);
-      showNotice('Photo deleted from gallery');
-      await loadData();
-      if (onDataUpdated) onDataUpdated();
-    } catch (err: any) {
-      showNotice(err.message || 'Failed to delete photo', true);
-    }
+  const handleDeleteGalleryItem = (id: string) => {
+    setConfirmDialog({
+      title: 'Remove Photo',
+      message: 'Remove this photo from the public gallery? This action cannot be undone.',
+      confirmLabel: 'Delete Photo',
+      isDanger: true,
+      onConfirm: async () => {
+        try {
+          await deleteGalleryItemApi(id);
+          showNotice('Photo deleted from gallery');
+          await loadData();
+          if (onDataUpdated) onDataUpdated();
+        } catch (err: any) {
+          showNotice(err.message || 'Failed to delete photo', true);
+        }
+      },
+    });
   };
 
   // Stories Handlers
@@ -564,16 +621,23 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
     }
   };
 
-  const handleDeleteStory = async (id: string) => {
-    if (!window.confirm('Delete this testimonial story?')) return;
-    try {
-      await deleteClubStoryApi(id);
-      showNotice('Story removed from website');
-      await loadData();
-      if (onDataUpdated) onDataUpdated();
-    } catch (err: any) {
-      showNotice(err.message || 'Failed to delete story', true);
-    }
+  const handleDeleteStory = (id: string) => {
+    setConfirmDialog({
+      title: 'Delete Testimonial',
+      message: 'Are you sure you want to delete this testimonial story?',
+      confirmLabel: 'Delete Story',
+      isDanger: true,
+      onConfirm: async () => {
+        try {
+          await deleteClubStoryApi(id);
+          showNotice('Story removed from website');
+          await loadData();
+          if (onDataUpdated) onDataUpdated();
+        } catch (err: any) {
+          showNotice(err.message || 'Failed to delete story', true);
+        }
+      },
+    });
   };
 
   // YouTube Video Handlers
@@ -635,16 +699,23 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
     }
   };
 
-  const handleDeleteVideo = async (id: string) => {
-    if (!window.confirm('Remove this YouTube video from the website showcase?')) return;
-    try {
-      await deleteClubVideoApi(id);
-      showNotice('Video removed from showcase');
-      await loadData();
-      if (onDataUpdated) onDataUpdated();
-    } catch (err: any) {
-      showNotice(err.message || 'Failed to delete video', true);
-    }
+  const handleDeleteVideo = (id: string) => {
+    setConfirmDialog({
+      title: 'Remove Video',
+      message: 'Remove this YouTube video from the website showcase?',
+      confirmLabel: 'Delete Video',
+      isDanger: true,
+      onConfirm: async () => {
+        try {
+          await deleteClubVideoApi(id);
+          showNotice('Video removed from showcase');
+          await loadData();
+          if (onDataUpdated) onDataUpdated();
+        } catch (err: any) {
+          showNotice(err.message || 'Failed to delete video', true);
+        }
+      },
+    });
   };
 
   // Projects Handlers
@@ -691,16 +762,23 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
     }
   };
 
-  const handleDeleteProject = async (id: string) => {
-    if (!window.confirm('Delete this project?')) return;
-    try {
-      await deleteClubProject(id);
-      showNotice('Project removed from website');
-      await loadData();
-      if (onDataUpdated) onDataUpdated();
-    } catch (err: any) {
-      showNotice(err.message || 'Delete failed', true);
-    }
+  const handleDeleteProject = (id: string) => {
+    setConfirmDialog({
+      title: 'Delete Project',
+      message: 'Are you sure you want to delete this project? This action cannot be undone.',
+      confirmLabel: 'Delete Project',
+      isDanger: true,
+      onConfirm: async () => {
+        try {
+          await deleteClubProject(id);
+          showNotice('Project removed from website');
+          await loadData();
+          if (onDataUpdated) onDataUpdated();
+        } catch (err: any) {
+          showNotice(err.message || 'Delete failed', true);
+        }
+      },
+    });
   };
 
   const isEventScheduleOver = (dateStr: string, status?: string) => {
@@ -786,16 +864,23 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
     }
   };
 
-  const handleDeleteEvent = async (id: string) => {
-    if (!window.confirm('Delete this drive?')) return;
-    try {
-      await deleteClubEvent(id);
-      showNotice('Drive removed from live site');
-      await loadData();
-      if (onDataUpdated) onDataUpdated();
-    } catch (err: any) {
-      showNotice(err.message || 'Delete failed', true);
-    }
+  const handleDeleteEvent = (id: string) => {
+    setConfirmDialog({
+      title: 'Delete Event',
+      message: 'Are you sure you want to delete this event/drive? This action cannot be undone.',
+      confirmLabel: 'Delete Event',
+      isDanger: true,
+      onConfirm: async () => {
+        try {
+          await deleteClubEvent(id);
+          showNotice('Drive removed from live site');
+          await loadData();
+          if (onDataUpdated) onDataUpdated();
+        } catch (err: any) {
+          showNotice(err.message || 'Delete failed', true);
+        }
+      },
+    });
   };
 
   // Stats Counters Update
@@ -832,15 +917,67 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
     }
   };
 
-  const handleDeleteVolunteer = async (id: string) => {
-    if (!window.confirm(`Permanently remove volunteer record ${id}?`)) return;
+  const handleDeleteVolunteer = (id: string) => {
+    setConfirmDialog({
+      title: 'Delete Volunteer Record',
+      message: `Permanently remove volunteer record ${id}? This action cannot be undone.`,
+      confirmLabel: 'Delete Volunteer',
+      isDanger: true,
+      onConfirm: async () => {
+        try {
+          await deleteVolunteerApi(id);
+          showNotice('Volunteer record deleted');
+          await loadData();
+          if (onDataUpdated) onDataUpdated();
+        } catch (err: any) {
+          showNotice(err.message || 'Delete failed', true);
+        }
+      },
+    });
+  };
+
+  const handleAddVolunteerSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!volFullName.trim() || !volEmail.trim() || !volPhone.trim()) {
+      showNotice('Please enter Full Name, Email, and Contact Number', true);
+      return;
+    }
+    setIsSubmittingVolunteer(true);
     try {
-      await deleteVolunteerApi(id);
-      showNotice('Volunteer record deleted');
+      await submitJoinApplication({
+        fullName: volFullName.trim(),
+        email: volEmail.trim(),
+        phone: volPhone.trim(),
+        roleType: volRoleType,
+        occupation: volOccupation,
+        department: volDepartment.trim() || 'General',
+        collegeId: volCollegeId.trim() || 'N/A',
+        yearOfStudy: volYear.trim() || 'N/A',
+        bloodGroup: volBloodGroup,
+        city: volCity.trim() || 'Sivakasi',
+        skills: volSkills.trim() || 'Community Outreach',
+        availability: volAvailability,
+        preferredDomain: volDomain,
+        message: volMessage.trim(),
+        status: volStatus,
+      });
+      showNotice('Volunteer added successfully!');
+      setVolFullName('');
+      setVolEmail('');
+      setVolPhone('');
+      setVolDepartment('');
+      setVolCollegeId('');
+      setVolYear('');
+      setVolCity('');
+      setVolSkills('');
+      setVolMessage('');
+      setShowAddVolunteer(false);
       await loadData();
       if (onDataUpdated) onDataUpdated();
     } catch (err: any) {
-      showNotice(err.message || 'Delete failed', true);
+      showNotice(err.message || 'Failed to add volunteer', true);
+    } finally {
+      setIsSubmittingVolunteer(false);
     }
   };
 
@@ -856,28 +993,78 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
     }
   };
 
-  const handleDeleteInquiry = async (id: string) => {
-    if (!window.confirm('Delete this inquiry?')) return;
-    try {
-      await deleteInquiryApi(id);
-      showNotice('Inquiry removed');
-      await loadData();
-      if (onDataUpdated) onDataUpdated();
-    } catch (err: any) {
-      showNotice(err.message || 'Delete failed', true);
-    }
+  const handleDeleteInquiry = (id: string) => {
+    setConfirmDialog({
+      title: 'Delete Inquiry',
+      message: 'Are you sure you want to permanently delete this inquiry message?',
+      confirmLabel: 'Delete Inquiry',
+      isDanger: true,
+      onConfirm: async () => {
+        try {
+          await deleteInquiryApi(id);
+          showNotice('Inquiry removed');
+          await loadData();
+          if (onDataUpdated) onDataUpdated();
+        } catch (err: any) {
+          showNotice(err.message || 'Delete failed', true);
+        }
+      },
+    });
   };
 
   // Donation Actions
-  const handleDeleteDonation = async (receiptNo: string) => {
-    if (!window.confirm(`Void / delete donation record ${receiptNo}?`)) return;
+  const handleDeleteDonation = (receiptNo: string) => {
+    setConfirmDialog({
+      title: 'Delete Donation Record',
+      message: `Void and permanently delete donation record ${receiptNo}?`,
+      confirmLabel: 'Delete Record',
+      isDanger: true,
+      onConfirm: async () => {
+        try {
+          await deleteDonationApi(receiptNo);
+          showNotice('Donation record deleted');
+          await loadData();
+          if (onDataUpdated) onDataUpdated();
+        } catch (err: any) {
+          showNotice(err.message || 'Delete failed', true);
+        }
+      },
+    });
+  };
+
+  const handleAddDonationSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const numericAmt = Number(donAmount);
+    if (!donName.trim() || !donEmail.trim() || !numericAmt || numericAmt < 50) {
+      showNotice('Please enter Donor Name, Email, and valid Amount (minimum ₹50)', true);
+      return;
+    }
+    setIsSubmittingDonation(true);
     try {
-      await deleteDonationApi(receiptNo);
-      showNotice('Donation record deleted');
+      await submitDonation({
+        donorName: donName.trim(),
+        email: donEmail.trim(),
+        phone: donPhone.trim() || 'Not provided',
+        pan: donPan.trim().toUpperCase(),
+        amount: numericAmt,
+        cause: donCause || 'Child Education & Vidhya Connect',
+        paymentMethod: donPaymentMethod,
+        transactionId: donTxnId.trim(),
+      });
+      showNotice('Donation recorded and receipt generated!');
+      setDonName('');
+      setDonEmail('');
+      setDonPhone('');
+      setDonPan('');
+      setDonAmount('1000');
+      setDonTxnId('');
+      setShowAddDonation(false);
       await loadData();
       if (onDataUpdated) onDataUpdated();
     } catch (err: any) {
-      showNotice(err.message || 'Delete failed', true);
+      showNotice(err.message || 'Failed to add donation', true);
+    } finally {
+      setIsSubmittingDonation(false);
     }
   };
 
@@ -1031,9 +1218,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   className="form-input flex-1"
                 />
               </div>
-              <p className="admin-pass-hint">
-                Default Access Key: <code>rce@admin</code>
-              </p>
             </div>
 
             {loginError && (
@@ -1416,7 +1600,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     onClick={() => setActiveTab('events')}
                     className="admin-action-tile"
                   >
-                    <PlusCircle size={20} className="text-emerald-700" />
+                    <Calendar size={20} className="text-emerald-700" />
                     <div>
                       <strong>Schedule a Drive</strong>
                       <p>Publish upcoming community, health, or clean-up drives</p>
@@ -1515,13 +1699,17 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   className="admin-select"
                 >
                   <option value="All">All Departments</option>
-                  <option value="Computer Science">Computer Science</option>
-                  <option value="Information Tech">Information Tech</option>
-                  <option value="AI & Data">AI & Data Science</option>
-                  <option value="Electronics">Electronics (ECE)</option>
-                  <option value="Electrical">Electrical (EEE)</option>
-                  <option value="Mechanical">Mechanical</option>
-                  <option value="Biotech">Biotechnology</option>
+                  {Array.from(
+                    new Set(
+                      (adminData?.volunteerApplications || [])
+                        .map((v) => (v.department || '').trim())
+                        .filter(Boolean)
+                    )
+                  ).map((dept) => (
+                    <option key={dept} value={dept}>
+                      {dept}
+                    </option>
+                  ))}
                 </select>
 
                 <select
@@ -1534,6 +1722,16 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   <option value="Pending">Pending Review</option>
                   <option value="Rejected">Rejected</option>
                 </select>
+
+                <button
+                  type="button"
+                  onClick={() => setShowAddVolunteer(true)}
+                  className="btn-primary btn-admin-top"
+                  title="Add Volunteer"
+                >
+                  <UserPlus size={15} />
+                  <span>Add Volunteer</span>
+                </button>
 
                 <button
                   type="button"
@@ -1588,8 +1786,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                           <span className="blood-group-chip">{vol.bloodGroup || 'O+'}</span>
                         </td>
                         <td className="whitespace-nowrap">
-                          <div className="text-xs font-semibold text-stone-900 whitespace-nowrap flex items-center gap-1.5">
-                            <Phone size={12} className="text-amber-800 flex-shrink-0" />
+                          <div className="text-xs font-semibold text-stone-900 whitespace-nowrap">
                             <span>{vol.phone}</span>
                           </div>
                         </td>
@@ -1678,10 +1875,15 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               </div>
 
               <div className="admin-filter-group">
-                <div className="admin-stat-pill">
-                  <span>Total Collected:</span>
-                  <strong>₹{totalDonationSum.toLocaleString('en-IN')}</strong>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowAddDonation(true)}
+                  className="btn-primary btn-admin-top"
+                  title="Add Donation"
+                >
+                  <Heart size={15} />
+                  <span>Add Donation</span>
+                </button>
 
                 <button
                   type="button"
@@ -1731,8 +1933,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                           </div>
                         </td>
                         <td className="whitespace-nowrap">
-                          <div className="text-xs font-semibold text-stone-900 whitespace-nowrap flex items-center gap-1.5">
-                            <Phone size={12} className="text-amber-800 flex-shrink-0" />
+                          <div className="text-xs font-semibold text-stone-900 whitespace-nowrap">
                             <span>{d.phone || 'N/A'}</span>
                           </div>
                         </td>
@@ -1805,8 +2006,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 onClick={() => setShowAddEvent(!showAddEvent)}
                 className="btn-primary"
               >
-                {showAddEvent ? <ChevronUp size={16} /> : <PlusCircle size={16} />}
-                <span>{showAddEvent ? 'Close Form' : '+ Upload Event'}</span>
+                {showAddEvent ? <ChevronUp size={16} /> : <Calendar size={16} />}
+                <span>{showAddEvent ? 'Close Form' : 'Add Event'}</span>
               </button>
             </div>
 
@@ -1814,7 +2015,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             {showAddEvent && (
               <div className="admin-box mb-6 border-amber-300 bg-amber-50/30">
                 <h4 className="font-bold text-amber-950 mb-4 flex items-center gap-2">
-                  <PlusCircle size={18} className="text-amber-700" />
+                  <Calendar size={18} className="text-amber-700" />
                   <span>Upload New Event</span>
                 </h4>
                 <form onSubmit={handleAddEvent}>
@@ -2203,8 +2404,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 onClick={() => setShowAddProject(!showAddProject)}
                 className="btn-primary"
               >
-                {showAddProject ? <ChevronUp size={16} /> : <PlusCircle size={16} />}
-                <span>{showAddProject ? 'Close Form' : '+ Launch New Project'}</span>
+                {showAddProject ? <ChevronUp size={16} /> : <Layers size={16} />}
+                <span>{showAddProject ? 'Close Form' : 'Add Project'}</span>
               </button>
             </div>
 
@@ -2212,7 +2413,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             {showAddProject && (
               <div className="admin-box mb-6 border-amber-300 bg-amber-50/30">
                 <h4 className="font-bold text-amber-950 mb-4 flex items-center gap-2">
-                  <PlusCircle size={18} className="text-amber-700" />
+                  <Layers size={18} className="text-amber-700" />
                   <span>Launch New Flagship Social Project</span>
                 </h4>
                 <form onSubmit={handleAddProject}>
@@ -2388,7 +2589,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
         )}
 
         {/* ==============================================================
-            TAB: INQUIRIES & HELPLINE
+            TAB: INQUIRIES
            ============================================================== */}
         {activeTab === 'inquiries' && (
           <div className="admin-content-view">
@@ -2410,7 +2611,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   {(adminData?.contactMessages || []).length === 0 ? (
                     <tr>
                       <td colSpan={8} className="text-center py-8 text-stone-500">
-                        No inquiries or helpline messages.
+                        No citizen messages or inquiries found.
                       </td>
                     </tr>
                   ) : (
@@ -2429,8 +2630,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                           </div>
                         </td>
                         <td className="whitespace-nowrap">
-                          <div className="text-xs font-semibold text-stone-900 whitespace-nowrap flex items-center gap-1.5">
-                            <Phone size={12} className="text-amber-800 flex-shrink-0" />
+                          <div className="text-xs font-semibold text-stone-900 whitespace-nowrap">
                             <span>{msg.phone || 'No phone'}</span>
                           </div>
                         </td>
@@ -2522,7 +2722,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 className={`cms-subnav-btn ${cmsSubTab === 'contact' ? 'active' : ''}`}
                 onClick={() => setCmsSubTab('contact')}
               >
-                <span>📞 Contact & Helpline</span>
+                <span>📞 Contact & Office</span>
               </button>
               <button
                 type="button"
@@ -2902,8 +3102,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   <div>
                     <div className="cms-section-header">
                       <div>
-                        <h3>Contact Desk & Helpline</h3>
-                        <p>Edit office location, phones, emails, working hours, and emergency helpline</p>
+                        <h3>Contact Desk & Office</h3>
+                        <p>Edit office location, official email, and operating hours</p>
                       </div>
                       <button
                         type="submit"
@@ -2926,15 +3126,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
 
                     <div className="form-row-2 mb-3">
                       <div>
-                        <label className="input-sublabel">Helpline Phone(s)</label>
-                        <input
-                          type="text"
-                          value={contactPhone}
-                          onChange={(e) => setContactPhone(e.target.value)}
-                          className="form-input"
-                        />
-                      </div>
-                      <div>
                         <label className="input-sublabel">Official Email</label>
                         <input
                           type="text"
@@ -2943,24 +3134,12 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                           className="form-input"
                         />
                       </div>
-                    </div>
-
-                    <div className="form-row-2 mb-3">
                       <div>
                         <label className="input-sublabel">Operating Hours</label>
                         <input
                           type="text"
                           value={contactHours}
                           onChange={(e) => setContactHours(e.target.value)}
-                          className="form-input"
-                        />
-                      </div>
-                      <div>
-                        <label className="input-sublabel">24/7 Emergency Helpline</label>
-                        <input
-                          type="text"
-                          value={contactEmergency}
-                          onChange={(e) => setContactEmergency(e.target.value)}
                           className="form-input"
                         />
                       </div>
@@ -3072,8 +3251,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 onClick={() => setShowAddVideo(!showAddVideo)}
                 className="btn-primary"
               >
-                {showAddVideo ? <ChevronUp size={16} /> : <PlusCircle size={16} />}
-                <span>{showAddVideo ? 'Close Form' : '+ Add YouTube Video'}</span>
+                {showAddVideo && <ChevronUp size={16} />}
+                <span>{showAddVideo ? 'Close Form' : 'Add YouTube Video'}</span>
               </button>
             </div>
 
@@ -3219,7 +3398,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   onClick={() => setShowAddVideo(true)}
                   className="btn-primary"
                 >
-                  <PlusCircle size={16} />
+                  <Tv size={16} />
                   <span>Add First YouTube Video</span>
                 </button>
               </div>
@@ -3315,15 +3494,15 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 onClick={() => setShowAddGallery(!showAddGallery)}
                 className="btn-primary"
               >
-                {showAddGallery ? <ChevronUp size={16} /> : <PlusCircle size={16} />}
-                <span>{showAddGallery ? 'Close Form' : '+ Add New Photo'}</span>
+                {showAddGallery && <ChevronUp size={16} />}
+                <span>{showAddGallery ? 'Close Form' : 'Add New Photo'}</span>
               </button>
             </div>
 
             {showAddGallery && (
               <div className="admin-box mb-6 border-amber-300 bg-amber-50/30">
                 <h4 className="font-bold text-amber-950 mb-4 flex items-center gap-2">
-                  <PlusCircle size={18} className="text-amber-700" />
+                  <ImageIcon size={18} className="text-amber-700" />
                   <span>Add Photo to Public Impact Gallery</span>
                 </h4>
                 <form onSubmit={handleAddGalleryItem}>
@@ -3456,15 +3635,15 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 onClick={() => setShowAddStory(!showAddStory)}
                 className="btn-primary"
               >
-                {showAddStory ? <ChevronUp size={16} /> : <PlusCircle size={16} />}
-                <span>{showAddStory ? 'Close Form' : '+ Add Testimonial'}</span>
+                {showAddStory && <ChevronUp size={16} />}
+                <span>{showAddStory ? 'Close Form' : 'Add Testimonial'}</span>
               </button>
             </div>
 
             {showAddStory && (
               <div className="admin-box mb-6 border-amber-300 bg-amber-50/30">
                 <h4 className="font-bold text-amber-950 mb-4 flex items-center gap-2">
-                  <PlusCircle size={18} className="text-amber-700" />
+                  <Quote size={18} className="text-amber-700" />
                   <span>Publish Beneficiary / Volunteer Testimonial</span>
                 </h4>
                 <form onSubmit={handleAddStory}>
@@ -4363,12 +4542,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               )}
 
               <div className="modal-actions-bar mt-6">
-                <a
-                  href={`tel:${selectedVolunteer.phone}`}
-                  className="btn-outline"
-                >
-                  <Phone size={15} /> Call
-                </a>
                 {selectedVolunteer.status !== 'Approved' && (
                   <button
                     type="button"
@@ -4395,9 +4568,537 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           <div className="modal-content modal-receipt-preview p-0" onClick={(e) => e.stopPropagation()}>
             <DonationReceipt
               receipt={selectedDonation}
+              brand={adminData?.siteContent?.brand}
+              contact={adminData?.siteContent?.contact}
               onClose={() => setSelectedDonation(null)}
               showCloseBtn={true}
             />
+          </div>
+        </div>
+      )}
+
+      {/* ==============================================================
+          MODAL: ADD VOLUNTEER RECORD
+         ============================================================== */}
+      {showAddVolunteer && (
+        <div className="modal-overlay" onClick={() => setShowAddVolunteer(false)}>
+          <div className="modal-content admin-modal-edit" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <div className="modal-title-group">
+                <span className="section-tag gold">ADMIN VOLUNTEER ENTRY</span>
+                <h2 className="modal-title">Add New Volunteer</h2>
+              </div>
+              <button
+                type="button"
+                className="modal-close-btn"
+                onClick={() => setShowAddVolunteer(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleAddVolunteerSubmit} className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div className="form-row-2">
+                <div>
+                  <label className="input-sublabel">Full Name *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Karthik Subramanian"
+                    value={volFullName}
+                    onChange={(e) => setVolFullName(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+                <div>
+                  <label className="input-sublabel">Email Address *</label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="e.g. karthik@example.com"
+                    value={volEmail}
+                    onChange={(e) => setVolEmail(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+              </div>
+
+              <div className="form-row-3 mb-3">
+                <div>
+                  <label className="input-sublabel">Contact Number *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. 9876543210"
+                    value={volPhone}
+                    onChange={(e) => setVolPhone(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+                <div>
+                  <label className="input-sublabel">Role Type</label>
+                  <select
+                    value={volRoleType}
+                    onChange={(e) => setVolRoleType(e.target.value)}
+                    className="form-input"
+                  >
+                    <option value="Volunteer">Volunteer</option>
+                    <option value="Active Member">Active Member</option>
+                    <option value="Campus Ambassador">Campus Ambassador</option>
+                    <option value="Mentor / Professional">Mentor / Professional</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="input-sublabel">Approval Status</label>
+                  <select
+                    value={volStatus}
+                    onChange={(e) => setVolStatus(e.target.value)}
+                    className="form-input"
+                  >
+                    <option value="Approved">Approved</option>
+                    <option value="Pending Review">Pending Review</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-row-3 mb-3">
+                <div>
+                  <label className="input-sublabel">Occupation / Profile</label>
+                  <select
+                    value={volOccupation}
+                    onChange={(e) => setVolOccupation(e.target.value)}
+                    className="form-input"
+                  >
+                    <option value="Student">Student</option>
+                    <option value="Working Professional">Working Professional</option>
+                    <option value="Educator / Doctor">Educator / Doctor</option>
+                    <option value="Business / Self-Employed">Business / Self-Employed</option>
+                    <option value="General Citizen">General Citizen</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="input-sublabel">Department / Organization</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Computer Science / Organization"
+                    value={volDepartment}
+                    onChange={(e) => setVolDepartment(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+                <div>
+                  <label className="input-sublabel">Blood Group</label>
+                  <select
+                    value={volBloodGroup}
+                    onChange={(e) => setVolBloodGroup(e.target.value)}
+                    className="form-input"
+                  >
+                    <option value="O+ Positive">O+ Positive</option>
+                    <option value="O- Negative">O- Negative</option>
+                    <option value="A+ Positive">A+ Positive</option>
+                    <option value="A- Negative">A- Negative</option>
+                    <option value="B+ Positive">B+ Positive</option>
+                    <option value="B- Negative">B- Negative</option>
+                    <option value="AB+ Positive">AB+ Positive</option>
+                    <option value="AB- Negative">AB- Negative</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-row-3 mb-3">
+                <div>
+                  <label className="input-sublabel">Student / Staff ID</label>
+                  <input
+                    type="text"
+                    placeholder="Optional"
+                    value={volCollegeId}
+                    onChange={(e) => setVolCollegeId(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+                <div>
+                  <label className="input-sublabel">Year / Designation</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 3rd Year"
+                    value={volYear}
+                    onChange={(e) => setVolYear(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+                <div>
+                  <label className="input-sublabel">City / Town</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Sivakasi"
+                    value={volCity}
+                    onChange={(e) => setVolCity(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+              </div>
+
+              <div className="form-row-2 mb-3">
+                <div>
+                  <label className="input-sublabel">Preferred Domain / Cause</label>
+                  <select
+                    value={volDomain}
+                    onChange={(e) => setVolDomain(e.target.value)}
+                    className="form-input"
+                  >
+                    <option value="General Community Service">General Community Service</option>
+                    <option value="Child Education & Vidhya Connect">Child Education & Vidhya Connect</option>
+                    {(adminData?.projects || []).map((p) => (
+                      <option key={p.id} value={p.title}>
+                        {p.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="input-sublabel">Availability</label>
+                  <select
+                    value={volAvailability}
+                    onChange={(e) => setVolAvailability(e.target.value)}
+                    className="form-input"
+                  >
+                    <option value="Weekends (Saturday/Sunday)">Weekends (Saturday/Sunday)</option>
+                    <option value="Weekday Evenings">Weekday Evenings</option>
+                    <option value="Flexible Schedule">Flexible Schedule</option>
+                    <option value="Special Event Drives">Special Event Drives</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-group mb-3">
+                <label className="input-sublabel">Skills & Strengths</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Teaching, Event Coordination, Photography"
+                  value={volSkills}
+                  onChange={(e) => setVolSkills(e.target.value)}
+                  className="form-input"
+                />
+              </div>
+
+              <div className="form-group mb-4">
+                <label className="input-sublabel">Notes / Motivation</label>
+                <textarea
+                  rows={2}
+                  placeholder="Optional notes or statement..."
+                  value={volMessage}
+                  onChange={(e) => setVolMessage(e.target.value)}
+                  className="form-input textarea"
+                ></textarea>
+              </div>
+
+              <div className="modal-actions-bar mt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowAddVolunteer(false)}
+                  className="btn-outline"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingVolunteer}
+                  className="btn-primary"
+                >
+                  <Save size={16} />
+                  <span>{isSubmittingVolunteer ? 'Saving...' : 'Save Volunteer'}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ==============================================================
+          MODAL: ADD DONATION RECORD
+         ============================================================== */}
+      {showAddDonation && (
+        <div className="modal-overlay" onClick={() => setShowAddDonation(false)}>
+          <div className="modal-content admin-modal-edit" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <div className="modal-title-group">
+                <span className="section-tag gold">ADMIN DONATION ENTRY</span>
+                <h2 className="modal-title">Add New Donation</h2>
+              </div>
+              <button
+                type="button"
+                className="modal-close-btn"
+                onClick={() => setShowAddDonation(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleAddDonationSubmit} className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div className="form-row-2">
+                <div>
+                  <label className="input-sublabel">Donor Full Name *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Meenakshi Sundaram"
+                    value={donName}
+                    onChange={(e) => setDonName(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+                <div>
+                  <label className="input-sublabel">Amount (₹) *</label>
+                  <input
+                    type="number"
+                    min={50}
+                    required
+                    placeholder="1000"
+                    value={donAmount}
+                    onChange={(e) => setDonAmount(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+              </div>
+
+              <div className="form-row-2 mb-3">
+                <div>
+                  <label className="input-sublabel">Email Address *</label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="e.g. donor@example.com"
+                    value={donEmail}
+                    onChange={(e) => setDonEmail(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+                <div>
+                  <label className="input-sublabel">Contact Number</label>
+                  <input
+                    type="text"
+                    placeholder="Optional"
+                    value={donPhone}
+                    onChange={(e) => setDonPhone(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+              </div>
+
+              <div className="form-row-2 mb-3">
+                <div>
+                  <label className="input-sublabel">PAN Card Number (Optional)</label>
+                  <input
+                    type="text"
+                    maxLength={10}
+                    placeholder="e.g. ABCDE1234F"
+                    value={donPan}
+                    onChange={(e) => setDonPan(e.target.value.toUpperCase())}
+                    className="form-input uppercase"
+                  />
+                </div>
+                <div>
+                  <label className="input-sublabel">Payment Mode</label>
+                  <select
+                    value={donPaymentMethod}
+                    onChange={(e) => setDonPaymentMethod(e.target.value)}
+                    className="form-input"
+                  >
+                    <option value="UPI">UPI</option>
+                    <option value="Bank Transfer">Bank Transfer (NEFT / IMPS)</option>
+                    <option value="Cash">Cash Contribution</option>
+                    <option value="Cheque / DD">Cheque / Demand Draft</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-row-2 mb-4">
+                <div>
+                  <label className="input-sublabel">Allocated Cause / Project</label>
+                  <select
+                    value={donCause}
+                    onChange={(e) => setDonCause(e.target.value)}
+                    className="form-input"
+                  >
+                    <option value="Child Education & Vidhya Connect">Child Education & Vidhya Connect</option>
+                    <option value="General Community Welfare">General Community Welfare</option>
+                    {(adminData?.projects || []).map((p) => (
+                      <option key={p.id} value={p.title}>
+                        {p.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="input-sublabel">Transaction Ref / UTR (Optional)</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. UPI/329481928410"
+                    value={donTxnId}
+                    onChange={(e) => setDonTxnId(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+              </div>
+
+              <div className="modal-actions-bar mt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowAddDonation(false)}
+                  className="btn-outline"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingDonation}
+                  className="btn-primary"
+                >
+                  <Save size={16} />
+                  <span>{isSubmittingDonation ? 'Recording...' : 'Record Donation'}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ==============================================================
+          MODAL: IN-APP CONFIRMATION DIALOG (REPLACES BROWSER CONFIRM)
+         ============================================================== */}
+      {confirmDialog && (
+        <div
+          className="modal-overlay"
+          style={{ zIndex: 100000 }}
+          onClick={() => !isConfirmLoading && setConfirmDialog(null)}
+        >
+          <div
+            className="modal-content"
+            style={{
+              maxWidth: '460px',
+              width: '100%',
+              padding: 0,
+              overflow: 'hidden',
+              borderRadius: '20px',
+            }}
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="confirm-dialog-title"
+          >
+            <div
+              className="modal-header"
+              style={{
+                padding: '20px 24px',
+                borderBottom: '1px solid #edd9c5',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '12px',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 12,
+                    background: confirmDialog.isDanger !== false ? '#fee2e2' : '#fef3c7',
+                    color: confirmDialog.isDanger !== false ? '#dc2626' : '#b45309',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  <AlertTriangle size={20} />
+                </div>
+                <h3
+                  id="confirm-dialog-title"
+                  style={{
+                    margin: 0,
+                    fontSize: '1.1rem',
+                    fontWeight: 800,
+                    color: '#24140c',
+                    lineHeight: 1.3,
+                  }}
+                >
+                  {confirmDialog.title}
+                </h3>
+              </div>
+              <button
+                type="button"
+                className="modal-close-btn"
+                disabled={isConfirmLoading}
+                onClick={() => setConfirmDialog(null)}
+                aria-label="Close confirmation"
+                style={{ flexShrink: 0 }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div style={{ padding: '22px 24px 20px' }}>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: '0.95rem',
+                  color: '#543d31',
+                  lineHeight: 1.6,
+                }}
+              >
+                {confirmDialog.message}
+              </p>
+            </div>
+
+            <div
+              style={{
+                padding: '16px 24px 20px',
+                borderTop: '1px solid #f0e6dc',
+                background: '#fdfaf7',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                gap: '12px',
+              }}
+            >
+              <button
+                type="button"
+                disabled={isConfirmLoading}
+                onClick={() => setConfirmDialog(null)}
+                className="btn-outline"
+                style={{ minWidth: '100px', padding: '10px 20px' }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={isConfirmLoading}
+                onClick={async () => {
+                  setIsConfirmLoading(true);
+                  try {
+                    await confirmDialog.onConfirm();
+                  } finally {
+                    setIsConfirmLoading(false);
+                    setConfirmDialog(null);
+                  }
+                }}
+                className="btn-primary"
+                style={
+                  confirmDialog.isDanger !== false
+                    ? {
+                        background: '#dc2626',
+                        borderColor: '#dc2626',
+                        boxShadow: '0 4px 12px rgba(220, 38, 38, 0.25)',
+                        padding: '10px 20px',
+                      }
+                    : { padding: '10px 20px' }
+                }
+              >
+                {confirmDialog.isDanger !== false && <Trash2 size={15} />}
+                <span>{isConfirmLoading ? 'Processing...' : confirmDialog.confirmLabel || 'Delete'}</span>
+              </button>
+            </div>
           </div>
         </div>
       )}

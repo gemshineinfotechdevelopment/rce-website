@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Heart, ShieldCheck, QrCode } from 'lucide-react';
-import { submitDonation, type ProjectItem } from '../services/api';
+import { submitDonation, type ProjectItem, type BrandContent, type ContactContent } from '../services/api';
 import { DonationReceipt } from './DonationReceipt';
 
 interface DonateModalProps {
@@ -8,6 +8,8 @@ interface DonateModalProps {
   onClose: () => void;
   defaultCause?: string;
   projects?: ProjectItem[];
+  brand?: BrandContent;
+  contact?: ContactContent;
   onSuccessDonated?: () => void;
 }
 
@@ -16,6 +18,8 @@ export const DonateModal: React.FC<DonateModalProps> = ({
   onClose,
   defaultCause = 'Child Education & Vidhya Connect',
   projects = [],
+  brand,
+  contact,
   onSuccessDonated,
 }) => {
   const [amount, setAmount] = useState<number>(1000);
@@ -117,6 +121,8 @@ export const DonateModal: React.FC<DonateModalProps> = ({
         {receiptData ? (
           <DonationReceipt
             receipt={receiptData}
+            brand={brand}
+            contact={contact}
             onClose={resetAndClose}
             showCloseBtn={true}
           />

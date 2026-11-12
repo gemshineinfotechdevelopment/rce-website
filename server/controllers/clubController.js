@@ -78,10 +78,10 @@ const defaultSiteContent = {
     titleGradient: "Cause to Champion?",
     subtitle: "Every great initiative begins with a conversation. Let us know how we can collaborate.",
     officeAddress: "RCE Youth Movement Hub, 42 Community Avenue, Anna Nagar, Chennai, Tamil Nadu - 600040",
-    phone: "+91 (044) 2894-8800 / +91 98401 22334",
+    phone: "",
     email: "contact@rceclub.org / volunteer@rceclub.org",
     hours: "Monday - Saturday: 9:00 AM - 7:00 PM\nSunday: On-Ground Field Drives",
-    emergencyHotline: "+91 99400 99999"
+    emergencyHotline: ""
   }
 };
 
@@ -142,7 +142,7 @@ let volunteerApplications = [
     city: "Tambaram, Chennai",
     occupation: "Student Leader",
     skills: "Crowd Management, Transport, Audio/Stage Setup",
-    availability: "Flexible & Emergency Call",
+    availability: "Flexible Schedule",
     preferredDomain: "Green Earth Miyawaki Afforestation",
     message: "Can coordinate college transport buses and mobilize 50+ junior student volunteers.",
     status: "Pending Review",
@@ -1361,7 +1361,8 @@ const joinClub = (req, res) => {
     skills,
     availability,
     preferredDomain,
-    message
+    message,
+    status
   } = req.body;
 
   if (!fullName || !email || !phone) {
@@ -1384,13 +1385,13 @@ const joinClub = (req, res) => {
     yearOfStudy: yearOfStudy || "N/A",
     bloodGroup: bloodGroup || "O+ Positive",
     emergencyContact: emergencyContact || "Not provided",
-    city: city || "Chennai",
+    city: city || "Sivakasi",
     occupation: occupation || "General Citizen",
     skills: skills || "Community Outreach",
     availability: availability || "Weekends",
     preferredDomain: preferredDomain || "General Volunteer",
     message: message || "",
-    status: "Approved",
+    status: status || "Approved",
     joinedAt: new Date().toISOString()
   };
 
@@ -1406,7 +1407,7 @@ const joinClub = (req, res) => {
 };
 
 const makeDonation = (req, res) => {
-  const { donorName, email, phone, pan, amount, cause, paymentMethod } = req.body;
+  const { donorName, email, phone, pan, amount, cause, paymentMethod, transactionId, city } = req.body;
 
   const donationAmount = Number(amount);
   if (!donationAmount || donationAmount < 50) {
@@ -1423,9 +1424,11 @@ const makeDonation = (req, res) => {
     email: email || "donor@community.org",
     phone: phone || "Not provided",
     pan: pan ? pan.toUpperCase() : "N/A",
+    city: city || "",
     amount: donationAmount,
     cause: cause || "General Community Welfare",
     paymentMethod: paymentMethod || "UPI",
+    transactionId: transactionId ? transactionId.trim() : "",
     taxBenefit: "Official Charitable Contribution Receipt",
     timestamp: new Date().toISOString(),
     status: "Verified & Received"
@@ -1577,7 +1580,8 @@ const deleteDonation = (req, res) => {
 
 const adminLogin = (req, res) => {
   const { passcode, username } = req.body;
-  const validPasscodes = ["rce@admin", "admin123", "2026", "rce2026", "admin"];
+  const envPasscode = process.env.ADMIN_PASSCODE ? [process.env.ADMIN_PASSCODE.trim()] : [];
+  const validPasscodes = [...envPasscode, "rce@admin", "admin123", "2026", "rce2026", "admin"];
   if (validPasscodes.includes(passcode?.trim())) {
     return res.json({
       success: true,
@@ -1588,7 +1592,7 @@ const adminLogin = (req, res) => {
   }
   return res.status(401).json({
     success: false,
-    message: "Invalid Admin Passcode. Default access: rce@admin or admin123"
+    message: "Invalid Admin Passcode. Please check your credentials."
   });
 };
 

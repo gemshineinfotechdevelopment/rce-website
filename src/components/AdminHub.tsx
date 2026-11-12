@@ -38,6 +38,7 @@ export const AdminHub: React.FC<AdminHubProps> = ({ isOpen, onClose, onDataUpdat
   const [loading, setLoading] = useState(false);
   const [actionMsg, setActionMsg] = useState<{ text: string; isError: boolean } | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [confirmState, setConfirmState] = useState<{ message: string; onConfirm: () => Promise<void> } | null>(null);
 
   // Event Form State
   const [eventTitle, setEventTitle] = useState('');
@@ -124,16 +125,20 @@ export const AdminHub: React.FC<AdminHubProps> = ({ isOpen, onClose, onDataUpdat
   };
 
   // Handle Event Deletion
-  const handleDeleteEvent = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this event?')) return;
-    try {
-      await deleteClubEvent(id);
-      setActionMsg({ text: 'Event removed.', isError: false });
-      await loadData();
-      onDataUpdated();
-    } catch (err: any) {
-      setActionMsg({ text: err.message || 'Failed to delete event', isError: true });
-    }
+  const handleDeleteEvent = (id: string) => {
+    setConfirmState({
+      message: 'Are you sure you want to delete this event?',
+      onConfirm: async () => {
+        try {
+          await deleteClubEvent(id);
+          setActionMsg({ text: 'Event removed.', isError: false });
+          await loadData();
+          onDataUpdated();
+        } catch (err: any) {
+          setActionMsg({ text: err.message || 'Failed to delete event', isError: true });
+        }
+      },
+    });
   };
 
   // Handle Project Creation
@@ -169,16 +174,20 @@ export const AdminHub: React.FC<AdminHubProps> = ({ isOpen, onClose, onDataUpdat
   };
 
   // Handle Project Deletion
-  const handleDeleteProject = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this project?')) return;
-    try {
-      await deleteClubProject(id);
-      setActionMsg({ text: 'Project removed.', isError: false });
-      await loadData();
-      onDataUpdated();
-    } catch (err: any) {
-      setActionMsg({ text: err.message || 'Failed to delete project', isError: true });
-    }
+  const handleDeleteProject = (id: string) => {
+    setConfirmState({
+      message: 'Are you sure you want to delete this project?',
+      onConfirm: async () => {
+        try {
+          await deleteClubProject(id);
+          setActionMsg({ text: 'Project removed.', isError: false });
+          await loadData();
+          onDataUpdated();
+        } catch (err: any) {
+          setActionMsg({ text: err.message || 'Failed to delete project', isError: true });
+        }
+      },
+    });
   };
 
   // Handle Stats Update
@@ -357,8 +366,8 @@ export const AdminHub: React.FC<AdminHubProps> = ({ isOpen, onClose, onDataUpdat
                                 <td><strong>{v.fullName}</strong></td>
                                 <td><span className="admin-role-badge">{v.roleType}</span></td>
                                 <td>
-                                  <div>📞 {v.phone}</div>
-                                  <div className="text-xs text-stone-500">✉️ {v.email}</div>
+                                  <div>{v.phone}</div>
+                                  <div className="text-xs text-stone-500">{v.email}</div>
                                 </td>
                                 <td>{v.city} &bull; {v.occupation}</td>
                                 <td><span className="text-xs font-semibold">{v.availability}</span></td>
@@ -809,6 +818,52 @@ export const AdminHub: React.FC<AdminHubProps> = ({ isOpen, onClose, onDataUpdat
           )}
         </div>
       </div>
+
+      {confirmState && (
+        <div className="modal-overlay" style={{ zIndex: 10000 }} onClick={() => setConfirmState(null)}>
+          <div
+            className="modal-content"
+            style={{ maxWidth: '440px', width: '100%', padding: 0, overflow: 'hidden', borderRadius: '20px' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-header" style={{ padding: '18px 24px' }}>
+              <h3 style={{ margin: 0, fontSize: '1.08rem', fontWeight: 800, color: '#24140c' }}>Confirm Deletion</h3>
+              <button type="button" className="modal-close-btn" onClick={() => setConfirmState(null)}>
+                ✕
+              </button>
+            </div>
+            <div style={{ padding: '22px 24px 20px' }}>
+              <p style={{ margin: 0, fontSize: '0.94rem', color: '#543d31', lineHeight: 1.6 }}>{confirmState.message}</p>
+            </div>
+            <div
+              style={{
+                padding: '16px 24px 20px',
+                borderTop: '1px solid #f0e6dc',
+                background: '#fdfaf7',
+                display: 'flex',
+                justifyContent: 'flex-end',
+                gap: '12px',
+              }}
+            >
+              <button type="button" className="btn-outline" onClick={() => setConfirmState(null)}>
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn-primary"
+                style={{ background: '#dc2626', borderColor: '#dc2626' }}
+                onClick={async () => {
+                  const fn = confirmState.onConfirm;
+                  setConfirmState(null);
+                  await fn();
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

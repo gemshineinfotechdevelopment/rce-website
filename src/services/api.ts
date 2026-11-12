@@ -690,6 +690,7 @@ export interface JoinPayload {
   availability: string;
   preferredDomain?: string;
   message?: string;
+  status?: string;
 }
 
 export interface VolunteerApplicationRecord extends JoinPayload {
@@ -707,6 +708,7 @@ export interface DonatePayload {
   amount: number;
   cause: string;
   paymentMethod: string;
+  transactionId?: string;
 }
 
 export interface DonationRecord {
@@ -829,10 +831,10 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
     titleGradient: 'Cause to Champion?',
     subtitle: 'Every great initiative begins with a conversation. Let us know how we can collaborate.',
     officeAddress: 'RCE Youth Movement Hub, 42 Community Avenue, Anna Nagar, Chennai, Tamil Nadu - 600040',
-    phone: '+91 (044) 2894-8800 / +91 98401 22334',
+    phone: '',
     email: 'contact@rceclub.org / volunteer@rceclub.org',
     hours: 'Monday - Saturday: 9:00 AM - 7:00 PM\nSunday: On-Ground Field Drives',
-    emergencyHotline: '+91 99400 99999',
+    emergencyHotline: '',
   },
 };
 

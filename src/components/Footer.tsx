@@ -1,14 +1,15 @@
 import React from 'react';
 import { Heart, ShieldCheck, SlidersHorizontal } from 'lucide-react';
 
-import type { BrandContent } from '../services/api';
+import type { BrandContent, ProjectItem } from '../services/api';
 
 interface FooterProps {
   brand?: BrandContent;
+  projects?: ProjectItem[];
   onOpenAdmin?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ brand, onOpenAdmin }) => {
+export const Footer: React.FC<FooterProps> = ({ brand, projects = [], onOpenAdmin }) => {
   return (
     <footer className="site-footer">
       {/* Main Footer Links */}
@@ -75,12 +76,20 @@ export const Footer: React.FC<FooterProps> = ({ brand, onOpenAdmin }) => {
           <div className="footer-col">
             <h4 className="footer-heading">Key Causes</h4>
             <ul className="footer-nav-list">
-              <li><a href="#projects">🎓 Vidhya Connect (Child Tutoring)</a></li>
-              <li><a href="#projects">🌿 Green Earth (Miyawaki Groves)</a></li>
-              <li><a href="#projects">🩺 Arogya Free Health & Eye Camps</a></li>
-              <li><a href="#projects">🍲 Annapoorna Hospital Food Drive</a></li>
-              <li><a href="#projects">🎨 Kala Uday (Youth Leadership)</a></li>
-              <li><a href="#projects">🧵 Shakthi Women Skill Hub</a></li>
+              {projects.length > 0 ? (
+                projects.slice(0, 6).map((p) => (
+                  <li key={p.id}>
+                    <a href="#projects">{p.title}</a>
+                  </li>
+                ))
+              ) : (
+                <>
+                  <li><a href="#projects">Vidhya Connect (Child Tutoring)</a></li>
+                  <li><a href="#projects">Green Earth (Miyawaki Groves)</a></li>
+                  <li><a href="#projects">Arogya Free Health & Eye Camps</a></li>
+                  <li><a href="#projects">Annapoorna Hospital Food Drive</a></li>
+                </>
+              )}
             </ul>
           </div>
 
@@ -100,7 +109,7 @@ export const Footer: React.FC<FooterProps> = ({ brand, onOpenAdmin }) => {
         {/* Bottom Bar */}
         <div className="footer-bottom-bar">
           <p className="copyright-text">
-            &copy; {new Date().getFullYear()} RCE Social Service Club Trust. All rights reserved.
+            &copy; {new Date().getFullYear()} {brand?.subtitle || brand?.name || 'Right Club for Education'}. All rights reserved.
           </p>
           {onOpenAdmin && (
             <button
