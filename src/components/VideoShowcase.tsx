@@ -66,6 +66,7 @@ export const VideoShowcase: React.FC<VideoShowcaseProps> = ({ videos }) => {
                   title={currentVideo.title}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
+                  loading="lazy"
                   className="youtube-cinema-iframe"
                 />
               </div>

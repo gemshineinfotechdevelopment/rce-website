@@ -769,6 +769,7 @@ export const EventsPage: React.FC<EventsPageProps> = ({
                         title={`Video coverage: ${selectedEvent.title}`}
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
+                        loading="lazy"
                       ></iframe>
                     </div>
                   </div>

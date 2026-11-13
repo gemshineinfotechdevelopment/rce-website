@@ -1315,7 +1315,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             <div className="form-group mb-4">
               <label className="input-sublabel">Security Password</label>
               <div className="admin-input-icon-box">
-                <Lock size={18} className="text-amber-600" />
+                <Lock size={18} className="text-amber-600 admin-input-lead-icon" />
                 <input
                   type={showLoginPassword ? 'text' : 'password'}
                   required
@@ -1327,8 +1327,9 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 <button
                   type="button"
                   onClick={() => setShowLoginPassword(!showLoginPassword)}
-                  className="p-1 text-stone-400 hover:text-stone-700 bg-transparent border-none cursor-pointer flex items-center justify-center"
+                  className="admin-password-toggle-btn"
                   title={showLoginPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showLoginPassword ? 'Hide password' : 'Show password'}
                 >
                   {showLoginPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -1643,7 +1644,12 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             )}
             <div className="admin-topbar-title">
               <h2>
-                {activeTab === 'overview' && 'Executive Performance Overview'}
+                {activeTab === 'overview' && (
+                  <>
+                    <span className="admin-title-desktop">Executive Performance Overview</span>
+                    <span className="admin-title-mobile">Overview</span>
+                  </>
+                )}
                 {activeTab === 'settings' && 'Website Settings & Live Counters'}
                 {activeTab === 'videos' && 'YouTube Videos & Impact Media Showcase'}
                 {activeTab === 'gallery' && 'Public Photo Gallery'}
@@ -1883,25 +1889,27 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   <option value="Rejected">Rejected</option>
                 </select>
 
-                <button
-                  type="button"
-                  onClick={() => setShowAddVolunteer(true)}
-                  className="btn-primary btn-admin-top"
-                  title="Add Volunteer"
-                >
-                  <UserPlus size={15} />
-                  <span>Add Volunteer</span>
-                </button>
+                <div className="admin-toolbar-btn-group">
+                  <button
+                    type="button"
+                    onClick={exportVolunteersCSV}
+                    className="btn-outline btn-admin-top"
+                    title="Export to CSV"
+                  >
+                    <Download size={14} />
+                    <span>Export CSV</span>
+                  </button>
 
-                <button
-                  type="button"
-                  onClick={exportVolunteersCSV}
-                  className="btn-outline btn-admin-top"
-                  title="Export to CSV"
-                >
-                  <Download size={15} />
-                  <span>Export CSV</span>
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddVolunteer(true)}
+                    className="btn-primary btn-admin-top"
+                    title="Add Volunteer"
+                  >
+                    <UserPlus size={14} />
+                    <span>Add Volunteer</span>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -2035,24 +2043,26 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               </div>
 
               <div className="admin-filter-group">
-                <button
-                  type="button"
-                  onClick={() => setShowAddDonation(true)}
-                  className="btn-primary btn-admin-top"
-                  title="Add Donation"
-                >
-                  <Heart size={15} />
-                  <span>Add Donation</span>
-                </button>
+                <div className="admin-toolbar-btn-group">
+                  <button
+                    type="button"
+                    onClick={exportDonationsCSV}
+                    className="btn-outline btn-admin-top"
+                  >
+                    <Download size={14} />
+                    <span>Export CSV</span>
+                  </button>
 
-                <button
-                  type="button"
-                  onClick={exportDonationsCSV}
-                  className="btn-outline btn-admin-top"
-                >
-                  <Download size={15} />
-                  <span>Export CSV</span>
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddDonation(true)}
+                    className="btn-primary btn-admin-top"
+                    title="Add Donation"
+                  >
+                    <Heart size={14} />
+                    <span>Add Donation</span>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -4033,21 +4043,32 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             <div className="admin-stories-grid">
               {(adminData?.stories || []).map((story) => (
                 <div key={story.id} className="admin-story-card">
-                  <div>
-                    <div className="flex items-center gap-3 mb-3">
+                  <div className="admin-story-body">
+                    <div className="admin-story-author-row">
                       <img
                         src={story.avatar}
                         alt={story.name}
-                        className="w-12 h-12 rounded-full object-cover border border-amber-300"
+                        className="admin-story-avatar"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80';
+                        }}
                       />
-                      <div>
-                        <h4 className="font-bold text-stone-900 text-sm leading-tight">{story.name}</h4>
-                        <span className="text-xs text-stone-500 block">{story.role}</span>
-                        <span className="text-xs text-amber-800 font-semibold">{story.location}</span>
+                      <div className="admin-story-author-info">
+                        <h4 className="admin-story-name">{story.name}</h4>
+                        <div className="admin-story-role">{story.role}</div>
+                        {story.location && (
+                          <div className="admin-story-location">{story.location}</div>
+                        )}
                       </div>
                     </div>
-                    <span className="event-cat-chip mb-2">{story.impactTag}</span>
-                    <p className="text-xs text-stone-700 italic mt-2">"{story.quote}"</p>
+
+                    {story.impactTag && (
+                      <div className="admin-story-tag-wrap">
+                        <span className="admin-story-impact-tag">{story.impactTag}</span>
+                      </div>
+                    )}
+
+                    <p className="admin-story-quote">"{story.quote}"</p>
                   </div>
 
                   <div className="admin-card-footer-corners mt-auto">
