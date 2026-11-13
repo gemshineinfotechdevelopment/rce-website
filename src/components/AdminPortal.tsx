@@ -39,7 +39,9 @@ import {
   Video,
   Settings,
   PanelLeftClose,
-  PanelLeftOpen
+  PanelLeftOpen,
+  Key,
+  EyeOff
 } from 'lucide-react';
 import {
   fetchAdminData,
@@ -58,6 +60,7 @@ import {
   submitJoinApplication,
   submitDonation,
   adminLoginApi,
+  updateAdminCredentialsApi,
   updateSiteContentApi,
   createGalleryItemApi,
   updateGalleryItemApi,
@@ -110,7 +113,15 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     return sessionStorage.getItem('rce_admin_session') === 'true';
   });
+  const [loginUsername, setLoginUsername] = useState(() => {
+    try {
+      return localStorage.getItem('rce_admin_saved_username') || 'admin';
+    } catch {
+      return 'admin';
+    }
+  });
   const [passcode, setPasscode] = useState('');
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [loginError, setLoginError] = useState('');
   const [loginLoading, setLoginLoading] = useState(false);
 
@@ -137,8 +148,17 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
     }
   }, [sidebarCollapsed]);
 
-  // Sub-navigation for Settings (Website Content CMS + Live Counters)
-  const [cmsSubTab, setCmsSubTab] = useState<'hero' | 'about' | 'pillars' | 'contact' | 'brand' | 'counters'>('hero');
+  // Sub-navigation for Settings (Website Content CMS + Live Counters + Security)
+  const [cmsSubTab, setCmsSubTab] = useState<'hero' | 'about' | 'pillars' | 'contact' | 'brand' | 'counters' | 'security'>('hero');
+
+  // Admin Credentials Security Settings State
+  const [currPassword, setCurrPassword] = useState('');
+  const [newAdminUsername, setNewAdminUsername] = useState('admin');
+  const [newAdminPassword, setNewAdminPassword] = useState('');
+  const [confirmAdminPassword, setConfirmAdminPassword] = useState('');
+  const [showSecurityPasswords, setShowSecurityPasswords] = useState(false);
+  const [isSavingSecurity, setIsSavingSecurity] = useState(false);
+  const [securityNotice, setSecurityNotice] = useState<{ text: string; isError: boolean } | null>(null);
 
   // Core Data
   const [adminData, setAdminData] = useState<AdminData | null>(null);
@@ -351,6 +371,11 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
         populateCmsFields(data.siteContent);
       }
 
+      if (data?.adminUsername) {
+        setNewAdminUsername(data.adminUsername);
+        setLoginUsername(data.adminUsername);
+      }
+
       if (data?.videos && data.videos.length > 0) {
         setVideosList(data.videos);
       } else {
@@ -425,14 +450,65 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
     setLoginError('');
     setLoginLoading(true);
     try {
-      await adminLoginApi(passcode);
+      const res = await adminLoginApi(passcode, loginUsername);
       sessionStorage.setItem('rce_admin_session', 'true');
+      sessionStorage.setItem('rce_admin_username', res.adminUser || loginUsername);
+      localStorage.setItem('rce_admin_saved_username', loginUsername);
       setIsAuthenticated(true);
-      showNotice('Welcome to RCE Club Admin Portal!');
+      showNotice(`Welcome to RCE Club Admin Portal, ${res.adminUser || loginUsername}!`);
     } catch (err: any) {
-      setLoginError(err.message || 'Invalid passcode. Please check your credentials.');
+      setLoginError(err.message || 'Invalid username or passcode. Please check your credentials.');
     } finally {
       setLoginLoading(false);
+    }
+  };
+
+  const handleUpdateCredentials = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSecurityNotice(null);
+
+    if (!currPassword.trim()) {
+      setSecurityNotice({ text: 'Please enter your current administrator password.', isError: true });
+      return;
+    }
+    if (!newAdminUsername.trim() || newAdminUsername.trim().length < 3) {
+      setSecurityNotice({ text: 'Username must be at least 3 characters long.', isError: true });
+      return;
+    }
+    if (!newAdminPassword || newAdminPassword.length < 4) {
+      setSecurityNotice({ text: 'New password must be at least 4 characters long.', isError: true });
+      return;
+    }
+    if (newAdminPassword !== confirmAdminPassword) {
+      setSecurityNotice({ text: 'New password and confirmation password do not match.', isError: true });
+      return;
+    }
+
+    setIsSavingSecurity(true);
+    try {
+      await updateAdminCredentialsApi({
+        currentPasscode: currPassword.trim(),
+        newUsername: newAdminUsername.trim(),
+        newPasscode: newAdminPassword.trim()
+      });
+      localStorage.setItem('rce_admin_saved_username', newAdminUsername.trim());
+      sessionStorage.setItem('rce_admin_username', newAdminUsername.trim());
+      setSecurityNotice({
+        text: 'Admin username and password updated successfully! Please use these credentials next time you sign in.',
+        isError: false
+      });
+      showNotice('Admin credentials updated successfully!');
+      setCurrPassword('');
+      setNewAdminPassword('');
+      setConfirmAdminPassword('');
+      await loadData();
+    } catch (err: any) {
+      setSecurityNotice({
+        text: err.message || 'Failed to update credentials. Please verify your current password.',
+        isError: true
+      });
+    } finally {
+      setIsSavingSecurity(false);
     }
   };
 
@@ -1221,18 +1297,41 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
           </div>
 
           <form onSubmit={handleLogin} className="admin-login-form">
-            <div className="form-group">
-              <label className="input-sublabel">Security Passcode</label>
+            <div className="form-group mb-3">
+              <label className="input-sublabel">Admin Username</label>
+              <div className="admin-input-icon-box">
+                <Users size={18} className="text-amber-600" />
+                <input
+                  type="text"
+                  required
+                  placeholder="Enter admin username"
+                  value={loginUsername}
+                  onChange={(e) => setLoginUsername(e.target.value)}
+                  className="form-input flex-1"
+                />
+              </div>
+            </div>
+
+            <div className="form-group mb-4">
+              <label className="input-sublabel">Security Password</label>
               <div className="admin-input-icon-box">
                 <Lock size={18} className="text-amber-600" />
                 <input
-                  type="password"
+                  type={showLoginPassword ? 'text' : 'password'}
                   required
-                  placeholder="Enter administrator passcode"
+                  placeholder="Enter administrator password"
                   value={passcode}
                   onChange={(e) => setPasscode(e.target.value)}
                   className="form-input flex-1"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowLoginPassword(!showLoginPassword)}
+                  className="p-1 text-stone-400 hover:text-stone-700 bg-transparent border-none cursor-pointer flex items-center justify-center"
+                  title={showLoginPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showLoginPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
               </div>
             </div>
 
@@ -2794,6 +2893,13 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               >
                 <span>📊 Live Counters</span>
               </button>
+              <button
+                type="button"
+                className={`cms-subnav-btn ${cmsSubTab === 'security' ? 'active' : ''}`}
+                onClick={() => setCmsSubTab('security')}
+              >
+                <span>🔐 Admin Credentials</span>
+              </button>
             </div>
 
             {cmsSubTab === 'counters' ? (
@@ -2828,6 +2934,143 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     <button type="submit" className="btn-primary btn-large">
                       <CheckCircle2 size={18} />
                       <span>Update Live Counters On Website</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            ) : cmsSubTab === 'security' ? (
+              <div className="admin-box">
+                <div className="admin-section-header-bar mb-4">
+                  <div>
+                    <h3 className="admin-section-title flex items-center gap-2">
+                      <ShieldCheck size={20} className="text-amber-600" />
+                      <span>Admin Account & Login Security</span>
+                    </h3>
+                    <p className="admin-section-subtitle">
+                      Change the username and password used to access this Admin Portal
+                    </p>
+                  </div>
+                </div>
+
+                {securityNotice && (
+                  <div className={`status-alert-banner ${securityNotice.isError ? 'error' : 'success'} mb-4`}>
+                    {securityNotice.isError ? <AlertCircle size={18} /> : <CheckCircle2 size={18} />}
+                    <span>{securityNotice.text}</span>
+                  </div>
+                )}
+
+                <div className="admin-security-info-box mb-5">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 rounded-lg bg-amber-500/10 text-amber-700">
+                      <Lock size={20} />
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-stone-900">
+                        Active Administrator Account
+                      </div>
+                      <div className="text-xs text-stone-600 mt-0.5">
+                        Current Login Username: <span className="font-semibold text-amber-800 bg-amber-100/70 px-2 py-0.5 rounded font-mono">{adminData?.adminUsername || newAdminUsername || 'admin'}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <form onSubmit={handleUpdateCredentials} className="admin-security-form max-w-xl">
+                  <div className="form-group mb-4">
+                    <label className="input-sublabel">
+                      Current Password <span className="text-red-500">*</span>
+                    </label>
+                    <div className="admin-input-icon-box">
+                      <Key size={18} className="text-amber-600" />
+                      <input
+                        type={showSecurityPasswords ? 'text' : 'password'}
+                        required
+                        placeholder="Enter current administrator password"
+                        value={currPassword}
+                        onChange={(e) => setCurrPassword(e.target.value)}
+                        className="form-input flex-1"
+                      />
+                    </div>
+                    <span className="text-xs text-stone-500 mt-1 block">Default initial password is <code className="bg-stone-100 px-1.5 py-0.5 rounded text-amber-800 font-mono">rce@admin</code></span>
+                  </div>
+
+                  <hr className="my-4 border-amber-200/50" />
+
+                  <div className="form-group mb-4">
+                    <label className="input-sublabel">
+                      New Admin Username <span className="text-red-500">*</span>
+                    </label>
+                    <div className="admin-input-icon-box">
+                      <Users size={18} className="text-amber-600" />
+                      <input
+                        type="text"
+                        required
+                        minLength={3}
+                        placeholder="Enter new administrator username"
+                        value={newAdminUsername}
+                        onChange={(e) => setNewAdminUsername(e.target.value)}
+                        className="form-input flex-1"
+                      />
+                    </div>
+                    <span className="text-xs text-stone-500 mt-1 block">Username to sign in with (minimum 3 characters)</span>
+                  </div>
+
+                  <div className="form-group mb-4">
+                    <label className="input-sublabel">
+                      New Password <span className="text-red-500">*</span>
+                    </label>
+                    <div className="admin-input-icon-box">
+                      <Lock size={18} className="text-amber-600" />
+                      <input
+                        type={showSecurityPasswords ? 'text' : 'password'}
+                        required
+                        minLength={4}
+                        placeholder="Enter new strong password"
+                        value={newAdminPassword}
+                        onChange={(e) => setNewAdminPassword(e.target.value)}
+                        className="form-input flex-1"
+                      />
+                    </div>
+                    <span className="text-xs text-stone-500 mt-1 block">Minimum 4 characters</span>
+                  </div>
+
+                  <div className="form-group mb-4">
+                    <label className="input-sublabel">
+                      Confirm New Password <span className="text-red-500">*</span>
+                    </label>
+                    <div className="admin-input-icon-box">
+                      <Lock size={18} className="text-amber-600" />
+                      <input
+                        type={showSecurityPasswords ? 'text' : 'password'}
+                        required
+                        minLength={4}
+                        placeholder="Re-enter new password to confirm"
+                        value={confirmAdminPassword}
+                        onChange={(e) => setConfirmAdminPassword(e.target.value)}
+                        className="form-input flex-1"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 mb-5">
+                    <button
+                      type="button"
+                      onClick={() => setShowSecurityPasswords(!showSecurityPasswords)}
+                      className="text-xs text-amber-800 hover:text-amber-900 font-semibold flex items-center gap-1.5 cursor-pointer bg-transparent border-none p-0"
+                    >
+                      {showSecurityPasswords ? <EyeOff size={15} /> : <Eye size={15} />}
+                      <span>{showSecurityPasswords ? 'Hide passwords' : 'Show passwords'}</span>
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-3 pt-2">
+                    <button
+                      type="submit"
+                      disabled={isSavingSecurity}
+                      className="btn-primary"
+                    >
+                      <Save size={16} />
+                      <span>{isSavingSecurity ? 'Saving Changes...' : 'Update Admin Credentials'}</span>
                     </button>
                   </div>
                 </form>

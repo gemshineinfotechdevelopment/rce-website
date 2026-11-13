@@ -38,7 +38,8 @@ const {
   updateInquiryStatus,
   deleteInquiry,
   deleteDonation,
-  adminLogin
+  adminLogin,
+  updateAdminCredentials
 } = require("../controllers/clubController");
 // Health check endpoint
 router.get("/health", getHealthStatus);
@@ -78,6 +79,8 @@ router.post("/newsletter", subscribeNewsletter);
 // Admin Management Endpoints
 // ==========================================
 router.post("/admin/login", adminLogin);
+router.put("/admin/credentials", updateAdminCredentials);
+router.patch("/admin/credentials", updateAdminCredentials);
 router.get("/admin/submissions", getAdminData);
 
 // Volunteer Records

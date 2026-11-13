@@ -728,6 +728,7 @@ export interface ContactMessageRecord extends ContactPayload {
 
 export interface AdminData {
   stats: ClubStats;
+  adminUsername?: string;
   volunteerApplications: VolunteerApplicationRecord[];
   donationRecords: DonationRecord[];
   contactMessages: ContactMessageRecord[];
@@ -1343,5 +1344,17 @@ export const adminLoginApi = async (passcode: string, username = 'RCE Admin') =>
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || 'Authentication failed');
+  return data;
+};
+
+
+export const updateAdminCredentialsApi = async (payload: { currentPasscode: string; newUsername: string; newPasscode: string; }) => {
+  const res = await fetch(`${API_BASE}/api/admin/credentials`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Failed to update admin credentials');
   return data;
 };

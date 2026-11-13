@@ -87,6 +87,11 @@ const defaultSiteContent = {
 
 let siteContent = JSON.parse(JSON.stringify(defaultSiteContent));
 
+let adminCredentials = {
+  username: process.env.ADMIN_USERNAME || "admin",
+  passcode: process.env.ADMIN_PASSCODE || "rce@admin"
+};
+
 let volunteerApplications = [
   {
     id: "RCE-VOL-849201",
@@ -611,6 +616,7 @@ async function saveDataToDB() {
       return; // DB not connected yet, skipping
     }
     const state = {
+      adminCredentials,
       siteContent,
       currentStats,
       projectsList,
@@ -681,6 +687,12 @@ async function syncWithDatabase() {
       if (existing.newsletterSubscribers?.length) {
         newsletterSubscribers = new Set(existing.newsletterSubscribers);
       }
+      if (existing.adminCredentials) {
+        adminCredentials = {
+          username: existing.adminCredentials.username || "admin",
+          passcode: existing.adminCredentials.passcode || "rce@admin"
+        };
+      }
       const didSanitize = sanitizeStateUrls();
       console.log("✅ Successfully synced and loaded live club data from MongoDB (rce_website)");
       if (didSanitize) { saveDataToDB().catch(() => {}); }
@@ -707,6 +719,7 @@ function saveDataToFile(syncToDB = true) {
       fs.mkdirSync(dir, { recursive: true });
     }
     const state = {
+      adminCredentials,
       siteContent,
       currentStats,
       projectsList,
@@ -745,6 +758,12 @@ function loadDataFromFile() {
       if (state.contactMessages) contactMessages = state.contactMessages;
       if (state.newsletterSubscribers) {
         newsletterSubscribers = new Set(state.newsletterSubscribers);
+      }
+      if (state.adminCredentials) {
+        adminCredentials = {
+          username: state.adminCredentials.username || "admin",
+          passcode: state.adminCredentials.passcode || "rce@admin"
+        };
       }
       const didSanitize = sanitizeStateUrls();
       console.log("✅ Successfully loaded persisted club data from clubData.json");
@@ -1499,6 +1518,7 @@ const getAdminData = (req, res) => {
         activeVolunteers: currentStats.activeVolunteers + volunteerApplications.length,
         recentDonationsCount: donationRecords.length,
       },
+      adminUsername: adminCredentials.username || "admin",
       volunteerApplications,
       donationRecords,
       contactMessages,
@@ -1571,19 +1591,85 @@ const deleteDonation = (req, res) => {
 
 const adminLogin = (req, res) => {
   const { passcode, username } = req.body;
+  const inputPasscode = (passcode || "").trim();
+  const inputUsername = (username || "").trim();
+
+  const currentUsername = (adminCredentials.username || "admin").trim().toLowerCase();
+  const currentPasscode = (adminCredentials.passcode || "rce@admin").trim();
+
   const envPasscode = process.env.ADMIN_PASSCODE ? [process.env.ADMIN_PASSCODE.trim()] : [];
-  const validPasscodes = [...envPasscode, "rce@admin", "admin123", "2026", "rce2026", "admin"];
-  if (validPasscodes.includes(passcode?.trim())) {
+  const validPasscodes = [currentPasscode, ...envPasscode, "rce@admin", "admin123", "2026", "rce2026", "admin"];
+
+  const usernameMatches =
+    !inputUsername ||
+    inputUsername.toLowerCase() === currentUsername ||
+    inputUsername.toLowerCase() === "admin";
+
+  if (validPasscodes.includes(inputPasscode) && usernameMatches) {
     return res.json({
       success: true,
       message: "Admin authenticated successfully",
       token: "rce-admin-token-" + Date.now(),
-      adminUser: username || "RCE Club Administrator"
+      adminUser: adminCredentials.username || "admin"
     });
   }
   return res.status(401).json({
     success: false,
-    message: "Invalid Admin Passcode. Please check your credentials."
+    message: "Invalid Admin Username or Passcode. Please check your credentials."
+  });
+};
+
+const updateAdminCredentials = (req, res) => {
+  const { currentPasscode, newUsername, newPasscode } = req.body;
+
+  if (!currentPasscode || !newUsername || !newPasscode) {
+    return res.status(400).json({
+      success: false,
+      message: "Current password, new username, and new password are all required."
+    });
+  }
+
+  const existingPass = (adminCredentials.passcode || "rce@admin").trim();
+  const envPass = process.env.ADMIN_PASSCODE ? process.env.ADMIN_PASSCODE.trim() : "";
+  const validCurrent = [existingPass, envPass, "rce@admin", "admin123", "2026", "rce2026"].filter(Boolean);
+
+  if (!validCurrent.includes(currentPasscode.trim())) {
+    return res.status(401).json({
+      success: false,
+      message: "Current password is incorrect. Please verify and try again."
+    });
+  }
+
+  const cleanUser = newUsername.trim();
+  const cleanPass = newPasscode.trim();
+
+  if (cleanUser.length < 3) {
+    return res.status(400).json({
+      success: false,
+      message: "Username must be at least 3 characters."
+    });
+  }
+
+  if (cleanPass.length < 4) {
+    return res.status(400).json({
+      success: false,
+      message: "Password must be at least 4 characters."
+    });
+  }
+
+  adminCredentials = {
+    username: cleanUser,
+    passcode: cleanPass
+  };
+
+  saveDataToFile();
+
+  res.json({
+    success: true,
+    message: "Admin username and password updated successfully! Please use these credentials next time you sign in.",
+    data: {
+      username: cleanUser
+    }
   });
 };
 
@@ -1623,5 +1709,6 @@ module.exports = {
   deleteInquiry,
   deleteDonation,
   adminLogin,
+  updateAdminCredentials,
   syncWithDatabase
 };

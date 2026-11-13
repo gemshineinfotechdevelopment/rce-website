@@ -52,6 +52,10 @@ const ClubDataSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    adminCredentials: {
+      type: mongoose.Schema.Types.Mixed,
+      default: { username: "admin", passcode: "rce@admin" },
+    },
   },
   {
     timestamps: true,

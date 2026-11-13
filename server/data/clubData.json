@@ -889,5 +889,9 @@
     "alumni.rce18@gmail.com",
     "volunteer@mykutumb.com",
     "heamanthprabhu59@gmail.com"
-  ]
+  ],
+  "adminCredentials": {
+    "username": "admin",
+    "passcode": "rce@admin"
+  }
 }
