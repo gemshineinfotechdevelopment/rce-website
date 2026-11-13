@@ -1630,15 +1630,17 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             >
               <Menu size={20} />
             </button>
-            <button
-              type="button"
-              className="admin-desktop-sidebar-toggle"
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-              aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            >
-              {sidebarCollapsed ? <PanelLeftOpen size={19} /> : <PanelLeftClose size={19} />}
-            </button>
+            {sidebarCollapsed && (
+              <button
+                type="button"
+                className="admin-desktop-sidebar-toggle"
+                onClick={() => setSidebarCollapsed(false)}
+                title="Expand sidebar"
+                aria-label="Expand sidebar"
+              >
+                <PanelLeftOpen size={19} />
+              </button>
+            )}
             <div className="admin-topbar-title">
               <h2>
                 {activeTab === 'overview' && 'Executive Performance Overview'}
@@ -2930,7 +2932,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     ))}
                   </div>
 
-                  <div className="mt-6 pt-4 border-t border-stone-200 flex justify-end">
+                  <div className="admin-form-actions">
                     <button type="submit" className="btn-primary btn-large">
                       <CheckCircle2 size={18} />
                       <span>Update Live Counters On Website</span>
@@ -3063,13 +3065,13 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     </button>
                   </div>
 
-                  <div className="flex items-center gap-3 pt-2">
+                  <div className="admin-form-actions">
                     <button
                       type="submit"
                       disabled={isSavingSecurity}
-                      className="btn-primary"
+                      className="btn-primary btn-large"
                     >
-                      <Save size={16} />
+                      <Save size={18} />
                       <span>{isSavingSecurity ? 'Saving Changes...' : 'Update Admin Credentials'}</span>
                     </button>
                   </div>
@@ -3368,11 +3370,11 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="admin-pillars-editor-grid">
                       {pillarsList.map((pillar, idx) => (
-                        <div key={pillar.id || idx} className="p-4 rounded-xl border border-stone-200 bg-stone-50">
-                          <span className="text-xs font-bold text-amber-800 uppercase tracking-wider">Pillar #{idx + 1}</span>
-                          <div className="form-group mt-2">
+                        <div key={pillar.id || idx} className="admin-pillar-editor-card">
+                          <span className="admin-pillar-badge">Pillar #{idx + 1}</span>
+                          <div className="form-group mb-2">
                             <label className="input-sublabel">Title</label>
                             <input
                               type="text"
@@ -3381,7 +3383,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                               className="form-input"
                             />
                           </div>
-                          <div className="form-group mt-2">
+                          <div className="form-group mb-0">
                             <label className="input-sublabel">Description</label>
                             <textarea
                               rows={2}
@@ -3517,13 +3519,13 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                   </div>
                 )}
 
-                <div className="mt-6 pt-4 border-t border-stone-200 flex justify-end">
+                <div className="admin-form-actions">
                   <button
                     type="submit"
                     disabled={isSavingCms}
-                    className="btn-primary"
+                    className="btn-primary btn-large"
                   >
-                    <CheckCircle2 size={16} />
+                    <CheckCircle2 size={18} />
                     <span>{isSavingCms ? 'Saving Changes...' : 'Save & Publish All CMS Changes'}</span>
                   </button>
                 </div>

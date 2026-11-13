@@ -1598,12 +1598,14 @@ const adminLogin = (req, res) => {
   const currentPasscode = (adminCredentials.passcode || "rce@admin").trim();
 
   const envPasscode = process.env.ADMIN_PASSCODE ? [process.env.ADMIN_PASSCODE.trim()] : [];
-  const validPasscodes = [currentPasscode, ...envPasscode, "rce@admin", "admin123", "2026", "rce2026", "admin"];
+  const isDefaultPasscode = currentPasscode === "rce@admin";
+  const validPasscodes = isDefaultPasscode
+    ? [currentPasscode, ...envPasscode, "rce@admin", "admin123", "2026", "rce2026", "admin"]
+    : [currentPasscode, ...envPasscode];
 
   const usernameMatches =
     !inputUsername ||
-    inputUsername.toLowerCase() === currentUsername ||
-    inputUsername.toLowerCase() === "admin";
+    inputUsername.toLowerCase() === currentUsername;
 
   if (validPasscodes.includes(inputPasscode) && usernameMatches) {
     return res.json({
@@ -1631,7 +1633,10 @@ const updateAdminCredentials = (req, res) => {
 
   const existingPass = (adminCredentials.passcode || "rce@admin").trim();
   const envPass = process.env.ADMIN_PASSCODE ? process.env.ADMIN_PASSCODE.trim() : "";
-  const validCurrent = [existingPass, envPass, "rce@admin", "admin123", "2026", "rce2026"].filter(Boolean);
+  const isDefault = existingPass === "rce@admin";
+  const validCurrent = isDefault
+    ? Array.from(new Set([existingPass, envPass, "rce@admin", "admin123", "2026", "rce2026"].filter(Boolean)))
+    : Array.from(new Set([existingPass, envPass].filter(Boolean)));
 
   if (!validCurrent.includes(currentPasscode.trim())) {
     return res.status(401).json({
