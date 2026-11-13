@@ -57,21 +57,14 @@ export interface ClubEvent {
 
 export const getEventImages = (event: Partial<ClubEvent> | null | undefined): string[] => {
   if (!event) return [];
-  const list: string[] = [];
   if (event.image && typeof event.image === 'string' && event.image.trim()) {
-    list.push(event.image.trim());
+    return [event.image.trim()];
   }
-  if (Array.isArray(event.images)) {
-    for (const img of event.images) {
-      if (typeof img === 'string' && img.trim() && !list.includes(img.trim())) {
-        list.push(img.trim());
-      }
-    }
+  if (Array.isArray(event.images) && event.images.length > 0) {
+    const valid = event.images.filter((img) => Boolean(img && typeof img === 'string' && img.trim()));
+    if (valid.length > 0) return [valid[0].trim()];
   }
-  const cleanList = list.filter(Boolean);
-  return cleanList.length > 0
-    ? cleanList
-    : ['https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80'];
+  return [];
 };
 
 export interface StoryItem {
@@ -210,7 +203,7 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "category": "Green Forest",
     "status": "Conducted",
     "studentsImpacted": "1,200+ Students Benefited",
-    "image": "/api/uploads/pazhavam-kurungadu-award.jpg",
+    "image": "https://res.cloudinary.com/kkbtbhkk/image/upload/v1794548030/lcxagzoezemlnfdgkp2t.jpg",
     "highlights": [
       "தமிழ்நாடு அரசு & விருதுநகர் மாவட்ட நிர்வாகத்தின் சிறப்புப் பாராட்டு விருது",
       "பழவம் பகுதியில் பல்லுயிர் பெருக்கும் குறுங்காடு (Miyawaki Forest) உருவாக்கம்",
@@ -223,12 +216,10 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "slotsBooked": 0,
     "formUrl": "",
     "images": [
-      "https://res.cloudinary.com/kkbtbhkk/image/upload/v1793685499/pr65gwekqv45ktbach6i.png",
-      "/api/uploads/pazhavam-kurungadu-award.jpg",
-      "/api/uploads/WhatsAppImage2026-10-31at10544-1793433270670-6783.jpeg",
-      "/api/uploads/Screenshot2026-10-30115215-1793341376498-9113.png",
-      "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1200&q=80"
-    ]
+      "https://res.cloudinary.com/kkbtbhkk/image/upload/v1794548030/lcxagzoezemlnfdgkp2t.jpg"
+    ],
+    "youtubeUrl": "",
+    "youtubeId": ""
   },
   {
     "id": "ev-rce-1",
@@ -239,7 +230,7 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "category": "₹5 Paadasaalai",
     "status": "Ongoing Flagship",
     "studentsImpacted": "1,200+ Students Daily",
-    "image": "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80",
+    "image": "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80",
     "description": "Right Club for Education's revolutionary daily evening study hub where rural & underprivileged children receive structured coaching, homework assistance, spoken English, and holistic mentoring for just ₹5 token fee.",
     "highlights": [
       "Daily evening tutoring for grades 1 to 10",
@@ -251,11 +242,9 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "chiefGuest": "Elders & Village Education Committee",
     "slotsTotal": 100,
     "slotsBooked": 0,
+    "formUrl": "",
     "images": [
-      "/api/uploads/hackathon-1793363701450-705.jpg",
-      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1200&q=80"
+      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80"
     ]
   },
   {
@@ -280,11 +269,11 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "slotsTotal": 100,
     "slotsBooked": 0,
     "images": [
-      "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1200&q=80",
-      "/api/uploads/Screenshot2026-10-30115355-1793341788513-4474.png",
-      "https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80"
-    ]
+      "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=800&q=80"
+    ],
+    "formUrl": "",
+    "youtubeUrl": "https://www.youtube.com/watch?v=IXj0j1G0UtA",
+    "youtubeId": "IXj0j1G0UtA"
   },
   {
     "id": "ev-rce-3",
@@ -309,11 +298,10 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "slotsBooked": 0,
     "formUrl": "https://forms.gle/MdXLG6yPZrSRVejm6",
     "images": [
-      "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80",
-      "/api/uploads/Screenshot2026-10-30120906-1793342382807-7268.png",
-      "/api/uploads/Screenshot2026-10-30121105-1793342482386-9330.png",
-      "https://images.unsplash.com/photo-1511629091441-ee46146481b6?auto=format&fit=crop&w=1200&q=80"
-    ]
+      "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80"
+    ],
+    "youtubeUrl": "https://www.youtube.com/watch?v=j-4RyG3S1l4",
+    "youtubeId": "j-4RyG3S1l4"
   },
   {
     "id": "ev-rce-4",
@@ -339,11 +327,10 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "slotsBooked": 0,
     "formUrl": "",
     "images": [
-      "https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=1200&q=80",
-      "/api/uploads/Screenshot2026-10-30121327-1793342628230-2346.png",
-      "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?auto=format&fit=crop&w=1200&q=80"
-    ]
+      "https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=800&q=80"
+    ],
+    "youtubeUrl": "https://www.youtube.com/watch?v=Ftle5THUD-M",
+    "youtubeId": "Ftle5THUD-M"
   },
   {
     "id": "ev-rce-5",
@@ -367,11 +354,9 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "slotsTotal": 100,
     "slotsBooked": 0,
     "images": [
-      "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80",
-      "/api/uploads/hackathon-1793363701450-705.jpg",
-      "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=1200&q=80"
-    ]
+      "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=800&q=80"
+    ],
+    "formUrl": ""
   },
   {
     "id": "ev-rce-6",
@@ -395,10 +380,9 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "slotsTotal": 100,
     "slotsBooked": 0,
     "images": [
-      "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80"
-    ]
+      "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80"
+    ],
+    "formUrl": ""
   },
   {
     "id": "ev-rce-mou-psr",
@@ -409,7 +393,7 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "category": "MoU & CSR Collaboration",
     "status": "Conducted",
     "studentsImpacted": "College Students & Community Outreach",
-    "image": "/api/uploads/Screenshot2026-10-30121327-1793342628230-2346.png",
+    "image": "https://res.cloudinary.com/kkbtbhkk/image/upload/v1794548091/dizmvrj7i3tl6cz7dt7a.jpg",
     "description": "Right Club for Education (RCE) and PSR Engineering College Join Hands for Corporate Social Activities.\n\nOn 1st August, 2024, Right Club for Education (RCE) and PSR Engineering College celebrated the inauguration and signing of a Memorandum of Understanding (MoU) to collaborate on various corporate social activities.\n\nThe ceremony was held at PSREC, where esteemed members from both RCE and PSR Engineering College gathered to formalize this strategic partnership. The event began with a warm welcome address by Mr. M Venkatesh, followed by insightful speeches from key dignitaries.\n\nDuring the ceremony, Mr. T Chandrarajan, Advisor of RCE, emphasized the importance of collaborative efforts in driving social change and expressed gratitude to PSR Engineering College for their partnership.\n\nDr. P Kannan, Head, Department of Management Studies of PSR Engineering College, highlighted the institution's dedication to social responsibility and encouraged students and faculty members to actively participate in the initiatives and contribute to the cause.\n\nTogether, let's create a brighter future!",
     "highlights": [
       "MoU Signing: Collaboration on Corporate Social Activities & Welfare",
@@ -424,10 +408,10 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "slotsBooked": 0,
     "formUrl": "",
     "images": [
-      "/api/uploads/Screenshot2026-10-30121327-1793342628230-2346.png",
-      "/api/uploads/Screenshot2026-10-30121105-1793342482386-9330.png",
-      "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=80"
-    ]
+      "https://res.cloudinary.com/kkbtbhkk/image/upload/v1794548091/dizmvrj7i3tl6cz7dt7a.jpg"
+    ],
+    "youtubeUrl": "",
+    "youtubeId": ""
   },
   {
     "id": "ev-rce-gandhi-jayanti-2023",
@@ -453,9 +437,7 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "slotsBooked": 0,
     "formUrl": "",
     "images": [
-      "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1200&q=80",
-      "/api/uploads/Screenshot2026-10-30115215-1793341376498-9113.png",
-      "https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=1200&q=80"
+      "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=800&q=80"
     ]
   },
   {
@@ -482,9 +464,7 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "slotsBooked": 0,
     "formUrl": "",
     "images": [
-      "https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=1200&q=80",
-      "/api/uploads/Screenshot2026-10-30121327-1793342628230-2346.png",
-      "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=80"
+      "https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=800&q=80"
     ]
   },
   {
@@ -496,7 +476,7 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "category": "Teachers Award",
     "status": "Conducted",
     "studentsImpacted": "15+ சிறந்த ஆசிரியர்கள் & RCE கல்வியாளர்கள் கௌரவிப்பு",
-    "image": "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80",
+    "image": "/api/uploads/Screenshot2026-10-30120906-1793342382807-7268.png",
     "description": "Right Club for Education (₹5 ரூபாய் பாடசாலை) சார்பாக 15.09.2024 அன்று ஆசிரியர் தின விழாவைக் கொண்டாடும் விதமாக சிறந்த நல்லாசிரியர் விருது வழங்கும் விழா மிகச் சிறப்பாக நடத்தப்பட்டது.\n\nசெப்டம்பர் 2-ல் துவங்கி 10-ம் தேதி வரை Online Form மாணவர்களுக்கும் பொதுமக்களுக்கும் இணையத்தில் அனுப்பி ஆசிரியர்களின் திறமை மற்றும் பொது நலத் தொண்டு அடிப்படையில் பல துறைகளைச் சார்ந்த 15 ஆசிரியர்கள் தேர்வு செய்யப்பட்டனர்.\n\n🏆 விருதுகள் & கௌரவிப்பு:\nஇவர்களுக்கு ஓய்வு பெற்ற தமிழ் ஆசிரியர் திரு. சந்திரபோஸ் மற்றும் RCE ஐந்து ரூபாய் பாடசாலையின் ஆலோசகர் திரு. சந்திரராஜன் ஐயா அவர்களும் இணைந்து விருதுகள் வழங்கி சிறப்பு செய்தனர்.\n\nமேலும் RCE குழுமத்தில் மாணவர்களின் நலனுக்காக அர்ப்பணிப்புடன் செயலாற்றி வரும் ஆசிரியர்களுக்கும் சிறப்பு விருதுகள் வழங்கப்பட்டன.\n\nஇந்நிகழ்வை சிவகாசி திரு. NRKR ஆர்ட்ஸ் கிளப் மைதானத்தில் RCE (ஐந்து ரூபாய் பாடசாலை) குழும உறுப்பினர்கள் மிகச் சிறப்பாக ஏற்பாடு செய்திருந்தனர்.",
     "highlights": [
       "ஆசிரியர் தின விழாவை முன்னிட்டு 2024 சிறந்த நல்லாசிரியர் விருது வழங்கும் விழா",
@@ -511,10 +491,10 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "slotsBooked": 0,
     "formUrl": "https://forms.gle/MdXLG6yPZrSRVejm6",
     "images": [
-      "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80",
-      "/api/uploads/Screenshot2026-10-30120906-1793342382807-7268.png",
-      "/api/uploads/Screenshot2026-10-30121105-1793342482386-9330.png"
-    ]
+      "/api/uploads/Screenshot2026-10-30120906-1793342382807-7268.png"
+    ],
+    "youtubeUrl": "",
+    "youtubeId": ""
   },
   {
     "id": "ev-rce-anbumani-ramadoss-meeting",
@@ -525,7 +505,7 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "category": "Leadership & Honors",
     "status": "Conducted",
     "studentsImpacted": "RCE Youth Leadership & Social Service Outreach",
-    "image": "https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?auto=format&fit=crop&w=800&q=80",
+    "image": "https://res.cloudinary.com/kkbtbhkk/image/upload/v1794548129/tbzozuiqdvfhebgjkwmx.jpg",
     "description": "It was an honor for Right Club for Education (RCE) to meet Dr. Anbumani Ramadoss MP, whose motivational words emboldened our RCE leaders to create lasting positive change across our communities.\n\nHis recognition of our RCE team’s tireless efforts—from our daily ₹5 Paadasaalai rural centers to social awareness campaigns and tree planting drives—was a heartwarming testament to the dedication of our youth volunteers.\n\nA special thank you to Mrs. Thilagabama for her unwavering support and guidance. Your encouragement has been invaluable to our mission.\n\nTogether, let’s continue to build a brighter and more educated society!\n\n– Right Club for Education",
     "highlights": [
       "Honorary interaction with Dr. Anbumani Ramadoss MP",
@@ -539,8 +519,10 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "slotsBooked": 0,
     "formUrl": "",
     "images": [
-      "https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?auto=format&fit=crop&w=800&q=80"
-    ]
+      "https://res.cloudinary.com/kkbtbhkk/image/upload/v1794548129/tbzozuiqdvfhebgjkwmx.jpg"
+    ],
+    "youtubeUrl": "",
+    "youtubeId": ""
   },
   {
     "id": "ev-rce-drug-free-sivakasi-2024",
@@ -551,7 +533,7 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "category": "Education Awareness",
     "status": "Conducted",
     "studentsImpacted": "2,500+ School & College Students Benefited",
-    "image": "/api/uploads/Screenshot2026-10-30121105-1793342482386-9330.png",
+    "image": "https://res.cloudinary.com/kkbtbhkk/image/upload/v1794548246/ynlc2rpyqturqq8ba4xb.jpg",
     "description": "In an inspiring effort to promote a Drug-Free Sivakasi, Right Club for Education (₹5 School) conducted a series of special events from August 17th to 19th, 2024. These programs aimed at raising awareness among students and the general public about the dangers of drug abuse and the importance of living a healthy, drug-free life.\n\nKey Highlights of the Event Series:\n\n• Session with Government School Students (17th August 2024):\nThe event series began with an awareness program for government school students in Sivakasi. This interactive session focused on educating young minds about the dangers of drug addiction and the steps they can take to stay away from harmful substances.\n\n• Morning Session at Ayya Nadar Janaki Ammal College (19th August 2024):\nLed by Mr. Venkatesh Babu IRS, who spoke to college students about the risks associated with drug use and the importance of making informed, healthy choices in life. His discussion emphasized vigilance and prevention as key factors in living a drug-free life.\n\n• Afternoon Session at The Standard Fireworks Rajaratnam College for Women (SFRC):\nIn the afternoon, Mr. Venkatesh Babu IRS addressed the students of SFR College for Women, focusing on the role that individuals and communities can play in building a drug-free society. He elaborated on various methods to prevent drug abuse and encouraged students to take an active role in the movement.\n\nThese programs are a vital step toward a larger mission—building a healthier, drug-free community in Sivakasi. Heartfelt thanks to all participants, college administrations, and special guests for their steadfast support!\n\n– Right Club for Education (₹5 School)",
     "highlights": [
       "3-day anti-drug awareness conclave across Sivakasi educational institutions",
@@ -566,10 +548,10 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "slotsBooked": 0,
     "formUrl": "",
     "images": [
-      "/api/uploads/Screenshot2026-10-30121105-1793342482386-9330.png",
-      "/api/uploads/Screenshot2026-10-30120906-1793342382807-7268.png",
-      "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80"
-    ]
+      "https://res.cloudinary.com/kkbtbhkk/image/upload/v1794548246/ynlc2rpyqturqq8ba4xb.jpg"
+    ],
+    "youtubeUrl": "",
+    "youtubeId": ""
   },
   {
     "id": "ev-rce-kalvi-mela-2024",
@@ -580,7 +562,7 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "category": "Kalvi Mela",
     "status": "Conducted",
     "studentsImpacted": "650+ மாணவர்கள் & சிவகாசி பள்ளிகள்",
-    "image": "/api/uploads/Screenshot2026-10-30115215-1793341376498-9113.png",
+    "image": "https://res.cloudinary.com/kkbtbhkk/image/upload/v1794548194/hznhnkloa99zcwbrkkcf.jpg",
     "description": "Right Club for Education (₹5 ரூபாய் பாடசாலை) கல்விமேளா – 2024 என்ற பிரம்மாண்ட கலை மற்றும் இலக்கியத் திருவிழாவை 09.11.2024 மற்றும் 10.11.2024 ஆகிய இரண்டு நாட்கள் சிவகாசி சுப சங்கமம் திருமண மண்டபத்தில் மிகச் சிறப்பாக நடத்தியது.\n\nஇந்நிகழ்வில் சிவகாசியைச் சேர்ந்த பல்வேறு அரசு மற்றும் தனியார் பள்ளிகள் உற்சாகமாகக் கலந்துகொண்டன. மாணவர்களின் பன்முகத் திறமையை வெளிப்படுத்தும் வகையில் கட்டுரை, ஓவியம், பேச்சு, நடனம், நாடகம், முக ஓவியம், மௌன நாடகம் உள்ளிட்ட 16 வகையான போட்டிகள் நடத்தப்பட்டன.\n\nஒவ்வொரு போட்டிக்கும் மூன்று பரிசுகள் வீதம் 16 போட்டிகளுக்கும் பரிசுகள் மற்றும் சான்றிதழ்கள் வழங்கப்பட்டன.\n\n🏆 ஒட்டுமொத்த சாம்பியன்ஷிப் புள்ளிகளின் அடிப்படையில் வெற்றியாளர்கள்:\n• முதல் பரிசு (Champion): சிவகாசி இந்து நாடார் பெண்கள் மேல்நிலைப் பள்ளி\n• இரண்டாம் பரிசு (Runner-up): செண்பக விநாயகர் மெட்ரிகுலேஷன் பள்ளி\n\nசிவகாசியின் 650 மாணவச் செல்வங்கள் கலந்து கொண்டு திறமைகளை வெளிப்படுத்திய இந்நிகழ்வை RCE உறுப்பினர்கள் மிகச் சிறப்பாக ஏற்பாடு செய்திருந்தனர்.",
     "highlights": [
       "இரு நாட்கள் நடைபெற்ற மாபெரும் கல்விமேளா – 2024 திருவிழா",
@@ -595,10 +577,10 @@ export const DEFAULT_EVENTS: ClubEvent[] = [
     "slotsBooked": 0,
     "formUrl": "",
     "images": [
-      "/api/uploads/Screenshot2026-10-30115215-1793341376498-9113.png",
-      "/api/uploads/Screenshot2026-10-30115355-1793341788513-4474.png",
-      "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1200&q=80"
-    ]
+      "https://res.cloudinary.com/kkbtbhkk/image/upload/v1794548194/hznhnkloa99zcwbrkkcf.jpg"
+    ],
+    "youtubeUrl": "",
+    "youtubeId": ""
   }
 ];
 

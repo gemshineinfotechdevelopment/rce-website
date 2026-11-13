@@ -775,10 +775,10 @@ export const EventsPage: React.FC<EventsPageProps> = ({
                 );
               })()}
 
-              {/* Event Photo Gallery Grid */}
+              {/* Event Photo Gallery Grid (Only shown when multiple photos exist) */}
               {(() => {
                 const galleryPhotos = selectedEvent ? getEventImages(selectedEvent) : [];
-                if (galleryPhotos.length === 0) return null;
+                if (galleryPhotos.length <= 1) return null;
                 return (
                   <div className="event-modal-gallery-container mt-6 pt-5 border-t border-amber-200/50">
                     <div className="highlights-header-bar mb-3">

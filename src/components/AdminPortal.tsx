@@ -37,7 +37,9 @@ import {
   Tv,
   Play,
   Video,
-  Settings
+  Settings,
+  PanelLeftClose,
+  PanelLeftOpen
 } from 'lucide-react';
 import {
   fetchAdminData,
@@ -84,7 +86,6 @@ import type {
   SiteContent
 } from '../services/api';
 import { ImageUploadInput } from './ImageUploadInput';
-import { MultiImageUploadInput } from './MultiImageUploadInput';
 import { DonationReceipt } from './DonationReceipt';
 
 interface AdminPortalProps {
@@ -118,6 +119,23 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
 
   // Mobile sidebar drawer state
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  // Desktop sidebar collapse state (persisted)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem('rce_admin_sidebar_collapsed') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('rce_admin_sidebar_collapsed', String(sidebarCollapsed));
+    } catch {
+      // ignore
+    }
+  }, [sidebarCollapsed]);
 
   // Sub-navigation for Settings (Website Content CMS + Live Counters)
   const [cmsSubTab, setCmsSubTab] = useState<'hero' | 'about' | 'pillars' | 'contact' | 'brand' | 'counters'>('hero');
@@ -213,8 +231,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
   const [eventLocation, setEventLocation] = useState('');
   const [eventCategory, setEventCategory] = useState('');
   const [eventStudentsImpacted, setEventStudentsImpacted] = useState('1,200+ Students Benefited');
-  const [eventImage, setEventImage] = useState('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80');
-  const [eventImages, setEventImages] = useState<string[]>([]);
+  const [eventImage, setEventImage] = useState('');
   const [eventStatus, setEventStatus] = useState('Conducted');
   const [eventLeader, setEventLeader] = useState('RCE Educational Team');
   const [eventChiefGuest, setEventChiefGuest] = useState('');
@@ -810,8 +827,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       showNotice('Please enter an event title', true);
       return;
     }
-    const finalImages = eventImages.length > 0 ? eventImages : (eventImage ? [eventImage] : []);
-    const coverPhoto = eventImage || finalImages[0] || 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80';
+    const coverPhoto = eventImage.trim();
+    const finalImages = coverPhoto ? [coverPhoto] : [];
     try {
       await createClubEvent({
         title: eventTitle.trim(),
@@ -840,7 +857,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       setEventFormUrl('');
       setEventYoutubeUrl('');
       setEventChiefGuest('');
-      setEventImages([]);
       setEventImage('');
       setShowAddEvent(false);
       await loadData();
@@ -1264,7 +1280,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
   // 2. MAIN LOGGED-IN ADMIN CONSOLE
   // ==============================================================
   return (
-    <div className="admin-standalone-wrapper">
+    <div className={`admin-standalone-wrapper ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       {/* Floating Toast Notification (Fixed overlay - will never disturb layout) */}
       {actionNotice && (
         <div
@@ -1294,18 +1310,40 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       )}
 
       {/* Admin Sidebar */}
-      <aside className={`admin-sidebar ${mobileSidebarOpen ? 'mobile-open' : ''}`}>
+      <aside className={`admin-sidebar ${mobileSidebarOpen ? 'mobile-open' : ''} ${sidebarCollapsed ? 'collapsed' : ''}`}>
         {/* Brand */}
         <div className="admin-sidebar-brand">
           <div className="admin-sidebar-brand-group">
-            <div className="admin-sidebar-logo-wrap">
+            <div
+              className="admin-sidebar-logo-wrap"
+              onClick={() => {
+                if (sidebarCollapsed) setSidebarCollapsed(false);
+              }}
+              title={sidebarCollapsed ? 'Click to expand sidebar' : undefined}
+              role={sidebarCollapsed ? 'button' : undefined}
+            >
               <img src="/Rce.logo.png" alt="RCE Logo" className="admin-sidebar-logo-img" />
             </div>
-            <div className="admin-sidebar-text">
-              <h3>{brandName || 'RCE'}</h3>
-              <span className="admin-brand-portal-pill">ADMIN PORTAL</span>
-            </div>
+            {!sidebarCollapsed && (
+              <div className="admin-sidebar-text">
+                <h3>{brandName || 'RCE'}</h3>
+                <span className="admin-brand-portal-pill">ADMIN PORTAL</span>
+              </div>
+            )}
           </div>
+
+          {!sidebarCollapsed && (
+            <button
+              type="button"
+              className="admin-sidebar-collapse-btn"
+              onClick={() => setSidebarCollapsed(true)}
+              title="Collapse sidebar"
+              aria-label="Collapse sidebar"
+            >
+              <PanelLeftClose size={18} />
+            </button>
+          )}
+
           <button
             type="button"
             className="admin-sidebar-close-btn"
@@ -1323,6 +1361,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             type="button"
             className={`admin-nav-item ${activeTab === 'overview' ? 'active' : ''}`}
             onClick={() => { setActiveTab('overview'); setMobileSidebarOpen(false); }}
+            title={sidebarCollapsed ? 'Overview' : undefined}
           >
             <div className="flex items-center gap-3">
               <BarChart3 size={18} />
@@ -1335,6 +1374,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             type="button"
             className={`admin-nav-item ${activeTab === 'volunteers' ? 'active' : ''}`}
             onClick={() => { setActiveTab('volunteers'); setMobileSidebarOpen(false); }}
+            title={sidebarCollapsed ? `Volunteers (${pendingVolunteersCount > 0 ? `${pendingVolunteersCount} Pending` : adminData?.volunteerApplications?.length || 0})` : undefined}
           >
             <div className="flex items-center gap-3">
               <Users size={18} />
@@ -1351,6 +1391,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             type="button"
             className={`admin-nav-item ${activeTab === 'donations' ? 'active' : ''}`}
             onClick={() => { setActiveTab('donations'); setMobileSidebarOpen(false); }}
+            title={sidebarCollapsed ? `Donations (${adminData?.donationRecords?.length || 0})` : undefined}
           >
             <div className="flex items-center gap-3">
               <Heart size={18} />
@@ -1363,6 +1404,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             type="button"
             className={`admin-nav-item ${activeTab === 'events' ? 'active' : ''}`}
             onClick={() => { setActiveTab('events'); setMobileSidebarOpen(false); }}
+            title={sidebarCollapsed ? `Events (${adminData?.events?.length || 0})` : undefined}
           >
             <div className="flex items-center gap-3">
               <Calendar size={18} />
@@ -1375,6 +1417,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             type="button"
             className={`admin-nav-item ${activeTab === 'projects' ? 'active' : ''}`}
             onClick={() => { setActiveTab('projects'); setMobileSidebarOpen(false); }}
+            title={sidebarCollapsed ? `Projects (${adminData?.projects?.length || 0})` : undefined}
           >
             <div className="flex items-center gap-3">
               <Layers size={18} />
@@ -1387,6 +1430,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             type="button"
             className={`admin-nav-item ${activeTab === 'inquiries' ? 'active' : ''}`}
             onClick={() => { setActiveTab('inquiries'); setMobileSidebarOpen(false); }}
+            title={sidebarCollapsed ? `Inquiries ${newInquiriesCount > 0 ? `(${newInquiriesCount} New)` : ''}` : undefined}
           >
             <div className="flex items-center gap-3">
               <Mail size={18} />
@@ -1402,6 +1446,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             type="button"
             className={`admin-nav-item ${activeTab === 'settings' ? 'active' : ''}`}
             onClick={() => { setActiveTab('settings'); setMobileSidebarOpen(false); }}
+            title={sidebarCollapsed ? 'Website Settings & Counters' : undefined}
           >
             <div className="flex items-center gap-3">
               <Settings size={18} />
@@ -1413,6 +1458,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             type="button"
             className={`admin-nav-item ${activeTab === 'videos' ? 'active' : ''}`}
             onClick={() => { setActiveTab('videos'); setMobileSidebarOpen(false); }}
+            title={sidebarCollapsed ? `YouTube Videos (${videosList.length})` : undefined}
           >
             <div className="flex items-center gap-3">
               <Tv size={18} className="text-red-500" />
@@ -1425,6 +1471,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             type="button"
             className={`admin-nav-item ${activeTab === 'gallery' ? 'active' : ''}`}
             onClick={() => { setActiveTab('gallery'); setMobileSidebarOpen(false); }}
+            title={sidebarCollapsed ? `Photo Gallery (${adminData?.gallery?.length || 0})` : undefined}
           >
             <div className="flex items-center gap-3">
               <ImageIcon size={18} />
@@ -1437,6 +1484,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             type="button"
             className={`admin-nav-item ${activeTab === 'stories' ? 'active' : ''}`}
             onClick={() => { setActiveTab('stories'); setMobileSidebarOpen(false); }}
+            title={sidebarCollapsed ? `Testimonials (${adminData?.stories?.length || 0})` : undefined}
           >
             <div className="flex items-center gap-3">
               <Quote size={18} />
@@ -1452,6 +1500,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             type="button"
             onClick={() => { setMobileSidebarOpen(false); onBackToWebsite(); }}
             className="btn-outline w-full mb-2 admin-switch-website-btn"
+            title={sidebarCollapsed ? 'View Live Website' : undefined}
           >
             <ArrowLeft size={16} />
             <span>View Live Website</span>
@@ -1461,6 +1510,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
             type="button"
             onClick={() => { setMobileSidebarOpen(false); handleLogout(); }}
             className="admin-logout-btn w-full"
+            title={sidebarCollapsed ? 'Log Out' : undefined}
           >
             <LogOut size={16} />
             <span>Log Out</span>
@@ -1469,7 +1519,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
       </aside>
 
       {/* Main Viewport */}
-      <main className="admin-main-viewport">
+      <main className={`admin-main-viewport ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
         {/* Top Header Bar */}
         <header className="admin-topbar">
           <div className="admin-topbar-brand-group">
@@ -1480,6 +1530,15 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               aria-label="Toggle navigation"
             >
               <Menu size={20} />
+            </button>
+            <button
+              type="button"
+              className="admin-desktop-sidebar-toggle"
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            >
+              {sidebarCollapsed ? <PanelLeftOpen size={19} /> : <PanelLeftClose size={19} />}
             </button>
             <div className="admin-topbar-title">
               <h2>
@@ -2113,15 +2172,12 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     </div>
                   </div>
 
-                  <MultiImageUploadInput
-                    label="Event Photographs (Multiple Photos Allowed)"
-                    images={eventImages.length > 0 ? eventImages : (eventImage ? [eventImage] : [])}
-                    coverImage={eventImage}
-                    onChange={(updatedList, newCover) => {
-                      setEventImages(updatedList);
-                      setEventImage(newCover || updatedList[0] || '');
-                    }}
-                    helpText="Upload all photographs and moments for this event. The first picture will be the primary cover photo."
+                  <ImageUploadInput
+                    label="Event Photograph"
+                    value={eventImage}
+                    onChange={setEventImage}
+                    helpText="Upload photograph for this event from your device (JPG, PNG, WEBP)"
+                    previewHeight="160px"
                   />
 
                   <div className="form-row-2 mb-3">
@@ -4005,18 +4061,12 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                 </div>
               </div>
 
-              <MultiImageUploadInput
-                label="Event Photographs (Multiple Photos)"
-                images={editingEvent.images && editingEvent.images.length > 0 ? editingEvent.images : (editingEvent.image ? [editingEvent.image] : [])}
-                coverImage={editingEvent.image}
-                onChange={(updatedList, newCover) => {
-                  setEditingEvent({
-                    ...editingEvent,
-                    images: updatedList,
-                    image: newCover || updatedList[0] || '',
-                  });
-                }}
-                helpText="Add, reorder, or remove event photos. Click 'Set Cover' to pick the main photo."
+              <ImageUploadInput
+                label="Event Photograph"
+                value={editingEvent.image || ''}
+                onChange={(url) => setEditingEvent({ ...editingEvent, image: url, images: url ? [url] : [] })}
+                helpText="Upload new photo to replace current event picture"
+                previewHeight="160px"
               />
 
               <div className="form-row-2 mb-3">

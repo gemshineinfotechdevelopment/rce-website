@@ -1184,15 +1184,15 @@ const createEvent = (req, res) => {
     return res.status(400).json({ success: false, message: "Event title and date are required." });
   }
 
+  const mainImage = (image || "").trim();
   const rawImages = Array.isArray(images)
-    ? images
-    : typeof images === "string" && images.trim()
-    ? images.split(",").map((s) => s.trim())
+    ? images.map((s) => (s && typeof s === 'string' ? s.trim() : '')).filter(Boolean)
     : [];
-
-  const cleanedImages = Array.from(new Set([...rawImages, image].filter((s) => Boolean(s && typeof s === 'string' && s.trim()))));
-  const mainImage = image || (cleanedImages.length > 0 ? cleanedImages[0] : "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80");
-  const finalImages = cleanedImages.length > 0 ? cleanedImages : [mainImage];
+  const finalImages = mainImage
+    ? [mainImage]
+    : rawImages.length > 0
+    ? [rawImages[0]]
+    : [];
 
   const newEvent = {
     id: "ev-" + Date.now(),
@@ -1269,21 +1269,12 @@ const updateEvent = (req, res) => {
     ? String(youtubeId).trim()
     : (youtubeUrl !== undefined ? extractYoutubeId(cleanYoutubeUrl) : (existing.youtubeId || ""));
 
-  let updatedImages = existing.images || (existing.image ? [existing.image] : []);
-  if (images !== undefined) {
-    const rawImages = Array.isArray(images)
-      ? images
-      : typeof images === "string" && images.trim()
-      ? images.split(",").map((s) => s.trim())
-      : [];
-    updatedImages = Array.from(new Set(rawImages.filter((s) => Boolean(s && typeof s === 'string' && s.trim()))));
-  } else if (image !== undefined && image && !updatedImages.includes(image)) {
-    updatedImages = [image, ...updatedImages];
-  }
-
   const updatedMainImage = image !== undefined
-    ? image
-    : (updatedImages.length > 0 ? updatedImages[0] : existing.image);
+    ? String(image).trim()
+    : (images !== undefined && Array.isArray(images) && images.length > 0
+      ? String(images[0]).trim()
+      : existing.image);
+  const updatedImages = updatedMainImage ? [updatedMainImage] : [];
 
   eventsList[index] = {
     ...existing,
@@ -1300,7 +1291,7 @@ const updateEvent = (req, res) => {
         ? beneficiaries
         : existing.studentsImpacted,
     image: updatedMainImage,
-    images: updatedImages.length > 0 ? updatedImages : (updatedMainImage ? [updatedMainImage] : []),
+    images: updatedImages,
     highlights:
       highlights !== undefined
         ? Array.isArray(highlights)
