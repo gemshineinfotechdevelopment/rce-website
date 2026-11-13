@@ -7,7 +7,7 @@ module.exports = {
   apps: [
     {
       name: "rce-backend",
-      cwd: "./server",
+      cwd: path.join(__dirname, "server"),
       script: "server.js",
       instances: 1,
       exec_mode: "fork",
