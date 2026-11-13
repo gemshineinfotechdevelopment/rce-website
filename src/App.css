@@ -506,7 +506,7 @@
 .hero-section {
   position: relative;
   width: 100%;
-  padding-top: 46px; /* Reduced to 46px on desktop as requested */
+  padding-top: 10px;
   padding-bottom: 80px;
   overflow: hidden;
   background: 
@@ -572,7 +572,7 @@
   }
 
   .hero-section {
-    padding-top: 20px;
+    padding-top: 10px;
   }
 }
 
@@ -586,7 +586,7 @@
 
   .hero-content {
     order: 1;
-    padding-top: 6px;
+    padding-top: 0;
   }
 
   .hero-visual {
@@ -5160,12 +5160,13 @@
 /* Standalone Admin Shell */
 .admin-standalone-wrapper {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   width: 100%;
   background: #f6f1eb;
   color: #24140c;
   position: relative;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 /* Floating Notice Banner & Toast */
@@ -5617,7 +5618,8 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   overflow-y: auto;
   overflow-x: hidden;
   margin-left: 270px;
@@ -5628,6 +5630,7 @@
     radial-gradient(rgba(180, 83, 9, 0.04) 1px, transparent 1px);
   background-size: 100% 100%, 24px 24px;
   transition: margin-left 0.25s cubic-bezier(0.16, 1, 0.3, 1), width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  scrollbar-gutter: stable;
 }
 
 .admin-main-viewport.sidebar-collapsed {
@@ -5640,13 +5643,18 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 16px 28px;
-  background: #ffffff;
+  padding: 14px 28px;
+  min-height: 70px;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1.5px solid #dfcebc;
-  box-shadow: 0 2px 10px rgba(36, 20, 12, 0.03);
+  box-shadow: 0 2px 10px rgba(36, 20, 12, 0.04);
   position: sticky;
   top: 0;
-  z-index: 30;
+  z-index: 50;
+  flex-shrink: 0;
 }
 
 .admin-topbar-brand-group {
@@ -5932,7 +5940,7 @@
   display: none;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 960px) {
   .admin-title-desktop {
     display: none !important;
   }
@@ -6109,6 +6117,17 @@
   gap: 16px;
   margin-bottom: 22px;
   flex-wrap: wrap;
+}
+
+.btn-admin-header-action {
+  padding: 8px 18px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
 .admin-section-title {
@@ -7330,16 +7349,32 @@
 /* ==============================================================
    CMS & WEBSITE CONTENT MANAGER STYLES
    ============================================================== */
+.admin-cms-subnav-wrapper {
+  position: sticky;
+  top: 70px;
+  z-index: 45;
+  background: #faf7f2;
+  padding-top: 14px;
+  padding-bottom: 6px;
+  margin-top: -12px;
+  margin-bottom: 22px;
+}
+
 .admin-cms-subnav {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   padding: 10px 14px;
   border-radius: var(--radius-lg);
   border: 1.5px solid #dfcebc;
-  margin-bottom: 24px;
+  box-shadow: 0 4px 16px rgba(36, 20, 12, 0.08);
+  margin-bottom: 0;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
 }
 
 .cms-subnav-btn {
@@ -7773,8 +7808,9 @@
   .admin-standalone-wrapper {
     flex-direction: column;
     width: 100%;
-    min-height: 100vh;
-    overflow-x: hidden;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
   }
 
   /* Slide-in Mobile Drawer for Admin Sidebar */
@@ -7881,13 +7917,18 @@
     margin-left: 0 !important;
     max-width: 100% !important;
     width: 100% !important;
-    min-height: 100vh;
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 
   /* Admin Topbar on Mobile */
   .admin-topbar {
-    padding: 12px 14px;
+    padding: 10px 14px;
+    min-height: 60px;
+    box-sizing: border-box;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
@@ -7895,8 +7936,10 @@
     position: sticky;
     top: 0;
     z-index: 50;
+    flex-shrink: 0;
     background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     box-shadow: 0 2px 10px rgba(36, 20, 12, 0.05);
   }
 
@@ -8001,7 +8044,53 @@
   .admin-content-view {
     padding: 16px 14px 60px;
     width: 100%;
-    overflow-x: hidden;
+    overflow: visible;
+  }
+
+  .admin-cms-subnav-wrapper {
+    top: 60px;
+    padding-top: 10px;
+    padding-bottom: 4px;
+    margin-top: -6px;
+    margin-bottom: 16px;
+  }
+
+  .admin-cms-subnav {
+    padding: 8px 10px;
+    gap: 8px;
+    box-shadow: 0 3px 12px rgba(36, 20, 12, 0.08);
+  }
+
+  /* Admin Section Header Bar & Right-Aligned Add Buttons on Mobile */
+  .admin-section-header-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+    width: 100%;
+  }
+
+  .admin-section-header-bar > div:first-child {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .admin-section-header-bar > button,
+  .admin-section-header-bar .btn-primary,
+  .btn-admin-header-action {
+    align-self: flex-end !important;
+    margin-left: auto !important;
+    width: auto !important;
+    padding: 6px 14px !important;
+    font-size: 0.82rem !important;
+    height: 34px !important;
+    border-radius: 8px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    flex-shrink: 0 !important;
   }
 }
 

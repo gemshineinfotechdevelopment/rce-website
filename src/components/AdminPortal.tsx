@@ -1598,16 +1598,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
         <div className="admin-sidebar-footer">
           <button
             type="button"
-            onClick={() => { setMobileSidebarOpen(false); onBackToWebsite(); }}
-            className="btn-outline w-full mb-2 admin-switch-website-btn"
-            title={sidebarCollapsed ? 'View Live Website' : undefined}
-          >
-            <ArrowLeft size={16} />
-            <span>View Live Website</span>
-          </button>
-
-          <button
-            type="button"
             onClick={() => { setMobileSidebarOpen(false); handleLogout(); }}
             className="admin-logout-btn w-full"
             title={sidebarCollapsed ? 'Log Out' : undefined}
@@ -1650,15 +1640,60 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
                     <span className="admin-title-mobile">Overview</span>
                   </>
                 )}
-                {activeTab === 'settings' && 'Website Settings & Live Counters'}
-                {activeTab === 'videos' && 'YouTube Videos & Impact Media Showcase'}
-                {activeTab === 'gallery' && 'Public Photo Gallery'}
-                {activeTab === 'stories' && 'Voices of Change & Stories'}
-                {activeTab === 'events' && 'Events'}
-                {activeTab === 'projects' && 'Flagship Causes & Projects'}
-                {activeTab === 'volunteers' && 'Volunteer & Member Registry'}
-                {activeTab === 'donations' && 'Donations & Official Receipts'}
-                {activeTab === 'inquiries' && 'Citizen Messages & Inquiries'}
+                {activeTab === 'settings' && (
+                  <>
+                    <span className="admin-title-desktop">Website Settings & Live Counters</span>
+                    <span className="admin-title-mobile">Settings</span>
+                  </>
+                )}
+                {activeTab === 'videos' && (
+                  <>
+                    <span className="admin-title-desktop">YouTube Videos & Impact Media Showcase</span>
+                    <span className="admin-title-mobile">YouTube Videos</span>
+                  </>
+                )}
+                {activeTab === 'gallery' && (
+                  <>
+                    <span className="admin-title-desktop">Public Photo Gallery</span>
+                    <span className="admin-title-mobile">Photo Gallery</span>
+                  </>
+                )}
+                {activeTab === 'stories' && (
+                  <>
+                    <span className="admin-title-desktop">Voices of Change & Stories</span>
+                    <span className="admin-title-mobile">Testimonials</span>
+                  </>
+                )}
+                {activeTab === 'events' && (
+                  <>
+                    <span className="admin-title-desktop">Events</span>
+                    <span className="admin-title-mobile">Events</span>
+                  </>
+                )}
+                {activeTab === 'projects' && (
+                  <>
+                    <span className="admin-title-desktop">Flagship Causes & Projects</span>
+                    <span className="admin-title-mobile">Projects</span>
+                  </>
+                )}
+                {activeTab === 'volunteers' && (
+                  <>
+                    <span className="admin-title-desktop">Volunteer & Member Registry</span>
+                    <span className="admin-title-mobile">Volunteers</span>
+                  </>
+                )}
+                {activeTab === 'donations' && (
+                  <>
+                    <span className="admin-title-desktop">Donations & Official Receipts</span>
+                    <span className="admin-title-mobile">Donations</span>
+                  </>
+                )}
+                {activeTab === 'inquiries' && (
+                  <>
+                    <span className="admin-title-desktop">Citizen Messages & Inquiries</span>
+                    <span className="admin-title-mobile">Inquiries</span>
+                  </>
+                )}
               </h2>
             </div>
           </div>
@@ -2174,9 +2209,9 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               <button
                 type="button"
                 onClick={() => setShowAddEvent(!showAddEvent)}
-                className="btn-primary"
+                className="btn-primary btn-admin-header-action"
               >
-                {showAddEvent ? <ChevronUp size={16} /> : <Calendar size={16} />}
+                {showAddEvent ? <ChevronUp size={15} /> : <Calendar size={15} />}
                 <span>{showAddEvent ? 'Close Form' : 'Add Event'}</span>
               </button>
             </div>
@@ -2569,9 +2604,9 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               <button
                 type="button"
                 onClick={() => setShowAddProject(!showAddProject)}
-                className="btn-primary"
+                className="btn-primary btn-admin-header-action"
               >
-                {showAddProject ? <ChevronUp size={16} /> : <Layers size={16} />}
+                {showAddProject ? <ChevronUp size={15} /> : <Layers size={15} />}
                 <span>{showAddProject ? 'Close Form' : 'Add Project'}</span>
               </button>
             </div>
@@ -2862,56 +2897,58 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
         {activeTab === 'settings' && (
           <div className="admin-content-view">
             {/* Sub-Nav Pills */}
-            <div className="admin-cms-subnav">
-              <button
-                type="button"
-                className={`cms-subnav-btn ${cmsSubTab === 'hero' ? 'active' : ''}`}
-                onClick={() => setCmsSubTab('hero')}
-              >
-                <span>🏷️ Hero Banner</span>
-              </button>
-              <button
-                type="button"
-                className={`cms-subnav-btn ${cmsSubTab === 'about' ? 'active' : ''}`}
-                onClick={() => setCmsSubTab('about')}
-              >
-                <span>📖 About Story</span>
-              </button>
-              <button
-                type="button"
-                className={`cms-subnav-btn ${cmsSubTab === 'pillars' ? 'active' : ''}`}
-                onClick={() => setCmsSubTab('pillars')}
-              >
-                <span>🏛️ 4 Pillars</span>
-              </button>
-              <button
-                type="button"
-                className={`cms-subnav-btn ${cmsSubTab === 'contact' ? 'active' : ''}`}
-                onClick={() => setCmsSubTab('contact')}
-              >
-                <span>📞 Contact & Office</span>
-              </button>
-              <button
-                type="button"
-                className={`cms-subnav-btn ${cmsSubTab === 'brand' ? 'active' : ''}`}
-                onClick={() => setCmsSubTab('brand')}
-              >
-                <span>🛡️ Brand & Legal</span>
-              </button>
-              <button
-                type="button"
-                className={`cms-subnav-btn ${cmsSubTab === 'counters' ? 'active' : ''}`}
-                onClick={() => setCmsSubTab('counters')}
-              >
-                <span>📊 Live Counters</span>
-              </button>
-              <button
-                type="button"
-                className={`cms-subnav-btn ${cmsSubTab === 'security' ? 'active' : ''}`}
-                onClick={() => setCmsSubTab('security')}
-              >
-                <span>🔐 Admin Credentials</span>
-              </button>
+            <div className="admin-cms-subnav-wrapper">
+              <div className="admin-cms-subnav">
+                <button
+                  type="button"
+                  className={`cms-subnav-btn ${cmsSubTab === 'hero' ? 'active' : ''}`}
+                  onClick={() => setCmsSubTab('hero')}
+                >
+                  <span>🏷️ Hero Banner</span>
+                </button>
+                <button
+                  type="button"
+                  className={`cms-subnav-btn ${cmsSubTab === 'about' ? 'active' : ''}`}
+                  onClick={() => setCmsSubTab('about')}
+                >
+                  <span>📖 About Story</span>
+                </button>
+                <button
+                  type="button"
+                  className={`cms-subnav-btn ${cmsSubTab === 'pillars' ? 'active' : ''}`}
+                  onClick={() => setCmsSubTab('pillars')}
+                >
+                  <span>🏛️ 4 Pillars</span>
+                </button>
+                <button
+                  type="button"
+                  className={`cms-subnav-btn ${cmsSubTab === 'contact' ? 'active' : ''}`}
+                  onClick={() => setCmsSubTab('contact')}
+                >
+                  <span>📞 Contact & Office</span>
+                </button>
+                <button
+                  type="button"
+                  className={`cms-subnav-btn ${cmsSubTab === 'brand' ? 'active' : ''}`}
+                  onClick={() => setCmsSubTab('brand')}
+                >
+                  <span>🛡️ Brand & Legal</span>
+                </button>
+                <button
+                  type="button"
+                  className={`cms-subnav-btn ${cmsSubTab === 'counters' ? 'active' : ''}`}
+                  onClick={() => setCmsSubTab('counters')}
+                >
+                  <span>📊 Live Counters</span>
+                </button>
+                <button
+                  type="button"
+                  className={`cms-subnav-btn ${cmsSubTab === 'security' ? 'active' : ''}`}
+                  onClick={() => setCmsSubTab('security')}
+                >
+                  <span>🔐 Admin Credentials</span>
+                </button>
+              </div>
             </div>
 
             {cmsSubTab === 'counters' ? (
@@ -3560,9 +3597,9 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               <button
                 type="button"
                 onClick={() => setShowAddVideo(!showAddVideo)}
-                className="btn-primary"
+                className="btn-primary btn-admin-header-action"
               >
-                {showAddVideo && <ChevronUp size={16} />}
+                {showAddVideo ? <ChevronUp size={15} /> : <Tv size={15} />}
                 <span>{showAddVideo ? 'Close Form' : 'Add YouTube Video'}</span>
               </button>
             </div>
@@ -3803,10 +3840,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               <button
                 type="button"
                 onClick={() => setShowAddGallery(!showAddGallery)}
-                className="btn-primary"
+                className="btn-primary btn-admin-header-action"
               >
-                {showAddGallery && <ChevronUp size={16} />}
-                <span>{showAddGallery ? 'Close Form' : 'Add New Photo'}</span>
+                {showAddGallery ? <ChevronUp size={15} /> : <ImageIcon size={15} />}
+                <span>{showAddGallery ? 'Close Form' : 'Add Photo'}</span>
               </button>
             </div>
 
@@ -3944,9 +3981,9 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToWebsite, onDat
               <button
                 type="button"
                 onClick={() => setShowAddStory(!showAddStory)}
-                className="btn-primary"
+                className="btn-primary btn-admin-header-action"
               >
-                {showAddStory && <ChevronUp size={16} />}
+                {showAddStory ? <ChevronUp size={15} /> : <Quote size={15} />}
                 <span>{showAddStory ? 'Close Form' : 'Add Testimonial'}</span>
               </button>
             </div>
