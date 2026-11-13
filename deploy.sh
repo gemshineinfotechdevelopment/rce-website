@@ -45,12 +45,9 @@ else
 fi
 
 # 6. Start or Reload PM2
-echo "⚙️ Reloading PM2 backend process on Port 5024..."
-if pm2 describe rce-backend > /dev/null 2>&1; then
-    pm2 reload ecosystem.config.cjs
-else
-    pm2 start ecosystem.config.cjs
-fi
+echo "⚙️ Starting/Reloading PM2 backend process on Port 5024..."
+pm2 delete rce-backend 2>/dev/null || true
+pm2 start ecosystem.config.cjs --update-env
 pm2 save
 
 # 7. Test and reload Nginx
