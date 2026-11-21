@@ -11,6 +11,8 @@ echo "🚀 Starting RCE Website Deployment..."
 # 1. Pull latest code (if git repository)
 if [ -d ".git" ]; then
     echo "📥 Pulling latest git changes..."
+    # Auto-stash local build artifacts (e.g. dist/) or runtime data so merge conflicts don't block deploy
+    git stash --include-untracked 2>/dev/null || true
     git pull origin main || git pull
 fi
 
